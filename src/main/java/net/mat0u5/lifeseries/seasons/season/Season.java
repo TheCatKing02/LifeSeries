@@ -256,13 +256,17 @@ public abstract class Season {
 
     public boolean sessionStart() {
         boogeymanManager.resetBoogeymen();
-        boogeymanManager.addSessionActions();
-        secretSociety.addSessionActions();
+        addSessionActions();
         return true;
     }
 
     public void tick(MinecraftServer server) {}
     public void tickSessionOn(MinecraftServer server) {}
+    public void addSessionActions() {
+        //TODO overrides from other seasons
+        boogeymanManager.addSessionActions();
+        secretSociety.addSessionActions();
+    }
 
     /*
         Events

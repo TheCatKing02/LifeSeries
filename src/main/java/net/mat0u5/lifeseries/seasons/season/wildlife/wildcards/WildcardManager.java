@@ -240,10 +240,8 @@ public class WildcardManager {
 
     public static void onSessionStart() {
         if (chosenWildcard == null && activeWildcards.isEmpty()) {
-            for (ServerPlayerEntity player : PlayerUtils.getAllPlayers()) {
-                if (PermissionManager.isAdmin(player)) {
-                    NetworkHandlerServer.sendStringPacket(player, PacketNames.SELECT_WILDCARDS, "true");
-                }
+            for (ServerPlayerEntity player : PlayerUtils.getAdminPlayers()) {
+                NetworkHandlerServer.sendStringPacket(player, PacketNames.SELECT_WILDCARDS, "true");
             }
         }
     }

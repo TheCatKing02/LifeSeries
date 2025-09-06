@@ -40,11 +40,13 @@ public class SocietyCommands {
                                 CommandRegistryAccess commandRegistryAccess,
                                 CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(
-                literal("initiate")
-                        .executes(context -> initiate(context.getSource()))
+            literal("initiate")
+                .requires(source -> isAllowed())
+                .executes(context -> initiate(context.getSource()))
         );
         dispatcher.register(
             literal("society")
+                .requires(source -> isAllowed())
                 .then(literal("success")
                     .executes(context -> societySuccess(context.getSource()))
                 )

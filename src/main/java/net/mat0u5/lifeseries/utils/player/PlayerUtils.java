@@ -129,6 +129,12 @@ public class PlayerUtils {
         return result;
     }
 
+    public static List<ServerPlayerEntity> getAdminPlayers() {
+        List<ServerPlayerEntity> result = getAllPlayers();
+        result.removeIf(player -> !PermissionManager.isAdmin(player));
+        return result;
+    }
+
     public static ServerPlayerEntity getPlayer(String name) {
         if (server == null || name == null) return null;
         return server.getPlayerManager().getPlayer(name);
@@ -384,8 +390,7 @@ public class PlayerUtils {
         if (broadcastCooldown.containsKey(message)) return;
         broadcastCooldown.put(message, cooldownTicks);
 
-        for (ServerPlayerEntity player : PlayerUtils.getAllPlayers()) {
-            if (!PermissionManager.isAdmin(player)) continue;
+        for (ServerPlayerEntity player : PlayerUtils.getAdminPlayers()) {
             player.sendMessage(message, false);
         }
         Main.LOGGER.info(message.getString());
