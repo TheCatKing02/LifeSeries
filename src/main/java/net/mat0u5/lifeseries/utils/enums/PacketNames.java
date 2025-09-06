@@ -3,50 +3,51 @@ package net.mat0u5.lifeseries.utils.enums;
 public enum PacketNames {
     PACKET(""),
 
-    CURSE_SLIDING("curse_sliding"),
+    CURSE_SLIDING,
     LIMITED_LIFE_TIMER("limited_life_timer__"),
-    SESSION_TIMER("session_timer"),
+    SESSION_TIMER,
 
-    MIMICRY_COOLDOWN("mimicry_cooldown"),
-    SUPERPOWER_COOLDOWN("superpower_cooldown"),
-    FAKE_THUNDER("fake_thunder"),
-    SNAIL_AIR("snail_air"),
-    TOGGLE_TIMER("toggle_timer"),
-    PREVENT_GLIDING("prevent_gliding"),
-    SNAIL_TEXTURES_INFO("snail_textures_info"),
-    TRIVIA_SNAIL_POS("trivia_snail_pos"),
-    TRIVIA_SNAIL_PART("trivia_snail_part"),
-    SNAIL_POS("snail_pos"),
-    SNAIL_PART("snail_part"),
-    TRIVIA_BOT_PART("trivia_bot_part"),
-    SEASON_INFO("season_info"),
-    SELECT_SEASON("select_season"),
-    OPEN_CONFIG("open_config"),
-    SELECT_WILDCARDS("select_wildcards"),
-    RESET_TRIVIA("reset_trivia"),
-    JUMP("jump"),
-    SESSION_STATUS("session_status"),
-    SNAIL_SKIN("snail_skin"),
-    MORPH("morph"),
-    TIME_DILATION("time_dilation"),
-    PLAYER_DISGUISE("player_disguise"), // Also a packet ID
-    SHOW_VIGNETTE("show_vignette"),
+    MIMICRY_COOLDOWN,
+    SUPERPOWER_COOLDOWN,
+    FAKE_THUNDER,
+    SNAIL_AIR,
+    TOGGLE_TIMER,
+    PREVENT_GLIDING,
+    SNAIL_TEXTURES_INFO,
+    TRIVIA_SNAIL_POS,
+    TRIVIA_SNAIL_PART,
+    SNAIL_POS,
+    SNAIL_PART,
+    TRIVIA_BOT_PART,
+    SEASON_INFO,
+    SELECT_SEASON,
+    OPEN_CONFIG,
+    SELECT_WILDCARDS,
+    RESET_TRIVIA,
+    JUMP,
+    SESSION_STATUS,
+    SNAIL_SKIN,
+    MORPH,
+    TIME_DILATION,
+    PLAYER_DISGUISE, // Also a packet ID
+    SHOW_VIGNETTE,
     PLAYER_INVISIBLE("player_invisible__"),
-    TABLIST_SHOW_EXACT("tablist_show_exact"),
-    CURRENT_SEASON("current_season"),
-    ACTIVE_WILDCARDS("active_wildcards"),
-    PLAYER_MIN_MSPT("player_min_mspt"),
-    TRIPLE_JUMP("triple_jump"),
-    REQUEST_SNAIL_MODEL("reset_snail_model"),
-    SET_SEASON("set_season"),
-    REQUEST_CONFIG("request_config"),
-    SELECTED_WILDCARD("selected_wildcard"),
-    TRANSCRIPT("transcript"),
-    SUPERPOWER_KEY("superpower_key"),
-    HOLDING_JUMP("holding_jump"),
-    TRIVIA_ANSWER("trivia_answer"),
-    SHOW_TOTEM("show_totem"),
-    UPDATE_HIDDEN_PLAYERS("update_hidden_players");
+    TABLIST_SHOW_EXACT,
+    CURRENT_SEASON,
+    ACTIVE_WILDCARDS,
+    PLAYER_MIN_MSPT,
+    TRIPLE_JUMP,
+    REQUEST_SNAIL_MODEL,
+    SET_SEASON,
+    REQUEST_CONFIG,
+    SELECTED_WILDCARD,
+    TRANSCRIPT,
+    SUPERPOWER_KEY,
+    HOLDING_JUMP,
+    TRIVIA_ANSWER,
+    SHOW_TOTEM,
+    UPDATE_HIDDEN_PLAYERS,
+    PAST_LIFE_CHOOSE_TWIST;
 
     public static PacketNames fromName(String name) {
         for (PacketNames packet : PacketNames.values()) {
@@ -63,6 +64,10 @@ public enum PacketNames {
     private String name;
     PacketNames(String name) {
         this.name = name;
+    }
+
+    PacketNames() {
+        this.name = this.toString().toLowerCase();
     }
 
     public String getName() {

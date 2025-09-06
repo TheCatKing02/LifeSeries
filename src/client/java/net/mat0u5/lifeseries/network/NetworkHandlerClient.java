@@ -9,6 +9,7 @@ import net.mat0u5.lifeseries.features.SnailSkinsClient;
 import net.mat0u5.lifeseries.features.Trivia;
 import net.mat0u5.lifeseries.config.ClientConfigGuiManager;
 import net.mat0u5.lifeseries.gui.other.ChooseWildcardScreen;
+import net.mat0u5.lifeseries.gui.other.PastLifeChooseTwistScreen;
 import net.mat0u5.lifeseries.gui.other.SnailTextureInfoScreen;
 import net.mat0u5.lifeseries.gui.seasons.ChooseSeasonScreen;
 import net.mat0u5.lifeseries.gui.seasons.SeasonInfoScreen;
@@ -21,6 +22,7 @@ import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.TimeDila
 import net.mat0u5.lifeseries.seasons.session.SessionStatus;
 import net.mat0u5.lifeseries.utils.ClientResourcePacks;
 import net.mat0u5.lifeseries.utils.ClientTaskScheduler;
+import net.mat0u5.lifeseries.utils.ClientUtils;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.versions.VersionControl;
@@ -227,6 +229,9 @@ public class NetworkHandlerClient {
             }
             MinecraftClient.getInstance().gameRenderer.showFloatingItem(totemItem);
         }
+        if (name == PacketNames.PAST_LIFE_CHOOSE_TWIST) {
+            MinecraftClient.getInstance().setScreen(new PastLifeChooseTwistScreen());
+        }
     }
 
     public static void handleNumberPacket(NumberPayload payload) {
@@ -362,8 +367,7 @@ public class NetworkHandlerClient {
         ClientPlayNetworking.send(new StringPayload(PacketNames.SUPERPOWER_KEY.getName(), "true"));
     }
     public static void pressRunCommandKey() {
-        if (MinecraftClient.getInstance().getNetworkHandler() == null) return;
-        MinecraftClient.getInstance().getNetworkHandler().sendChatCommand(MainClient.RUN_COMMAND);
+        ClientUtils.runCommand(MainClient.RUN_COMMAND);
     }
 
     public static void sendStringPacket(PacketNames name, String value) {

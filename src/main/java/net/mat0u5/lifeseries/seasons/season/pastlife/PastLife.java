@@ -4,6 +4,7 @@ import net.mat0u5.lifeseries.config.ConfigManager;
 import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
+import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -44,7 +45,7 @@ public class PastLife extends Season {
     public void requestSessionAction() {
         for (ServerPlayerEntity player : PlayerUtils.getAdminPlayers()) {
             if (NetworkHandlerServer.wasHandshakeSuccessful(player)) {
-
+                NetworkHandlerServer.sendStringPacket(player, PacketNames.UPDATE_HIDDEN_PLAYERS, "");
             }
             else {
                 player.sendMessage(Text.of("§7Past Life session started:"));

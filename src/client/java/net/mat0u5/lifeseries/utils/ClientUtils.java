@@ -4,6 +4,7 @@ import net.mat0u5.lifeseries.MainClient;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.world.ItemStackUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
@@ -37,5 +38,15 @@ public class ClientUtils {
         if (client == null) return null;
         if (client.player == null) return null;
         return client.player.getScoreboardTeam();
+    }
+
+    public static void runCommand(String command) {
+        ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+        if (handler == null) return;
+
+        if (!command.startsWith("/")) {
+            command = "/" + command;
+        }
+        handler.sendChatCommand(command);
     }
 }
