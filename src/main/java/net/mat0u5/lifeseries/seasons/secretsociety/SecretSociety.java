@@ -62,13 +62,13 @@ public class SecretSociety {
             @Override
             public void trigger() {
                 if (!SOCIETY_ENABLED) return;
-                startSociety();
+                startSociety(null);
             }
         });
     }
 
-    public void startSociety() {
-        startSociety();
+    public void restartSociety() {
+        startSociety(secretWord);
     }
 
     public void startSociety(String word) {

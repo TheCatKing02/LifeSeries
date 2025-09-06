@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -53,7 +54,66 @@ public class SocietyCommands {
                     )
                     .executes(context -> societyBegin(context.getSource(), null))
                 )
+                .then(literal("members")
+                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                        .then(literal("add")
+                            .then(argument("player", EntityArgumentType.player())
+                                .executes(context -> membersAdd(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
+                            )
+                        )
+                        .then(literal("remove")
+                            .then(argument("player", EntityArgumentType.player())
+                                .executes(context -> membersRemove(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
+                            )
+                        )
+                        .then(literal("roll")
+                            .executes(context -> membersRoll(context.getSource()))
+                        )
+                )
         );
+    }
+    public static int membersRemove(ServerCommandSource source, ServerPlayerEntity target) {
+        if (checkBanned(source)) return -1;
+        SecretSociety society = get();
+        if (society == null) return -1;
+        if (!checkSocietyStart(source)) return -1;
+        if (target == null) return -1;
+
+        society.removeMemberManually(target);
+        return 1;
+    }
+
+    public static int membersAdd(ServerCommandSource source, ServerPlayerEntity target) {
+        if (checkBanned(source)) return -1;
+        SecretSociety society = get();
+        if (society == null) return -1;
+        if (!checkSocietyStart(source)) return -1;
+        if (target == null) return -1;
+
+        society.addMemberManually(target);
+        return 1;
+    }
+
+    public static int membersRoll(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
+        SecretSociety society = get();
+        if (society == null) return -1;
+        if (!checkSocietyStart(source)) return -1;
+
+        OtherUtils.sendCommandFeedback(source, Text.of("§7Re-rolling members for the Secret Society..."));
+        society.restartSociety();
+        return 1;
+    }
+
+    public static boolean checkSocietyStart(ServerCommandSource source) {
+        SecretSociety society = get();
+        if (society == null) return false;
+        if (!society.societyStarted) {
+            source.sendError(Text.of("The society has not started yet."));
+            OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7Use '/society begin' or '/society begin <secret_word>' to start"));
+            return true;
+        }
+        return false;
     }
 
     public static int societyBegin(ServerCommandSource source, String word) {
@@ -61,7 +121,7 @@ public class SocietyCommands {
         SecretSociety society = get();
         if (society == null) return -1;
 
-        OtherUtils.sendCommandFeedback(source, Text.of("Starting the Secret Society..."));
+        OtherUtils.sendCommandFeedback(source, Text.of("§7Starting the Secret Society..."));
         society.startSociety(word);
         return 1;
     }
