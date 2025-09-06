@@ -4,12 +4,16 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
+import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
@@ -66,8 +70,8 @@ public class SocietyCommands {
                                 .executes(context -> membersRemove(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
                             )
                         )
-                        .then(literal("roll")
-                            .executes(context -> membersRoll(context.getSource()))
+                        .then(literal("list")
+                            .executes(context -> membersList(context.getSource()))
                         )
                 )
         );
@@ -94,14 +98,24 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int membersRoll(ServerCommandSource source) {
+    public static int membersList(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
         if (!checkSocietyStart(source)) return -1;
 
-        OtherUtils.sendCommandFeedback(source, Text.of("§7Re-rolling members for the Secret Society..."));
-        society.restartSociety();
+        if (society.members.isEmpty()) {
+            source.sendError(Text.of("The are no Secret Society members"));
+            return -1;
+        }
+
+        List<String> societyMembers = new ArrayList<>();
+        for (SocietyMember member : society.members) {
+            ServerPlayerEntity player = member.getPlayer();
+            if (player == null) continue;
+            societyMembers.add(player.getNameForScoreboard());
+        }
+        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.formatLoosely("Secret Society Members: §7{}"));
         return 1;
     }
 
@@ -109,7 +123,7 @@ public class SocietyCommands {
         SecretSociety society = get();
         if (society == null) return false;
         if (!society.societyStarted) {
-            source.sendError(Text.of("The society has not started yet."));
+            source.sendError(Text.of("The society has not started yet"));
             OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7Use '/society begin' or '/society begin <secret_word>' to start"));
             return true;
         }

@@ -240,6 +240,7 @@ public class SecretSociety {
     public void addMemberManually(ServerPlayerEntity player) {
         if (!SOCIETY_ENABLED) return;
         player.sendMessage(Text.of("§c [NOTICE] You are now a Secret Society member!"));
+        sendMessageToMembers(Text.of("A player has been added to the Secret Society."));
         addMember(player);
     }
 
@@ -247,6 +248,15 @@ public class SecretSociety {
         if (!SOCIETY_ENABLED) return;
         player.sendMessage(Text.of("§c [NOTICE] You are no longer a Secret Society member!"));
         removeMember(player);
+        sendMessageToMembers(Text.of("A player has been removed from the Secret Society."));
+    }
+
+    public void sendMessageToMembers(Text message) {
+        for (SocietyMember member : members) {
+            ServerPlayerEntity player = member.getPlayer();
+            if (player == null) continue;
+            player.sendMessage(message);
+        }
     }
 
     public void resetMembers() {

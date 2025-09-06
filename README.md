@@ -169,6 +169,21 @@ This command **always** available
 </details>
 
 <details open>
+<summary>Secret Society</summary>
+
+*This command is only available when the Secret Society has been enabled in the config.*
+- `/society begin` - Starts the Society with a random word (Can be changed in the config).
+- `/society begin <secret_word>` - Starts the Society with a specific word you type.
+- `/society members add <player>` - Adds `<player>` to the Society.
+- `/society members remove <player>` - Removes `<player>` from the Society.
+- `/society members list` - Shows you the current members of the Society.
+<br><br>
+- `/society success` - Society members can use this if they succeed in their task. *No permissions required.*
+- `/society fail` - Society members can use this if they fail in their task. *No permissions required.*
+- `/initiate` - Initiates a member of the Society. *No permissions required.*
+</details>
+
+<details open>
 <summary>/health</summary>
 
 *This command is only available when playing Secret Life.*
