@@ -6,6 +6,7 @@ import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.seasons.other.WatcherManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.secretlife.SecretLife;
+import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.superpower.Necromancy;
 import net.mat0u5.lifeseries.seasons.session.Session;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
@@ -298,7 +299,7 @@ public class PlayerUtils {
 
                 boolean hidePlayer = false;
 
-                if (!currentSeason.TAB_LIST_SHOW_DEAD_PLAYERS && livesManager.isAlive(receivingPlayer) && !livesManager.isAlive(player) && !WatcherManager.isWatcher(player)) {
+                if (!currentSeason.TAB_LIST_SHOW_DEAD_PLAYERS && livesManager.isAlive(receivingPlayer) && !livesManager.isAlive(player) && !WatcherManager.isWatcher(player) && !Necromancy.isRessurectedPlayer(player)) {
                     hidePlayer = true;
                 }
                 if (!currentSeason.WATCHERS_IN_TAB && !WatcherManager.isWatcher(receivingPlayer) && WatcherManager.isWatcher(player)) {

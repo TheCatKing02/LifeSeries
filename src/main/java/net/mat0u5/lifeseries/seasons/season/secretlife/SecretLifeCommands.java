@@ -7,6 +7,7 @@ import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.world.AnimationUtils;
 import net.minecraft.command.CommandRegistryAccess;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.*;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -50,13 +50,13 @@ public class SecretLifeCommands {
                 .requires(source -> isAllowed())
                 .executes(context -> showHealth(context.getSource()))
                 .then(literal("sync")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> syncHealth(
                         context.getSource())
                     )
                 )
                 .then(literal("add")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("player", EntityArgumentType.players())
                         .executes(context -> healthManager(
                             context.getSource(), EntityArgumentType.getPlayers(context, "player"), 1, false)
@@ -69,7 +69,7 @@ public class SecretLifeCommands {
                     )
                 )
                 .then(literal("remove")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("player", EntityArgumentType.players())
                         .executes(context -> healthManager(
                             context.getSource(), EntityArgumentType.getPlayers(context, "player"), -1, false)
@@ -82,7 +82,7 @@ public class SecretLifeCommands {
                     )
                 )
                 .then(literal("set")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("player", EntityArgumentType.players())
                         .then(argument("amount", DoubleArgumentType.doubleArg(0))
                             .executes(context -> healthManager(
@@ -92,7 +92,7 @@ public class SecretLifeCommands {
                     )
                 )
                 .then(literal("get")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("player", EntityArgumentType.player())
                         .executes(context -> getHealthFor(
                             context.getSource(), EntityArgumentType.getPlayer(context, "player"))
@@ -100,7 +100,7 @@ public class SecretLifeCommands {
                     )
                 )
                 .then(literal("reset")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("player", EntityArgumentType.players())
                         .executes(context -> resetHealth(
                             context.getSource(), EntityArgumentType.getPlayers(context, "player"))
@@ -110,7 +110,7 @@ public class SecretLifeCommands {
         );
         dispatcher.register(
             literal("task")
-                .requires(source -> isAllowed() && (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
                     .then(literal("succeed")
                             .then(argument("player", EntityArgumentType.players())
                                     .executes(context -> succeedTask(
@@ -174,7 +174,7 @@ public class SecretLifeCommands {
         );
         dispatcher.register(
             literal("secretlife")
-                .requires(source -> isAllowed() && (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
                 .then(literal("changeLocations")
                     .executes(context -> changeLocations(
                         context.getSource())

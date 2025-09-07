@@ -101,10 +101,16 @@ Improved Secret Life task selection.
 
 ----------
 
-Added the Secret Society.
+Added the Secret Society.<br>
 Configs: `secret_society`, `secret_society_member_amount`, `secret_society_start_time`, `secret_society_force`, `secret_society_ignore`, `secret_society_words`, `secret_society_punishment_lives`, `secret_society_kills_required`
 
 ----------
 
-Reworked Session Actions.
+Reworked Session Actions.<br>
 Bug Fixes.
+
+----------
+
+The 'only_take_lives_in_session' config now works in Limited Life.<br>
+Wild Life zombies now show up in the tab list even if the 'tab_list_show_dead_players' is turned off.<br>
+Refactored command permission handling.

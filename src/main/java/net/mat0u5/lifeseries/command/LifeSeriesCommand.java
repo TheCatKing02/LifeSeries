@@ -9,6 +9,7 @@ import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.WildcardManager;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.versions.VersionControl;
 import net.mat0u5.lifeseries.utils.world.WorldUitls;
@@ -25,7 +26,6 @@ import java.io.File;
 
 import static net.mat0u5.lifeseries.Main.ALLOWED_SEASON_NAMES;
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -56,7 +56,7 @@ public class LifeSeriesCommand {
                     .executes(context -> config(context.getSource()))
                 )
                 .then(literal("reload")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> reload(context.getSource()))
                 )
                 .then(literal("chooseSeries")
@@ -64,7 +64,7 @@ public class LifeSeriesCommand {
                         .executes(context -> chooseSeason(context.getSource()))
                 )
                 .then(literal("setSeries")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("season", StringArgumentType.string())
                         .suggests((context, builder) -> CommandSource.suggestMatching(ALLOWED_SEASON_NAMES, builder))
                         .executes(context -> setSeason(
@@ -82,7 +82,7 @@ public class LifeSeriesCommand {
         if (VersionControl.isDevVersion()) {
             dispatcher.register(
                 literal("ls")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(literal("test")
                         .executes(context -> test(context.getSource()))
                     )

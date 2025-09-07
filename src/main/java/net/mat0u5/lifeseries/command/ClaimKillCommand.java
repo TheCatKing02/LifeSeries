@@ -3,6 +3,7 @@ package net.mat0u5.lifeseries.command;
 import com.mojang.brigadier.CommandDispatcher;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
@@ -20,7 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.*;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -48,7 +48,7 @@ public class ClaimKillCommand {
                     ))
                 )
                 .then(literal("validate")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("killer", EntityArgumentType.player())
                         .then(argument("victim", EntityArgumentType.player())
                             .executes(context -> claimCreditAccept(

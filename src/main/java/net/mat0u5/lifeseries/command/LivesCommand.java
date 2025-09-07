@@ -9,6 +9,7 @@ import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
 import net.mat0u5.lifeseries.seasons.season.lastlife.LastLifeLivesManager;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.player.ScoreboardUtils;
 import net.minecraft.command.CommandRegistryAccess;
@@ -27,7 +28,6 @@ import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.Main.livesManager;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -69,13 +69,13 @@ public class LivesCommand {
             .requires(source -> isAllowed())
             .executes(context -> showLives(context.getSource()))
             .then(literal("reload")
-                .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(PermissionManager::isAdmin)
                 .executes(context -> reloadLives(
                     context.getSource())
                 )
             )
             .then(literal("add")
-                .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(PermissionManager::isAdmin)
                 .then(argument("player", EntityArgumentType.players())
                     .executes(context -> lifeManager(
                         context.getSource(), EntityArgumentType.getPlayers(context, "player"), 1, false)
@@ -97,7 +97,7 @@ public class LivesCommand {
                 )
             )
             .then(literal("remove")
-                .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(PermissionManager::isAdmin)
                 .then(argument("player", EntityArgumentType.players())
                     .executes(context -> lifeManager(
                         context.getSource(), EntityArgumentType.getPlayers(context, "player"), -1, false)
@@ -119,7 +119,7 @@ public class LivesCommand {
                 )
             )
             .then(literal("set")
-                .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(PermissionManager::isAdmin)
                 .then(argument("player", EntityArgumentType.players())
                     .then(argument("amount", IntegerArgumentType.integer(0))
                         .requires(source -> isAllowedNormal())
@@ -138,7 +138,7 @@ public class LivesCommand {
                 )
             )
             .then(literal("get")
-                .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(PermissionManager::isAdmin)
                 .then(argument("player", EntityArgumentType.player())
                     .executes(context -> getLivesFor(
                         context.getSource(), EntityArgumentType.getPlayer(context, "player"))
@@ -151,7 +151,7 @@ public class LivesCommand {
                 )
             )
             .then(literal("reset")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("player", EntityArgumentType.players())
                             .executes(context -> resetLives(
                                     context.getSource(), EntityArgumentType.getPlayers(context, "player"))
@@ -159,13 +159,13 @@ public class LivesCommand {
                     )
             )
             .then(literal("resetAll")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> resetAllLives(
                             context.getSource())
                     )
             )
             .then(literal("rollLives")
-                    .requires(source -> isLastLife() && (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(source -> isLastLife() && PermissionManager.isAdmin(source))
                     .executes(context -> assignRandomLives(
                             context.getSource(), PlayerUtils.getAllPlayers()
                     ))

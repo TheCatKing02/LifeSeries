@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.mat0u5.lifeseries.seasons.other.WatcherManager;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.ScoreboardUtils;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -15,7 +16,6 @@ import net.minecraft.world.GameMode;
 
 import java.util.Collection;
 
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -25,7 +25,7 @@ public class WatcherCommand {
                                 CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(
             literal("watcher")
-                .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(PermissionManager::isAdmin)
                 .executes(context -> info(context.getSource()))
                 .then(literal("info")
                     .executes(context -> info(context.getSource()))

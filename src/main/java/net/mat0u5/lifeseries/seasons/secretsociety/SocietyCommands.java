@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -50,23 +49,31 @@ public class SocietyCommands {
                 .requires(source -> isAllowed())
                 .then(literal("success")
                     .executes(context -> societySuccess(context.getSource()))
+                    .then(literal("confirm")
+                        .requires(PermissionManager::isAdmin)
+                        .executes(context -> societySuccessConfirm(context.getSource()))
+                    )
                 )
                 .then(literal("fail")
                     .executes(context -> societyFail(context.getSource()))
+                    .then(literal("confirm")
+                        .requires(PermissionManager::isAdmin)
+                        .executes(context -> societyFailConfirm(context.getSource()))
+                    )
                 )
                 .then(literal("begin")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .then(argument("secret_word", StringArgumentType.string())
                         .executes(context -> societyBegin(context.getSource(), StringArgumentType.getString(context, "secret_word")))
                     )
                     .executes(context -> societyBegin(context.getSource(), null))
                 )
                 .then(literal("end")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> societyEnd(context.getSource()))
                 )
                 .then(literal("members")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                         .then(literal("add")
                             .then(argument("player", EntityArgumentType.player())
                                 .executes(context -> membersAdd(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
@@ -187,12 +194,28 @@ public class SocietyCommands {
         SocietyMember member = society.getMember(self);
         if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
+            if (PermissionManager.isAdmin(self)) {
+                OtherUtils.sendCommandFeedback(source, Text.of("§7Use the §f\"/society fail §lconfirm\"§l§7 command to bypass this"));
+            }
             return -1;
         }
         if (!member.initiated) {
             source.sendError(Text.of("You have not been initiated"));
             return -1;
         }
+
+        society.endFail();
+        SessionTranscript.societyEndFail(self);
+        return 1;
+    }
+
+    public static int societyFailConfirm(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
+        SecretSociety society = get();
+        if (society == null) return -1;
+        ServerPlayerEntity self = source.getPlayer();
+        if (self == null) return -1;
+        if (checkSocietyRunning(source)) return -1;
 
         society.endFail();
         SessionTranscript.societyEndFail(self);
@@ -210,12 +233,28 @@ public class SocietyCommands {
         SocietyMember member = society.getMember(self);
         if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
+            if (PermissionManager.isAdmin(self)) {
+                OtherUtils.sendCommandFeedback(source, Text.of("§7Use the §f\"/society success §lconfirm\"§l§7 command to bypass this"));
+            }
             return -1;
         }
         if (!member.initiated) {
             source.sendError(Text.of("You have not been initiated"));
             return -1;
         }
+
+        society.endSuccess();
+        SessionTranscript.societyEndSuccess(self);
+        return 1;
+    }
+
+    public static int societySuccessConfirm(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
+        SecretSociety society = get();
+        if (society == null) return -1;
+        ServerPlayerEntity self = source.getPlayer();
+        if (self == null) return -1;
+        if (checkSocietyRunning(source)) return -1;
 
         society.endSuccess();
         SessionTranscript.societyEndSuccess(self);

@@ -164,9 +164,11 @@ public class LimitedLife extends Season {
             }
         }
         onPlayerDiedNaturally(player);
-        livesManager.addToPlayerLives(player, DEATH_NORMAL);
-        if (livesManager.isAlive(player)) {
-            PlayerUtils.sendTitle(player, Text.literal(OtherUtils.formatSecondsToReadable(DEATH_NORMAL)).formatted(Formatting.RED), 20, 80, 20);
+        if (livesManager.canChangeLivesNaturally()) {
+            livesManager.addToPlayerLives(player, DEATH_NORMAL);
+            if (livesManager.isAlive(player)) {
+                PlayerUtils.sendTitle(player, Text.literal(OtherUtils.formatSecondsToReadable(DEATH_NORMAL)).formatted(Formatting.RED), 20, 80, 20);
+            }
         }
     }
 
@@ -177,12 +179,12 @@ public class LimitedLife extends Season {
         super.onClaimKill(killer, victim);
 
         if (!wasBoogeyCure) {
-            if (wasAllowedToAttack) {
+            if (wasAllowedToAttack && livesManager.canChangeLivesNaturally()) {
                 livesManager.addToPlayerLives(killer, KILL_NORMAL);
                 PlayerUtils.sendTitle(killer, Text.literal(OtherUtils.formatSecondsToReadable(KILL_NORMAL)).formatted(Formatting.GREEN), 20, 80, 20);
             }
         }
-        else {
+        else if (livesManager.canChangeLivesNaturally()) {
             //Victim was killed by boogeyman - remove 2 hours from victim and add 1 hour to boogey
 
             boolean wasAlive = false;
@@ -217,7 +219,7 @@ public class LimitedLife extends Season {
         boolean wasBoogeyCure = boogeymanManager.isBoogeymanThatCanBeCured(killer, victim);
         super.onPlayerKilledByPlayer(victim, killer);
 
-        if (!wasBoogeyCure) {
+        if (!wasBoogeyCure && livesManager.canChangeLivesNaturally()) {
             boolean wasFinalKill = livesManager.isAlive(victim) || !SHOW_DEATH_TITLE;
             if (wasAllowedToAttack) {
                 String msgKiller = OtherUtils.formatSecondsToReadable(KILL_NORMAL);
@@ -238,7 +240,7 @@ public class LimitedLife extends Season {
                 PlayerUtils.sendTitle(victim, Text.literal(msgVictim).formatted(Formatting.RED), 20, 80, 20);
             }
         }
-        else {
+        else if (livesManager.canChangeLivesNaturally()) {
 
             //Victim was killed by boogeyman - remove 2 hours from victim and add 1 hour to boogey
             String msgVictim = OtherUtils.formatSecondsToReadable(DEATH_BOOGEYMAN);

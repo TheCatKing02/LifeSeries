@@ -17,6 +17,7 @@ import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
@@ -31,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -52,7 +52,7 @@ public class WildLifeCommands {
                                 CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(
             literal("wildcard")
-                .requires(source -> isAllowed() && (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
                 .then(literal("list")
                     .executes(context -> listWildcards(
                         context.getSource())
@@ -91,7 +91,7 @@ public class WildLifeCommands {
                 .requires(source -> isAllowed())
                 .then(literal("names")
                     .then(literal("set")
-                        .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                        .requires(PermissionManager::isAdmin)
                         .then(argument("player", EntityArgumentType.player())
                             .then(argument("name", StringArgumentType.greedyString())
                                 .executes(context -> setSnailName(context.getSource(), EntityArgumentType.getPlayer(context, "player"), StringArgumentType.getString(context, "name")))
@@ -99,7 +99,7 @@ public class WildLifeCommands {
                         )
                     )
                     .then(literal("reset")
-                        .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                        .requires(PermissionManager::isAdmin)
                         .then(argument("player", EntityArgumentType.players())
                             .executes(context -> resetSnailName(context.getSource(), EntityArgumentType.getPlayers(context, "player")))
                         )
@@ -116,7 +116,7 @@ public class WildLifeCommands {
                     )
                 )
                 .then(literal("textures")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> getSnailTexturesInfo(context.getSource()))
                     .then(literal("list")
                             .executes(context -> getSnailTextures(context.getSource()))
@@ -128,7 +128,7 @@ public class WildLifeCommands {
         );
         dispatcher.register(
             literal("superpower")
-                .requires(source -> isAllowed() && (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
                 .then(literal("set")
                     .then(argument("player", EntityArgumentType.players())
                         .then(argument("superpower", StringArgumentType.string())
@@ -164,7 +164,7 @@ public class WildLifeCommands {
         );
         dispatcher.register(
             literal("hunger")
-                .requires(source -> isAllowed() && (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
                 .then(literal("randomizeFood")
                         .executes(context -> randomizeFood(context.getSource()))
                 )

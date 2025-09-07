@@ -276,7 +276,7 @@ public abstract class Season {
      */
 
     public void onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
-        boolean soulmateKill = source.getType().msgId().equalsIgnoreCase("soulmate");
+         boolean soulmateKill = source.getType().msgId().equalsIgnoreCase("soulmate");
         SessionTranscript.onPlayerDeath(player, source);
         boolean killedByPlayer = false;
         if (source.getAttacker() instanceof ServerPlayerEntity serverAttacker) {

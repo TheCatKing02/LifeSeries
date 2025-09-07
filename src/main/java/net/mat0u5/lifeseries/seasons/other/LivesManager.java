@@ -279,14 +279,16 @@ public class LivesManager {
         info.put(pos, List.of(player.getYaw(),player.getPitch()));
         currentSeason.respawnPositions.put(player.getUuid(), info);
         currentSeason.dropItemsOnLastDeath(player);
-        if (livesBefore != null && livesBefore > 0) {
-            if (FINAL_DEATH_SOUND != null) {
-                PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), FINAL_DEATH_SOUND);
-            }
+        if (livesBefore != null) {
             if (FINAL_DEATH_LIGHTNING) {
                 WorldUitls.summonHarmlessLightning(player);
             }
-            showDeathTitle(player);
+            if (livesBefore > 0) {
+                if (FINAL_DEATH_SOUND != null) {
+                    PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), FINAL_DEATH_SOUND);
+                }
+                showDeathTitle(player);
+            }
         }
         SessionTranscript.onPlayerLostAllLives(player);
         currentSeason.boogeymanManager.playerLostAllLives(player);

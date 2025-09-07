@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -15,7 +16,6 @@ import net.minecraft.text.Text;
 import java.util.*;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -36,7 +36,7 @@ public class DoubleLifeCommands {
                                 CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(
             literal("soulmate")
-                .requires(source -> isAllowed() && (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
                 .then(literal("get")
                     .then(argument("player", EntityArgumentType.player())
                         .executes(context -> getSoulmate(context.getSource(), EntityArgumentType.getPlayer(context, "player")))

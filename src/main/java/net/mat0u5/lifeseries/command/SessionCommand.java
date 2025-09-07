@@ -7,6 +7,7 @@ import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
@@ -18,7 +19,6 @@ import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.Main.currentSession;
-import static net.mat0u5.lifeseries.utils.player.PermissionManager.isAdmin;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -41,26 +41,26 @@ public class SessionCommand {
         dispatcher.register(
             literal("session")
                 .then(literal("start")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> SessionCommand.startSession(
                         context.getSource()
                     ))
                 )
                 .then(literal("stop")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> SessionCommand.stopSession(
                         context.getSource()
                     ))
                 )
                 .then(literal("pause")
-                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .requires(PermissionManager::isAdmin)
                     .executes(context -> SessionCommand.pauseSession(
                         context.getSource()
                     ))
                 )
                 .then(literal("timer")
                     .then(literal("set")
-                        .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                        .requires(PermissionManager::isAdmin)
                         .then(argument("time", StringArgumentType.greedyString())
                             .suggests((context, builder) -> CommandSource.suggestMatching(List.of("1h","1h30m","2h"), builder))
                             .executes(context -> SessionCommand.setTime(
@@ -69,7 +69,7 @@ public class SessionCommand {
                         )
                     )
                     .then(literal("add")
-                        .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                        .requires(PermissionManager::isAdmin)
                         .then(argument("time", StringArgumentType.greedyString())
                             .suggests((context, builder) -> CommandSource.suggestMatching(List.of("30m", "1h"), builder))
                             .executes(context -> SessionCommand.addTime(
@@ -78,7 +78,7 @@ public class SessionCommand {
                         )
                     )
                     .then(literal("fastforward")
-                        .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                        .requires(PermissionManager::isAdmin)
                         .then(argument("time", StringArgumentType.greedyString())
                             .suggests((context, builder) -> CommandSource.suggestMatching(List.of("5m"), builder))
                             .executes(context -> SessionCommand.skipTime(
@@ -87,7 +87,7 @@ public class SessionCommand {
                         )
                     )
                     .then(literal("remove")
-                        .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                        .requires(PermissionManager::isAdmin)
                             .then(argument("time", StringArgumentType.greedyString())
                                     .suggests((context, builder) -> CommandSource.suggestMatching(List.of("5m"), builder))
                                     .executes(context -> SessionCommand.removeTime(
