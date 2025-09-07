@@ -149,11 +149,11 @@ public class SocietyCommands {
         ServerPlayerEntity self = source.getPlayer();
         if (self == null) return -1;
 
-        if (!society.isMember(self)) {
+        SocietyMember member = society.getMember(self);
+        if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
             return -1;
         }
-        SocietyMember member = society.getMember(self);
         if (!member.initialized) {
             source.sendError(Text.of("You have not been initialized"));
             return -1;
@@ -171,11 +171,11 @@ public class SocietyCommands {
         ServerPlayerEntity self = source.getPlayer();
         if (self == null) return -1;
 
-        if (!society.isMember(self)) {
+        SocietyMember member = society.getMember(self);
+        if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
             return -1;
         }
-        SocietyMember member = society.getMember(self);
         if (!member.initialized) {
             source.sendError(Text.of("You have not been initialized"));
             return -1;
@@ -193,11 +193,11 @@ public class SocietyCommands {
         ServerPlayerEntity self = source.getPlayer();
         if (self == null) return -1;
 
-        if (!society.isMember(self)) {
+        SocietyMember member = society.getMember(self);
+        if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
             return -1;
         }
-        SocietyMember member = society.getMember(self);
         if (member.initialized) {
             source.sendError(Text.of("You have already been initialized"));
             return -1;

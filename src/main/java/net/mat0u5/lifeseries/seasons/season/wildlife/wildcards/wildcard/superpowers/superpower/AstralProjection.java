@@ -122,9 +122,9 @@ public class AstralProjection extends ToggleableSuperpower {
         ServerPlayerEntity player = getPlayer();
         if (player == null) return;
         //? if <= 1.21 {
-        player.damage(source, amount);
+        PlayerUtils.damage(player, source, amount);
          //?} else {
-        /*player.damage(world, source, amount);
+        /*PlayerUtils.damage(player, world, source, amount);
         *///?}
     }
 }

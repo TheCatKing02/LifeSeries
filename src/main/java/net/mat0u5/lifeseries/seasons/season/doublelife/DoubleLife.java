@@ -663,13 +663,8 @@ public class DoubleLife extends Season {
                     TaskScheduler.scheduleTask(380, () -> {
                         WorldUitls.summonHarmlessLightning(player1);
                         WorldUitls.summonHarmlessLightning(player2);
-                        //? if <= 1.21 {
-                        player1.damage(player1.getDamageSources().lightningBolt(), 0.0000001F);
-                        player2.damage(player2.getDamageSources().lightningBolt(), 0.0000001F);
-                        //?} else {
-                        /*player1.damage(PlayerUtils.getServerWorld(player1), player1.getDamageSources().lightningBolt(), 0.0000001F);
-                        player2.damage(PlayerUtils.getServerWorld(player2), player2.getDamageSources().lightningBolt(), 0.0000001F);
-                        *///?}
+                        PlayerUtils.damage(player1, player1.getDamageSources().lightningBolt(), 0.0000001F);
+                        PlayerUtils.damage(player2, player2.getDamageSources().lightningBolt(), 0.0000001F);
                     });
                 }
             }

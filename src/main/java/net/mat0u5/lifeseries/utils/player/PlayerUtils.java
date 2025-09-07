@@ -11,6 +11,7 @@ import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.world.WorldUitls;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.inventory.Inventory;
@@ -452,5 +453,17 @@ public class PlayerUtils {
             return PlayerUtils.getPlayer(fakePlayer.shadow);
         }
         return player;
+    }
+
+    public static void damage(ServerPlayerEntity player, ServerWorld world, DamageSource source, float amount) {
+        //?if <= 1.21 {
+        player.damage(source, amount);
+        //?} else {
+        /*player.damage(world, source, amount);
+        *///?}
+    }
+
+    public static void damage(ServerPlayerEntity player, DamageSource source, float amount) {
+        damage(player, getServerWorld(player), source, amount);
     }
 }

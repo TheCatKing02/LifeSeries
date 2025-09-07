@@ -44,8 +44,8 @@ public class ClientUtils {
         ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
         if (handler == null) return;
 
-        if (!command.startsWith("/")) {
-            command = "/" + command;
+        if (command.startsWith("/")) {
+            command = command.substring(1);
         }
         handler.sendChatCommand(command);
     }

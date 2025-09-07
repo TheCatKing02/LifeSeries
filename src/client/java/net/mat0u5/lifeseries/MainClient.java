@@ -63,7 +63,7 @@ public class MainClient implements ClientModInitializer, IClientHelper {
     public static boolean COLORBLIND_SUPPORT = false;
     public static boolean SESSION_TIMER = false;
     public static boolean TAB_LIST_SHOW_EXACT_LIVES = false;
-    public static String RUN_COMMAND = "/lifeseries config";
+    public static String RUN_COMMAND = "lifeseries config";
     public static boolean COLORED_HEARTS = false;
     public static boolean COLORED_HEARTS_HARDCORE_LAST_LIFE = true;
     public static boolean COLORED_HEARTS_HARDCORE_ALL_LIVES = false;

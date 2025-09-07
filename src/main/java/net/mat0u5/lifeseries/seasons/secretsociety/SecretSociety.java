@@ -26,6 +26,8 @@ public class SecretSociety {
     public List<String> FORCE_MEMBERS = new ArrayList<>();
     public List<String> IGNORE_MEMBERS = new ArrayList<>();
     public List<String> POSSIBLE_WORDS = new ArrayList<>(List.of("Hammer","Magnet","Throne","Gravity","Puzzle","Spiral","Pivot","Flare"));
+    public int KILL_COUNT = 2;
+    public int PUNISHMENT_LIVES = -2;
 
     public static final int INITIATE_MESSAGE_DELAYS = 15*20;
     public List<SocietyMember> members = new ArrayList<>();
@@ -88,14 +90,9 @@ public class SecretSociety {
         chooseMembers(PlayerUtils.getAllFunctioningPlayers());
     }
 
-    public void endSociety() {
+    public void forceEndSociety() {
         resetMembers();
         societyStarted = false;
-    }
-
-    public boolean isMember(ServerPlayerEntity player) {
-        SocietyMember member = getMember(player);
-        return member == null;
     }
 
     @Nullable
@@ -195,13 +192,27 @@ public class SecretSociety {
             player.sendMessage(Text.of("§7You have been chosen to be part of the §csecret society§7."), false);
         });
         currentTime += 50;
-        TaskScheduler.scheduleTask(currentTime, () -> {
-            player.sendMessage(Text.of("§7There are §c2§7 other members. Find them."), false);
-        });
-        currentTime += 80;
-        TaskScheduler.scheduleTask(currentTime, () -> {
-            player.sendMessage(Text.of("§7Together, secretly kill §c2§7 other players by §cnon-pvp§7 means."), false);
-        });
+
+        int otherMembers = members.size()-1;
+        if (otherMembers > 1) {
+            TaskScheduler.scheduleTask(currentTime, () -> {
+                player.sendMessage(Text.of("§7There are §c2§7 other members. Find them."), false);
+            });
+            currentTime += 80;
+            TaskScheduler.scheduleTask(currentTime, () -> {
+                player.sendMessage(TextUtils.formatLoosely("§7Together, secretly kill §c{}§7 other {} by §cnon-pvp§7 means.", KILL_COUNT, TextUtils.pluralize("player", KILL_COUNT)), false);
+            });
+        }
+        else {
+            TaskScheduler.scheduleTask(currentTime, () -> {
+                player.sendMessage(Text.of("§7You are alone."), false);
+            });
+            currentTime += 80;
+            TaskScheduler.scheduleTask(currentTime, () -> {
+                player.sendMessage(TextUtils.formatLoosely("§7Secretly kill §c{}§7 other {} by §cnon-pvp§7 means.", KILL_COUNT, TextUtils.pluralize("player", KILL_COUNT)), false);
+            });
+        }
+
         currentTime += 100;
         TaskScheduler.scheduleTask(currentTime, () -> {
             player.sendMessage(Text.of("§7Find the other members with the secret word:"), false);
@@ -252,35 +263,65 @@ public class SecretSociety {
     }
 
     public void sendMessageToMembers(Text message) {
-        for (SocietyMember member : members) {
-            ServerPlayerEntity player = member.getPlayer();
-            if (player == null) continue;
+        for (ServerPlayerEntity player : getMembers()) {
             player.sendMessage(message);
         }
     }
 
     public void resetMembers() {
-        for (SocietyMember member : members) {
-            ServerPlayerEntity player = member.getPlayer();
-            if (player == null) continue;
+        for (ServerPlayerEntity player : getMembers()) {
             player.sendMessage(Text.of("§c [NOTICE] You are no longer a Secret Society member!"));
         }
         members.clear();
     }
 
+    public List<ServerPlayerEntity> getMembers() {
+        List<ServerPlayerEntity> memberPlayers = new ArrayList<>();
+        for (SocietyMember member : members) {
+            ServerPlayerEntity player = member.getPlayer();
+            if (player == null) continue;
+            memberPlayers.add(player);
+        }
+        return memberPlayers;
+    }
+
     public void onDisabledSociety() {
-        endSociety();
+        forceEndSociety();
+    }
+
+    public void endSociety() {
+        societyStarted = false;
+        SessionTranscript.societyEnded();
+        PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
     }
 
     public void endSuccess() {
-        societyStarted = false;
-        SessionTranscript.societyEnded();
-        //TODO
+        endSociety();
+        List<ServerPlayerEntity> memberPlayers = getMembers();
+        PlayerUtils.sendTitleWithSubtitleToPlayers(memberPlayers, Text.empty(), Text.of("§aThe Society is pleased"), 20, 30, 20);
+        TaskScheduler.scheduleTask(75, () -> {
+            PlayerUtils.sendTitleWithSubtitleToPlayers(memberPlayers, Text.empty(), Text.of("§aYou will not be punished"), 20, 30, 20);
+        });
+        TaskScheduler.scheduleTask(150, () -> {
+            PlayerUtils.sendTitleWithSubtitleToPlayers(memberPlayers, Text.empty(), Text.of("§cYou are still sworn to secrecy"), 20, 30, 20);
+        });
     }
 
     public void endFail() {
-        societyStarted = false;
-        SessionTranscript.societyEnded();
-        //TODO
+        endSociety();
+        List<ServerPlayerEntity> memberPlayers = getMembers();
+        PlayerUtils.sendTitleWithSubtitleToPlayers(memberPlayers, Text.empty(), Text.of("§cThe Society is displeased"), 20, 30, 20);
+        TaskScheduler.scheduleTask(75, () -> {
+            PlayerUtils.sendTitleWithSubtitleToPlayers(memberPlayers, Text.empty(), Text.of("§cYou will be punished"), 20, 30, 20);
+        });
+        TaskScheduler.scheduleTask(110, () -> {
+            for (ServerPlayerEntity member : memberPlayers) {
+                PlayerUtils.damage(member, member.getDamageSources().playerAttack(member), 0.001f);
+                livesManager.addToPlayerLives(member, -2);
+            }
+        });
+        TaskScheduler.scheduleTask(150, () -> {
+            PlayerUtils.sendTitleWithSubtitleToPlayers(memberPlayers, Text.empty(), Text.of("§cYou are still sworn to secrecy"), 20, 30, 20);
+        });
     }
 }
