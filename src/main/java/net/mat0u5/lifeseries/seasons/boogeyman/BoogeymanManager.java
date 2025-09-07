@@ -345,16 +345,20 @@ public class BoogeymanManager {
         if (boogeymen == null) return;
         if (!livesManager.isAlive(player)) return;
         if (livesManager.isOnLastLife(player, true)) return;
-        PlayerUtils.sendTitle(player,Text.of("§cYou have failed."), 20, 30, 20);
-        PlayerUtils.playSoundToPlayer(player, SoundEvent.of(Identifier.of("minecraft","lastlife_boogeyman_fail")));
-        if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
-            PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. They have been dropped to their §cLast Life§7.", player));
-        }
 
         if (BOOGEYMAN_ADVANCED_DEATHS) {
+            PlayerUtils.sendTitle(player,Text.of("§cThe curse consumes you.."), 20, 30, 20);
+            if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
+                PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. They have been consumed by the curse.", player));
+            }
             AdvancedDeathsManager.setPlayerLives(player, 1);
         }
         else {
+            PlayerUtils.sendTitle(player,Text.of("§cYou have failed."), 20, 30, 20);
+            PlayerUtils.playSoundToPlayer(player, SoundEvent.of(Identifier.of("minecraft","lastlife_boogeyman_fail")));
+            if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
+                PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. They have been dropped to their §cLast Life§7.", player));
+            }
             livesManager.setPlayerLives(player, 1);
         }
 

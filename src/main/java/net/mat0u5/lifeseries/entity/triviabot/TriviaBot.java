@@ -32,7 +32,7 @@ import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.world.AnimationUtils;
 import net.mat0u5.lifeseries.utils.world.ItemSpawner;
 import net.mat0u5.lifeseries.utils.world.ItemStackUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantments;
@@ -472,7 +472,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
 
     public static BlockPos getBlockPosNearTarget(ServerPlayerEntity target, BlockPos targetPos, double distanceFromTarget) {
         if (target == null) return targetPos;
-        return WorldUitls.getCloseBlockPos(PlayerUtils.getServerWorld(target), targetPos, distanceFromTarget, 2, false);
+        return WorldUtils.getCloseBlockPos(PlayerUtils.getServerWorld(target), targetPos, distanceFromTarget, 2, false);
     }
 
 

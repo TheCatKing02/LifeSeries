@@ -6,7 +6,7 @@ import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpow
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.player.AttributeUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -67,7 +67,7 @@ public class Necromancy extends Superpower {
                 ServerWorld updatedPlayerWorld = PlayerUtils.getServerWorld(updatedPlayer);
                 List<ServerPlayerEntity> deadPlayers = getDeadSpectatorPlayers();
                 for (ServerPlayerEntity deadPlayer : deadPlayers) {
-                    BlockPos tpTo = WorldUitls.getCloseBlockPos(updatedPlayerWorld, updatedPlayer.getBlockPos(), 3, 2, true);
+                    BlockPos tpTo = WorldUtils.getCloseBlockPos(updatedPlayerWorld, updatedPlayer.getBlockPos(), 3, 2, true);
                     PlayerUtils.teleport(deadPlayer, updatedPlayerWorld, tpTo);
                     deadPlayer.changeGameMode(GameMode.SURVIVAL);
                     if (seasonConfig instanceof WildLifeConfig config) {
@@ -78,7 +78,7 @@ public class Necromancy extends Superpower {
                     }
                     AttributeUtils.setMaxPlayerHealth(deadPlayer, 8);
                     deadPlayer.setHealth(8);
-                    WorldUitls.summonHarmlessLightning(deadPlayer);
+                    WorldUtils.summonHarmlessLightning(deadPlayer);
                     ressurectedPlayers.add(deadPlayer.getUuid());
                     perPlayerRessurections.add(deadPlayer.getUuid());
                 }
@@ -95,7 +95,7 @@ public class Necromancy extends Superpower {
             if (player.isSpectator()) continue;
             UUID uuid = player.getUuid();
             if (perPlayerRessurections.contains(uuid) && ressurectedPlayers.contains(uuid)) {
-                WorldUitls.summonHarmlessLightning(player);
+                WorldUtils.summonHarmlessLightning(player);
                 player.changeGameMode(GameMode.SPECTATOR);
                 deadAgain.add(uuid);
             }

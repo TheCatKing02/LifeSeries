@@ -11,7 +11,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class WorldUitls {
+public class WorldUtils {
 
     public static int findTopSafeY(World world, Vec3d pos) {
         BlockPos.Mutable mutablePos = new BlockPos.Mutable(pos.getX(), world.getHeight(), pos.getZ());

@@ -4,7 +4,7 @@ import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpow
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.ToggleableSuperpower;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.player.TeamUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.scoreboard.Team;
@@ -71,7 +71,7 @@ public class Creaking extends ToggleableSuperpower {
 
         //? if >= 1.21.2 {
         /*for (int i = 0; i < 3; i++) {
-            BlockPos spawnPos =  WorldUitls.getCloseBlockPos(playerWorld, player.getBlockPos(), 6, 3, true);
+            BlockPos spawnPos =  WorldUtils.getCloseBlockPos(playerWorld, player.getBlockPos(), 6, 3, true);
             CreakingEntity creaking = EntityType.CREAKING.spawn(playerWorld, spawnPos, SpawnReason.COMMAND);
             if (creaking != null) {
                 creaking.setInvulnerable(true);

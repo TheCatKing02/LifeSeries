@@ -28,7 +28,7 @@ import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.world.AnimationUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
@@ -656,7 +656,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
     public static BlockPos getBlockPosNearTarget(ServerPlayerEntity target, double distanceFromTarget) {
         if (target == null) return null;
         BlockPos targetPos = target.getBlockPos();
-        return WorldUitls.getCloseBlockPos(PlayerUtils.getServerWorld(target), targetPos, distanceFromTarget, 1, false);
+        return WorldUtils.getCloseBlockPos(PlayerUtils.getServerWorld(target), targetPos, distanceFromTarget, 1, false);
     }
 
 

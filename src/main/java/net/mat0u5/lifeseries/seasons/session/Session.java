@@ -8,7 +8,7 @@ import net.mat0u5.lifeseries.utils.enums.SessionTimerStates;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -266,7 +266,7 @@ public class Session {
 
             double clampedX = Math.clamp(playerX, minX, maxX);
             double clampedZ = Math.clamp(playerZ, minZ, maxZ);
-            double safeY = WorldUitls.findTopSafeY(player.getWorld(), new Vec3d(clampedX, player.getY(), clampedZ));
+            double safeY = WorldUtils.findTopSafeY(player.getWorld(), new Vec3d(clampedX, player.getY(), clampedZ));
 
             // Teleport player inside the world border
             PlayerUtils.teleport(player, clampedX, safeY, clampedZ);

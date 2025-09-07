@@ -10,7 +10,7 @@ import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpow
 import net.mat0u5.lifeseries.seasons.session.Session;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -439,7 +439,7 @@ public class PlayerUtils {
 
         //Teleport to the highest block in the terrain
         BlockPos.Mutable playerBlockPos = player.getBlockPos().mutableCopy();
-        int safeY = WorldUitls.findTopSafeY(getServerWorld(player), playerBlockPos.toCenterPos());
+        int safeY = WorldUtils.findTopSafeY(getServerWorld(player), playerBlockPos.toCenterPos());
         playerBlockPos.setY(safeY);
         teleport(player, playerBlockPos);
 

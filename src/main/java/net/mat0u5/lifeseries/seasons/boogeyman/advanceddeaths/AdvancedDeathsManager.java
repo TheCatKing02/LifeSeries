@@ -25,6 +25,14 @@ public class AdvancedDeathsManager {
                 toRemove.add(uuid);
                 continue;
             }
+            if (playerAdvancedDeath.queuedDeaths().getFirst().isFinished() ||
+                    (playerAdvancedDeath.queuedDeaths().getFirst().started && playerAdvancedDeath.queuedDeaths().getFirst().playerNotFound())) {
+                playerAdvancedDeath.queuedDeaths().removeFirst();
+                if (playerAdvancedDeath.queuedDeaths().isEmpty()) {
+                    toRemove.add(uuid);
+                    continue;
+                }
+            }
             playerAdvancedDeath.queuedDeaths().getFirst().onTick();
         }
         for (UUID uuid : toRemove) {

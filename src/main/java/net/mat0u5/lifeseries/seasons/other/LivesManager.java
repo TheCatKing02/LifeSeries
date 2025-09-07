@@ -8,7 +8,7 @@ import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.player.ScoreboardUtils;
 import net.mat0u5.lifeseries.utils.player.TeamUtils;
 import net.mat0u5.lifeseries.utils.world.AnimationUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.scoreboard.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -285,7 +285,7 @@ public class LivesManager {
         currentSeason.dropItemsOnLastDeath(player);
         if (livesBefore != null) {
             if (FINAL_DEATH_LIGHTNING) {
-                WorldUitls.summonHarmlessLightning(player);
+                WorldUtils.summonHarmlessLightning(player);
             }
             if (livesBefore > 0) {
                 if (FINAL_DEATH_SOUND != null) {

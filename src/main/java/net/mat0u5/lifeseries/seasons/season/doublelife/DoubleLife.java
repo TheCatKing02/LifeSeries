@@ -13,7 +13,7 @@ import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUitls;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -660,8 +660,8 @@ public class DoubleLife extends Season {
                         PlayerUtils.sendTitleWithSubtitleToPlayers(allPlayers, Text.empty(), Text.of("§cThere can only be one winner."), 20, 40, 20);
                     });
                     TaskScheduler.scheduleTask(380, () -> {
-                        WorldUitls.summonHarmlessLightning(player1);
-                        WorldUitls.summonHarmlessLightning(player2);
+                        WorldUtils.summonHarmlessLightning(player1);
+                        WorldUtils.summonHarmlessLightning(player2);
                         PlayerUtils.damage(player1, player1.getDamageSources().lightningBolt(), 0.0000001F);
                         PlayerUtils.damage(player2, player2.getDamageSources().lightningBolt(), 0.0000001F);
                     });
