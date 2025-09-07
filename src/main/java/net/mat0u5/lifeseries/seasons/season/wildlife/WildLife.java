@@ -161,10 +161,13 @@ public class WildLife extends Season {
     public boolean sessionStart() {
         super.sessionStart();
         WildcardManager.onSessionStart();
-        currentSession.activeActions.addAll(
-                WildcardManager.getActions()
-        );
         return true;
+    }
+
+    @Override
+    public void addSessionActions() {
+        super.addSessionActions();
+        WildcardManager.addSessionActions();
     }
 
     @Override

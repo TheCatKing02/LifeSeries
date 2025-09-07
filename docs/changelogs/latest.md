@@ -102,3 +102,9 @@ Improved Secret Life task selection.
 ----------
 
 Added the Secret Society.
+Configs: `secret_society`, `secret_society_member_amount`, `secret_society_start_time`, `secret_society_force`, `secret_society_ignore`, `secret_society_words`, `secret_society_punishment_lives`, `secret_society_kills_required`
+
+----------
+
+Reworked Session Actions.
+Bug Fixes.

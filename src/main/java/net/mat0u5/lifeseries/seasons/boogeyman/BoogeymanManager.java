@@ -42,33 +42,29 @@ public class BoogeymanManager {
 
     public void addSessionActions() {
         if (!BOOGEYMAN_ENABLED) return;
-        if (BOOGEYMAN_CHOOSE_MINUTE >= 5) {
-            currentSession.activeActions.add(
-                new SessionAction(OtherUtils.minutesToTicks(BOOGEYMAN_CHOOSE_MINUTE-5)) {
-                    @Override
-                    public void trigger() {
-                        if (!BOOGEYMAN_ENABLED) return;
-                        if (boogeymanChosen) return;
-                        PlayerUtils.broadcastMessage(Text.literal("The Boogeyman is being chosen in 5 minutes.").formatted(Formatting.RED));
-                        PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER);
-                    }
+        currentSession.addSessionActionIfTime(
+            new SessionAction(OtherUtils.minutesToTicks(BOOGEYMAN_CHOOSE_MINUTE-5)) {
+                @Override
+                public void trigger() {
+                    if (!BOOGEYMAN_ENABLED) return;
+                    if (boogeymanChosen) return;
+                    PlayerUtils.broadcastMessage(Text.literal("The Boogeyman is being chosen in 5 minutes.").formatted(Formatting.RED));
+                    PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER);
                 }
-            );
-        }
-        if (BOOGEYMAN_CHOOSE_MINUTE >= 1) {
-            currentSession.activeActions.add(
-                new SessionAction(OtherUtils.minutesToTicks(BOOGEYMAN_CHOOSE_MINUTE-1)) {
-                    @Override
-                    public void trigger() {
-                        if (!BOOGEYMAN_ENABLED) return;
-                        if (boogeymanChosen) return;
-                        PlayerUtils.broadcastMessage(Text.literal("The Boogeyman is being chosen in 1 minute.").formatted(Formatting.RED));
-                        PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER);
-                    }
+            }
+        );
+        currentSession.addSessionActionIfTime(
+            new SessionAction(OtherUtils.minutesToTicks(BOOGEYMAN_CHOOSE_MINUTE-1)) {
+                @Override
+                public void trigger() {
+                    if (!BOOGEYMAN_ENABLED) return;
+                    if (boogeymanChosen) return;
+                    PlayerUtils.broadcastMessage(Text.literal("The Boogeyman is being chosen in 1 minute.").formatted(Formatting.RED));
+                    PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER);
                 }
-            );
-        }
-        currentSession.activeActions.add(
+            }
+        );
+        currentSession.addSessionAction(
                 new SessionAction(
                         OtherUtils.minutesToTicks(BOOGEYMAN_CHOOSE_MINUTE),TextUtils.formatString("§7Choose Boogeymen §f[{}]", OtherUtils.formatTime(OtherUtils.minutesToTicks(BOOGEYMAN_CHOOSE_MINUTE))), "Choose Boogeymen"
                 ) {
@@ -297,7 +293,12 @@ public class BoogeymanManager {
     }
 
     public List<ServerPlayerEntity> getAllowedBoogeyPlayers() {
-        return livesManager.getNonRedPlayers();
+        List<ServerPlayerEntity> result = new ArrayList<>();
+        for (ServerPlayerEntity player : livesManager.getNonRedPlayers()) {
+            if (isBoogeyman(player)) continue;
+            result.add(player);
+        }
+        return result;
     }
 
     public void handleBoogeymanLists(List<ServerPlayerEntity> normalPlayers, List<ServerPlayerEntity> boogeyPlayers) {

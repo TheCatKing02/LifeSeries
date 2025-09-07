@@ -28,7 +28,7 @@ import static net.mat0u5.lifeseries.Main.currentSeason;
 
 public class Session {
     public Map<UUID, Integer> playerNaturalDeathLog = new HashMap<>();
-    public List<SessionAction> activeActions = new ArrayList<>();
+    private List<SessionAction> activeActions = new ArrayList<>();
     public List<UUID> displayTimer = new ArrayList<>();
     public static final int NATURAL_DEATH_LOG_MAX = 2400;
     public static final int DISPLAY_TIMER_INTERVAL = 5;
@@ -60,7 +60,7 @@ public class Session {
 
     public boolean sessionStart() {
         if (!canStartSession()) return false;
-        activeActions.clear();
+        clearSessionActions();
         if (!currentSeason.sessionStart()) return false;
         status = SessionStatus.STARTED;
         passedTime = 0;
@@ -68,12 +68,31 @@ public class Session {
         Text line2 = Text.literal("§f/session timer showDisplay§7 - toggles a session timer on your screen.");
         PlayerUtils.broadcastMessage(line1);
         PlayerUtils.broadcastMessage(line2);
-        activeActions.add(endWarning1);
-        activeActions.add(endWarning2);
-        activeActions.add(actionInfoAction);
+
+        addSessionActionIfTime(endWarning1);
+        addSessionActionIfTime(endWarning2);
+        addSessionAction(actionInfoAction);
+
         SessionTranscript.sessionStart();
         SessionTranscript.logPlayers();
         return true;
+    }
+
+    public void clearSessionActions() {
+        activeActions.clear();
+    }
+
+    public List<SessionAction> getSessionActions() {
+        return activeActions;
+    }
+
+    public void addSessionAction(SessionAction action) {
+        activeActions.add(action);
+    }
+
+    public void addSessionActionIfTime(SessionAction action) {
+        if (action.shouldTrigger()) return;
+        addSessionAction(action);
     }
 
     public void sessionEnd() {
@@ -222,7 +241,7 @@ public class Session {
         if (activeActions.isEmpty()) return;
         List<SessionAction> remaining = new ArrayList<>();
         for (SessionAction action : activeActions) {
-            boolean triggered = action.tick((int) passedTime, sessionLength);
+            boolean triggered = action.tick();
             if (!triggered) {
                 remaining.add(action);
             }
@@ -306,8 +325,8 @@ public class Session {
     }
 
     public void showActionInfo() {
-        if (activeActions.isEmpty()) return;
-        List<SessionAction> actions = new ArrayList<>(activeActions);
+        if (getSessionActions().isEmpty()) return;
+        List<SessionAction> actions = new ArrayList<>(getSessionActions());
         actions.sort(Comparator.comparingInt(SessionAction::getTriggerTime));
         List<Text> messages = new ArrayList<>();
         for (SessionAction action : actions) {

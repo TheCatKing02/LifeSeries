@@ -269,9 +269,6 @@ public class SecretLife extends Season {
     public boolean sessionStart() {
         if (TaskManager.checkSecretLifePositions()) {
             super.sessionStart();
-            currentSession.activeActions.addAll(
-                    List.of(TaskManager.getActionChooseTasks(), taskWarningAction, taskWarningAction2)
-            );
             SecretLifeCommands.playersGiven.clear();
             TaskManager.tasksChosen = false;
             TaskManager.tasksChosenFor.clear();
@@ -281,6 +278,15 @@ public class SecretLife extends Season {
         }
         return false;
     }
+
+    @Override
+    public void addSessionActions() {
+        super.addSessionActions();
+        currentSession.addSessionAction(TaskManager.getActionChooseTasks());
+        currentSession.addSessionActionIfTime(taskWarningAction);
+        currentSession.addSessionActionIfTime(taskWarningAction2);
+    }
+
 
     @Override
     public void sessionEnd() {

@@ -59,7 +59,7 @@ public class PastLifeCommands {
 
         boolean bannedSociety = !currentSeason.secretSociety.SOCIETY_ENABLED || currentSeason.secretSociety.societyStarted || currentSeason.secretSociety.societyEnded;
         boolean bannedBoogeyman = !currentSeason.boogeymanManager.BOOGEYMAN_ENABLED || currentSeason.boogeymanManager.boogeymanChosen;
-        for (SessionAction action : currentSession.activeActions) {
+        for (SessionAction action : currentSession.getSessionActions()) {
             if (action.sessionId != null && action.sessionId.equalsIgnoreCase("Begin Secret Society")) {
                 bannedSociety = true;
             }
@@ -119,7 +119,7 @@ public class PastLifeCommands {
             return -1;
         }
 
-        for (SessionAction action : currentSession.activeActions) {
+        for (SessionAction action : currentSession.getSessionActions()) {
             if (action.sessionId != null && action.sessionId.equalsIgnoreCase("Begin Secret Society")) {
                 source.sendError(Text.of("The Secret Society is already queued"));
                 return -1;
@@ -149,7 +149,7 @@ public class PastLifeCommands {
             return -1;
         }
 
-        for (SessionAction action : currentSession.activeActions) {
+        for (SessionAction action : currentSession.getSessionActions()) {
             if (action.sessionId != null && action.sessionId.equalsIgnoreCase("Choose Boogeymen")) {
                 source.sendError(Text.of("The Boogeyman is already queued"));
                 return -1;

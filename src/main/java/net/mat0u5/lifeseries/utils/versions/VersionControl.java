@@ -13,6 +13,9 @@ public class VersionControl {
 
     public static int getModVersionInt(String string) {
         String originalVersion = string;
+        if (string.contains("-pre")) {
+            string = string.split("-pre")[0];
+        }
         string = string.replaceAll("[^\\d.]", ""); //Remove all non-digit and non-dot characters.
         string = string.replaceAll("^\\.+|\\.+$", ""); //Remove all leading or trailing dots.
         while (string.contains("..")) string = string.replace("..",".");
@@ -30,6 +33,13 @@ public class VersionControl {
             build = parts.length > 3 ? Integer.parseInt(parts[3]) : 0;
         }catch(Exception e) {
             Main.LOGGER.error(TextUtils.formatString("Failed to parse mod version to int: {} (formatted to {})", originalVersion, string));
+        }
+
+        if (originalVersion.contains("-pre")) {
+            build = -100;
+            try {
+                build += Integer.parseInt(originalVersion.split("-pre")[1]);
+            }catch(Exception ignored) {}
         }
 
         return (major * 100000) + (minor * 10000) + (patch * 1000) + build;

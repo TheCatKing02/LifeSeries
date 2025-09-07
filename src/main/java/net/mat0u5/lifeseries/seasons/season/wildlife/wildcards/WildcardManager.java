@@ -33,21 +33,18 @@ public class WildcardManager {
     public static final Random rnd = new Random();
     public static double ACTIVATE_WILDCARD_MINUTE = 2.5;
 
-    public static List<SessionAction> getActions() {
-        List<SessionAction> result = new ArrayList<>();
-        if (ACTIVATE_WILDCARD_MINUTE >= 2) {
-            result.add(
-                    new SessionAction(OtherUtils.minutesToTicks(ACTIVATE_WILDCARD_MINUTE-2)) {
-                        @Override
-                        public void trigger() {
-                            if (activeWildcards.isEmpty()) {
-                                PlayerUtils.broadcastMessage(Text.literal("A Wildcard will be activated in 2 minutes!").formatted(Formatting.GRAY));
-                            }
+    public static void addSessionActions() {
+        currentSession.addSessionActionIfTime(
+                new SessionAction(OtherUtils.minutesToTicks(ACTIVATE_WILDCARD_MINUTE-2)) {
+                    @Override
+                    public void trigger() {
+                        if (activeWildcards.isEmpty()) {
+                            PlayerUtils.broadcastMessage(Text.literal("A Wildcard will be activated in 2 minutes!").formatted(Formatting.GRAY));
                         }
                     }
-            );
-        }
-        result.add(
+                }
+        );
+        currentSession.addSessionAction(
             new SessionAction(OtherUtils.minutesToTicks(ACTIVATE_WILDCARD_MINUTE),TextUtils.formatString("§7Activate Wildcard §f[{}]", OtherUtils.formatTime(OtherUtils.minutesToTicks(ACTIVATE_WILDCARD_MINUTE))), "Activate Wildcard") {
                 @Override
                 public void trigger() {
@@ -57,7 +54,6 @@ public class WildcardManager {
                 }
             }
         );
-        return result;
     }
 
     public static Wildcards chosenWildcard = null;

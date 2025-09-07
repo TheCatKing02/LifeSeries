@@ -225,6 +225,11 @@ public class LifeSeriesCommand {
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1..3.-personname-two"))));
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1......3.-personname-two"))));
 
+        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("1.4.0"))));
+        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.3.7.30"))));
+        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.4.0-pre1"))));
+        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.4.0-pre2"))));
+
         return 1;
     }
 

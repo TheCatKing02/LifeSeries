@@ -117,13 +117,12 @@ public class DoubleLife extends Season {
     }
 
     @Override
-    public boolean sessionStart() {
-        super.sessionStart();
-        currentSession.activeActions.add(actionChooseSoulmates);
+    public void addSessionActions() {
+        super.addSessionActions();
+        currentSession.addSessionAction(actionChooseSoulmates);
         if (!DISABLE_START_TELEPORT) {
-            currentSession.activeActions.add(actionRandomTP);
+            currentSession.addSessionAction(actionRandomTP);
         }
-        return true;
     }
 
     @Override

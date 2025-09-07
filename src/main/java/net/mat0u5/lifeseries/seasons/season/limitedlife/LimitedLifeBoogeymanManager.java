@@ -91,6 +91,11 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
 
     @Override
     public List<ServerPlayerEntity> getAllowedBoogeyPlayers() {
-        return livesManager.getAlivePlayers();
+        List<ServerPlayerEntity> result = new ArrayList<>();
+        for (ServerPlayerEntity player : livesManager.getAlivePlayers()) {
+            if (isBoogeyman(player)) continue;
+            result.add(player);
+        }
+        return result;
     }
 }

@@ -1,5 +1,7 @@
 package net.mat0u5.lifeseries.seasons.session;
 
+import static net.mat0u5.lifeseries.Main.currentSession;
+
 public abstract class SessionAction {
     public boolean hasTriggered = false;
     public int triggerAtTicks;
@@ -16,33 +18,29 @@ public abstract class SessionAction {
         this.sessionId = sessionId;
     }
 
-    public boolean tick(int currentTick, int sessionLength) {
-        if (triggerAtTicks < 0) {
-            int remaining = sessionLength-currentTick;
-            if (hasTriggered && remaining > -triggerAtTicks) {
-                hasTriggered = false;
-            }
-            if (hasTriggered) return true;
-            if (remaining <= -triggerAtTicks) {
-                hasTriggered = true;
-                SessionTranscript.triggerSessionAction(sessionId);
-                trigger();
-                return true;
-            }
-            return false;
+    public boolean tick() {
+        boolean shouldTrigger = shouldTrigger();
+        if (hasTriggered && !shouldTrigger) hasTriggered = false;
+        if (hasTriggered) return true;
+        if (shouldTrigger) {
+            hasTriggered = true;
+            SessionTranscript.triggerSessionAction(sessionId);
+            trigger();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean shouldTrigger() {
+        if (triggerAtTicks >= 0) {
+            // Trigger after start
+            int passedTime = currentSession.getPassedTime();
+            return passedTime >= triggerAtTicks;
         }
         else {
-            if (hasTriggered && triggerAtTicks > currentTick) {
-                hasTriggered = false;
-            }
-            if (hasTriggered) return true;
-            if (triggerAtTicks <= currentTick) {
-                hasTriggered = true;
-                SessionTranscript.triggerSessionAction(sessionId);
-                trigger();
-                return true;
-            }
-            return false;
+            // Trigger before end
+            int remainingTime = currentSession.getRemainingTime();
+            return remainingTime <= Math.abs(triggerAtTicks);
         }
     }
 

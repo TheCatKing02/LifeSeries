@@ -63,17 +63,13 @@ public class SecretSociety {
     }
 
     public void addSessionActions() {
-        currentSession.activeActions.add(new SessionAction(OtherUtils.minutesToTicks(START_TIME), TextUtils.formatString("§7Begin Secret Society §f[{}]", OtherUtils.formatTime(OtherUtils.minutesToTicks(START_TIME))), "Begin Secret Society") {
+        currentSession.addSessionAction(new SessionAction(OtherUtils.minutesToTicks(START_TIME), TextUtils.formatString("§7Begin Secret Society §f[{}]", OtherUtils.formatTime(OtherUtils.minutesToTicks(START_TIME))), "Begin Secret Society") {
             @Override
             public void trigger() {
                 if (!SOCIETY_ENABLED) return;
                 startSociety(null);
             }
         });
-    }
-
-    public void restartSociety() {
-        startSociety(secretWord);
     }
 
     public void startSociety(String word) {
@@ -298,6 +294,16 @@ public class SecretSociety {
 
     public void onDisabledSociety() {
         forceEndSociety();
+    }
+    
+    public void sessionEnd() {
+        if (!SOCIETY_ENABLED) return;
+        if (societyStarted && !societyEnded) {
+            TaskScheduler.scheduleTask(40, () -> {
+                PlayerUtils.broadcastMessageToAdmins(Text.of("The Secret Society has not been ended by any Member!"));
+                PlayerUtils.broadcastMessageToAdmins(Text.of("Run \"/society members list\" to see the Members."));
+            });
+        }
     }
 
     public void endSociety() {

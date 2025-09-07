@@ -49,14 +49,11 @@ public class LastLife extends Season {
     }
 
     @Override
-    public boolean sessionStart() {
-        super.sessionStart();
+    public void addSessionActions() {
+        super.addSessionActions();
         if (livesManager instanceof LastLifeLivesManager lastLifeLivesManager) {
-            currentSession.activeActions.add(
-                    lastLifeLivesManager.actionChooseLives
-            );
+            currentSession.addSessionAction(lastLifeLivesManager.actionChooseLives);
         }
-        return true;
     }
 
     @Override
