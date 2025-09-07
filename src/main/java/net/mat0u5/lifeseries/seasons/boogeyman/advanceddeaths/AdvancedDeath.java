@@ -57,7 +57,7 @@ public abstract class AdvancedDeath {
     }
 
     public void ranOutOfTime(ServerPlayerEntity player) {
-        PlayerUtils.damage(player, damageSource(player), 100_000);
+        PlayerUtils.killFromSource(player, damageSource(player));
     }
 
     public boolean isFinished() {

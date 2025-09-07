@@ -32,6 +32,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.event.GameEvent;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -457,7 +458,7 @@ public class PlayerUtils {
     }
 
     public static void damage(ServerPlayerEntity player, ServerWorld world, DamageSource source, float amount) {
-        //?if <= 1.21 {
+        //? if <= 1.21 {
         player.damage(source, amount);
         //?} else {
         /*player.damage(world, source, amount);
@@ -466,5 +467,17 @@ public class PlayerUtils {
 
     public static void damage(ServerPlayerEntity player, DamageSource source, float amount) {
         damage(player, getServerWorld(player), source, amount);
+    }
+
+    public static void killFromSource(ServerPlayerEntity player, DamageSource source) {
+        player.setHealth(0.0001f);
+        damage(player, source, 10);
+        if (player.isAlive()) {
+            //?if <= 1.21 {
+            player.kill();
+            //?} else {
+            /*player.kill(getServerWorld(player));
+            *///?}
+        }
     }
 }

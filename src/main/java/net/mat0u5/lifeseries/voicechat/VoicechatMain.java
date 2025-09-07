@@ -3,6 +3,7 @@ package net.mat0u5.lifeseries.voicechat;
 import de.maxhenkel.voicechat.api.*;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
+import de.maxhenkel.voicechat.api.events.PlayerConnectedEvent;
 import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import de.maxhenkel.voicechat.api.packets.LocationalSoundPacket;
@@ -21,11 +22,15 @@ import net.mat0u5.lifeseries.voicechat.soundeffects.RoboticVoice;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 
 public class VoicechatMain implements VoicechatPlugin {
+
+    private static List<UUID> connectedPlayers = new ArrayList<>();
 
     private OpusEncoder encoder;
     private OpusDecoder decoder;
@@ -45,6 +50,18 @@ public class VoicechatMain implements VoicechatPlugin {
     @Override
     public void registerEvents(EventRegistration registration) {
         registration.registerEvent(MicrophonePacketEvent.class, this::onAudioPacket);
+        registration.registerEvent(PlayerConnectedEvent.class, this::onPlayerConnected);
+    }
+    
+    private void onPlayerConnected(PlayerConnectedEvent event) {
+        UUID uuid = event.getConnection().getPlayer().getUuid();
+        if (!connectedPlayers.contains(uuid)) {
+            connectedPlayers.add(uuid);
+        }
+    }
+
+    public static boolean isConnectedToSVC(UUID uuid) {
+        return connectedPlayers.contains(uuid);
     }
 
     private void onAudioPacket(MicrophonePacketEvent event) {

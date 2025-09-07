@@ -28,7 +28,7 @@ public class DeathAnvil extends AdvancedDeath {
 
     @Override
     protected DamageSource damageSource(ServerPlayerEntity player) {
-        return player.getDamageSources().fallingAnvil(null);
+        return player.getDamageSources().fallingAnvil(player);
     }
 
     @Override

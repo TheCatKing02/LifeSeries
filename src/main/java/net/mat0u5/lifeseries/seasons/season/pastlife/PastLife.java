@@ -2,6 +2,7 @@ package net.mat0u5.lifeseries.seasons.season.pastlife;
 
 import net.mat0u5.lifeseries.config.ConfigManager;
 import net.mat0u5.lifeseries.network.NetworkHandlerServer;
+import net.mat0u5.lifeseries.seasons.boogeyman.BoogeymanManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
@@ -21,6 +22,11 @@ public class PastLife extends Season {
     @Override
     public ConfigManager createConfig() {
         return new PastLifeConfig();
+    }
+
+    @Override
+    public BoogeymanManager createBoogeymanManager() {
+        return new PastLifeBoogeymanManager();
     }
 
     @Override

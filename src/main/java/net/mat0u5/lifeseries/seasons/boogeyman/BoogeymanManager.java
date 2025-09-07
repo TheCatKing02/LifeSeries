@@ -310,9 +310,13 @@ public class BoogeymanManager {
         PlayerUtils.sendTitleToPlayers(boogeyPlayers, Text.literal("The Boogeyman.").formatted(Formatting.RED),10,50,20);
         for (ServerPlayerEntity boogey : boogeyPlayers) {
             addBoogeyman(boogey);
-            boogey.sendMessage(Text.of(BOOGEYMAN_MESSAGE));
+            messageBoogeymen(boogey);
         }
         SessionTranscript.boogeymenChosen(boogeyPlayers);
+    }
+
+    public void messageBoogeymen(ServerPlayerEntity boogey) {
+        boogey.sendMessage(Text.of(BOOGEYMAN_MESSAGE));
     }
 
     public void sessionEnd() {

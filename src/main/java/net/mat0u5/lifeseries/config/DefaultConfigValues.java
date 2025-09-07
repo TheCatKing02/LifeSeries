@@ -235,6 +235,10 @@ public class DefaultConfigValues {
             "show_login_command_info", true, "global",
             "Show Command Info On Login", "Controls whether players get a message in chat showing the available commands when the login."
     );
+    public final ConfigFileEntry<Boolean> HIDE_UNJUSTIFIED_KILL_MESSAGES = new ConfigFileEntry<>(
+            "hide_unjustified_kills", false, "global",
+            "Hide Unjustified Kill Messages", "Controls whether unjustified kill messages show up in admin chat."
+    );
 
 
     /*

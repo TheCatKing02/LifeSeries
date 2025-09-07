@@ -68,6 +68,7 @@ public abstract class Season {
     public boolean ALLOW_SELF_DEFENSE = true;
     public static boolean GIVELIFE_CAN_REVIVE = false;
     public boolean SHOW_LOGIN_COMMAND_INFO = true;
+    public boolean HIDE_UNJUSTIFIED_KILL_MESSAGES = false;
 
     public BoogeymanManager boogeymanManager = createBoogeymanManager();
     public SecretSociety secretSociety = createSecretSociety();
@@ -148,6 +149,7 @@ public abstract class Season {
         ALLOW_SELF_DEFENSE = seasonConfig.ALLOW_SELF_DEFENSE.get(seasonConfig);
         GIVELIFE_CAN_REVIVE = seasonConfig.GIVELIFE_CAN_REVIVE.get(seasonConfig);
         SHOW_LOGIN_COMMAND_INFO = seasonConfig.SHOW_LOGIN_COMMAND_INFO.get(seasonConfig);
+        HIDE_UNJUSTIFIED_KILL_MESSAGES = seasonConfig.HIDE_UNJUSTIFIED_KILL_MESSAGES.get(seasonConfig);
 
         boogeymanManager.onReload();
         secretSociety.onReload();
@@ -342,7 +344,7 @@ public abstract class Season {
     }
 
     public void onPlayerKilledByPlayer(ServerPlayerEntity victim, ServerPlayerEntity killer) {
-        if (!isAllowedToAttack(killer, victim)) {
+        if (!isAllowedToAttack(killer, victim) && !HIDE_UNJUSTIFIED_KILL_MESSAGES) {
             PlayerUtils.broadcastMessageToAdmins(TextUtils.format("§c [Unjustified Kill?] {}§7 was killed by {}", victim, killer));
         }
 

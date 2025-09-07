@@ -33,7 +33,7 @@ public class DeathLightning extends AdvancedDeath {
         ServerWorld world = PlayerUtils.getServerWorld(player);
         if (ticks > 160) {
             WorldUtils.summonHarmlessLightning(player);
-            PlayerUtils.damage(player, player.getDamageSources().lightningBolt(), 100000f);
+            PlayerUtils.killFromSource(player, player.getDamageSources().lightningBolt());
         }
         else if (ticks > 80) {
             int distanceFromTarget = rnd.nextInt(15, 100);

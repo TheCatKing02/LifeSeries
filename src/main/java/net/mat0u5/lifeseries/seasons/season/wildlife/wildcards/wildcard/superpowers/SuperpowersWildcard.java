@@ -6,6 +6,7 @@ import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpow
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.superpower.Necromancy;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
+import net.mat0u5.lifeseries.voicechat.VoicechatMain;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -94,6 +95,10 @@ public class SuperpowersWildcard extends Wildcard {
         Collections.shuffle(allPlayers);
         for (ServerPlayerEntity player : allPlayers) {
             Superpowers power = implemented.get(pos%implemented.size());
+            if (power == Superpowers.LISTENING && !VoicechatMain.isConnectedToSVC(player.getUuid())) {
+                pos++;
+                power = implemented.get(pos%implemented.size());
+            }
             if (assignedSuperpowers.containsKey(player.getUuid())) {
                 power = assignedSuperpowers.get(player.getUuid());
                 assignedSuperpowers.remove(player.getUuid());

@@ -105,8 +105,8 @@ public class WildLifeCommands {
                         )
                     )
                     .then(literal("get")
-                        .then(argument("player", EntityArgumentType.player())
-                            .executes(context -> getSnailName(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
+                        .then(argument("player", EntityArgumentType.players())
+                            .executes(context -> getSnailNames(context.getSource(), EntityArgumentType.getPlayers(context, "player")))
                         )
                     )
                     .then(literal("request")
@@ -377,9 +377,19 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int getSnailName(ServerCommandSource source, ServerPlayerEntity player) {
+    public static int getSnailNames(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
-        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("{}'s snail is called {}", player, Snails.getSnailName(player)));
+        if (targets == null || targets.isEmpty()) return -1;
+
+        if (targets.size() == 1) {
+            ServerPlayerEntity player = targets.iterator().next();
+            OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("{}'s snail is called {}", player, Snails.getSnailName(player)));
+        }
+        else {
+            for (ServerPlayerEntity player : targets) {
+                OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("{}'s snail is called {}", player, Snails.getSnailName(player)));
+            }
+        }
         return 1;
     }
 

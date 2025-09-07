@@ -33,6 +33,7 @@ import net.mat0u5.lifeseries.utils.world.AnimationUtils;
 import net.mat0u5.lifeseries.utils.world.ItemSpawner;
 import net.mat0u5.lifeseries.utils.world.ItemStackUtils;
 import net.mat0u5.lifeseries.utils.world.WorldUtils;
+import net.mat0u5.lifeseries.voicechat.VoicechatMain;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantments;
@@ -626,7 +627,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
                 40, 0.1, 0.25, 0.1, 0.035
         );
         int numOfCurses = 9;
-        if (DependencyManager.voicechatLoaded()) numOfCurses = 10;
+        if (DependencyManager.voicechatLoaded() && VoicechatMain.isConnectedToSVC(player.getUuid())) numOfCurses = 10;
         int curse = world.random.nextInt(numOfCurses);
         switch (curse) {
             default:
