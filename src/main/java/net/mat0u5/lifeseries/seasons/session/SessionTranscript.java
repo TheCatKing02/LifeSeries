@@ -33,8 +33,8 @@ public class SessionTranscript {
     public static void societyEndFail(ServerPlayerEntity player) {
         addMessageWithTime(TextUtils.formatString("{} has marked the Secret Society as failed.", player));
     }
-    public static void societyMemberInitialized(ServerPlayerEntity player) {
-        addMessageWithTime(TextUtils.formatString("{} has been initialized into the Secret Society.", player));
+    public static void societyMemberInitiated(ServerPlayerEntity player) {
+        addMessageWithTime(TextUtils.formatString("{} has been initiated into the Secret Society.", player));
     }
 
     public static void societyMembersChosen(List<ServerPlayerEntity> players) {
@@ -45,10 +45,10 @@ public class SessionTranscript {
         addMessageWithTime(TextUtils.formatString("Secret Society members chosen: {}", names));
     }
     public static void societyStarted() {
-        addMessageWithTime(TextUtils.formatString("The Secret Society has started."));
+        addMessageWithTime("The Secret Society has started.");
     }
     public static void societyEnded() {
-        addMessageWithTime(TextUtils.formatString("The Secret Society has ended."));
+        addMessageWithTime("The Secret Society has ended.");
     }
 
     public static void logHealth(ServerPlayerEntity player, double health) {

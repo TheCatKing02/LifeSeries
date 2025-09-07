@@ -6,6 +6,7 @@ import net.mat0u5.lifeseries.dependencies.DependencyManager;
 import net.mat0u5.lifeseries.events.Events;
 import net.mat0u5.lifeseries.seasons.boogeyman.BoogeymanCommand;
 import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLifeCommands;
+import net.mat0u5.lifeseries.seasons.season.pastlife.PastLifeCommands;
 import net.mat0u5.lifeseries.seasons.season.secretlife.SecretLifeCommands;
 import net.mat0u5.lifeseries.seasons.season.wildlife.WildLifeCommands;
 import net.mat0u5.lifeseries.seasons.secretsociety.SocietyCommands;
@@ -25,6 +26,7 @@ public class ModRegistries {
         CommandRegistrationCallback.EVENT.register(DoubleLifeCommands::register);
         CommandRegistrationCallback.EVENT.register(SecretLifeCommands::register);
         CommandRegistrationCallback.EVENT.register(WildLifeCommands::register);
+        CommandRegistrationCallback.EVENT.register(PastLifeCommands::register);
 
         CommandRegistrationCallback.EVENT.register(LivesCommand::register);
         CommandRegistrationCallback.EVENT.register(SessionCommand::register);

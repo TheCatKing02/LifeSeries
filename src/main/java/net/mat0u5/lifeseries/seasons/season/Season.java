@@ -252,15 +252,19 @@ public abstract class Season {
 
     public void sessionEnd() {
         boogeymanManager.sessionEnd();
+        secretSociety.forceEndSociety();
     }
 
     public boolean sessionStart() {
         boogeymanManager.resetBoogeymen();
+        secretSociety.forceEndSociety();
         addSessionActions();
         return true;
     }
 
-    public void tick(MinecraftServer server) {}
+    public void tick(MinecraftServer server) {
+        secretSociety.tick();
+    }
     public void tickSessionOn(MinecraftServer server) {}
     public void addSessionActions() {
         //TODO overrides from other seasons

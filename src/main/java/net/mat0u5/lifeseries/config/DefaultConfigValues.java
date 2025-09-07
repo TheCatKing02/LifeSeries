@@ -202,6 +202,14 @@ public class DefaultConfigValues {
             "secret_society_words", "[Hammer, Magnet, Throne, Gravity, Puzzle, Spiral, Pivot, Flare]", "global.society",
             "Random Words", "List of words that can be picked as the secret word."
     );
+    public final ConfigFileEntry<Integer> SECRET_SOCIETY_PUNISHMENT_LIVES = new ConfigFileEntry<>(
+            "secret_society_punishment_lives", -2, "global.society",
+            "Punishment Lives", "The amount of lives all Members of the society lose if they fail."
+    );
+    public final ConfigFileEntry<Integer> SECRET_SOCIETY_KILLS_REQUIRED = new ConfigFileEntry<>(
+            "secret_society_kills_required", 2, "global.society",
+            "Kills Required To Succeed", "The number of kills the Members need to succeed in the Society."
+    );
 
     public final ConfigFileEntry<Boolean> WATCHERS_IN_TAB = new ConfigFileEntry<>(
             "watchers_in_tab", true, "global.watchers",

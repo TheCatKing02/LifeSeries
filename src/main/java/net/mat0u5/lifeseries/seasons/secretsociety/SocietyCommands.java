@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -60,6 +61,10 @@ public class SocietyCommands {
                     )
                     .executes(context -> societyBegin(context.getSource(), null))
                 )
+                .then(literal("end")
+                    .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
+                    .executes(context -> societyEnd(context.getSource()))
+                )
                 .then(literal("members")
                     .requires(source -> (isAdmin(source.getPlayer()) || (source.getEntity() == null)))
                         .then(literal("add")
@@ -82,8 +87,13 @@ public class SocietyCommands {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
-        if (!checkSocietyStart(source)) return -1;
+        if (checkSocietyRunning(source)) return -1;
         if (target == null) return -1;
+
+        if (!society.isMember(target)) {
+            source.sendError(Text.of("That player is not a Member"));
+            return -1;
+        }
 
         society.removeMemberManually(target);
         return 1;
@@ -93,8 +103,13 @@ public class SocietyCommands {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
-        if (!checkSocietyStart(source)) return -1;
+        if (checkSocietyRunning(source)) return -1;
         if (target == null) return -1;
+
+        if (society.isMember(target)) {
+            source.sendError(Text.of("That player already a Member"));
+            return -1;
+        }
 
         society.addMemberManually(target);
         return 1;
@@ -104,7 +119,7 @@ public class SocietyCommands {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
-        if (!checkSocietyStart(source)) return -1;
+        if (checkSocietyRunning(source)) return -1;
 
         if (society.members.isEmpty()) {
             source.sendError(Text.of("The are no Secret Society members"));
@@ -117,16 +132,25 @@ public class SocietyCommands {
             if (player == null) continue;
             societyMembers.add(player.getNameForScoreboard());
         }
-        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.formatLoosely("Secret Society Members: §7{}"));
+        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.formatLoosely("Secret Society Members: §7{}", societyMembers));
         return 1;
     }
 
-    public static boolean checkSocietyStart(ServerCommandSource source) {
+    public static boolean checkSocietyRunning(ServerCommandSource source) {
         SecretSociety society = get();
         if (society == null) return false;
+        if (society.societyEnded) {
+            source.sendError(Text.of("The Secret Society has already ended"));
+            if (PermissionManager.isAdmin(source)) {
+                OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7Use '/society begin' or '/society begin <secret_word>' to start."));
+            }
+            return true;
+        }
         if (!society.societyStarted) {
-            source.sendError(Text.of("The society has not started yet"));
-            OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7Use '/society begin' or '/society begin <secret_word>' to start"));
+            source.sendError(Text.of("The Secret Society has not started yet"));
+            if (PermissionManager.isAdmin(source)) {
+                OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7Use '/society begin' or '/society begin <secret_word>' to start."));
+            }
             return true;
         }
         return false;
@@ -142,20 +166,31 @@ public class SocietyCommands {
         return 1;
     }
 
+    public static int societyEnd(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
+        SecretSociety society = get();
+        if (society == null) return -1;
+
+        OtherUtils.sendCommandFeedback(source, Text.of("§7Ending the Secret Society..."));
+        society.forceEndSociety();
+        return 1;
+    }
+
     public static int societyFail(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
         ServerPlayerEntity self = source.getPlayer();
         if (self == null) return -1;
+        if (checkSocietyRunning(source)) return -1;
 
         SocietyMember member = society.getMember(self);
         if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
             return -1;
         }
-        if (!member.initialized) {
-            source.sendError(Text.of("You have not been initialized"));
+        if (!member.initiated) {
+            source.sendError(Text.of("You have not been initiated"));
             return -1;
         }
 
@@ -170,14 +205,15 @@ public class SocietyCommands {
         if (society == null) return -1;
         ServerPlayerEntity self = source.getPlayer();
         if (self == null) return -1;
+        if (checkSocietyRunning(source)) return -1;
 
         SocietyMember member = society.getMember(self);
         if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
             return -1;
         }
-        if (!member.initialized) {
-            source.sendError(Text.of("You have not been initialized"));
+        if (!member.initiated) {
+            source.sendError(Text.of("You have not been initiated"));
             return -1;
         }
 
@@ -192,18 +228,19 @@ public class SocietyCommands {
         if (society == null) return -1;
         ServerPlayerEntity self = source.getPlayer();
         if (self == null) return -1;
+        if (checkSocietyRunning(source)) return -1;
 
         SocietyMember member = society.getMember(self);
         if (member == null) {
             source.sendError(Text.of("You are not a member of the Secret Society"));
             return -1;
         }
-        if (member.initialized) {
-            source.sendError(Text.of("You have already been initialized"));
+        if (member.initiated) {
+            source.sendError(Text.of("You have already been initiated"));
             return -1;
         }
 
-        society.initializeMember(self);
+        society.initiateMember(self);
         return 1;
     }
 }

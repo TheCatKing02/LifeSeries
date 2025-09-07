@@ -32,6 +32,7 @@ public class SecretSociety {
     public static final int INITIATE_MESSAGE_DELAYS = 15*20;
     public List<SocietyMember> members = new ArrayList<>();
     public boolean societyStarted = false;
+    public boolean societyEnded = false;
     public long ticks = 0;
     public String secretWord = "";
     public Random rnd = new Random();
@@ -44,6 +45,8 @@ public class SecretSociety {
 
         MEMBER_COUNT = seasonConfig.SECRET_SOCIETY_MEMBER_AMOUNT.get(seasonConfig);
         START_TIME = seasonConfig.SECRET_SOCIETY_START_TIME.get(seasonConfig);
+        KILL_COUNT = seasonConfig.SECRET_SOCIETY_KILLS_REQUIRED.get(seasonConfig);
+        PUNISHMENT_LIVES = seasonConfig.SECRET_SOCIETY_PUNISHMENT_LIVES.get(seasonConfig);
 
         FORCE_MEMBERS.clear();
         IGNORE_MEMBERS.clear();
@@ -55,7 +58,7 @@ public class SecretSociety {
             if (!name.isEmpty()) IGNORE_MEMBERS.add(name.toLowerCase());
         }
         for (String name : seasonConfig.SECRET_SOCIETY_WORDS.get(seasonConfig).replaceAll("\\[","").replaceAll("]","").replaceAll(" ","").trim().split(",")) {
-            if (!name.isEmpty()) POSSIBLE_WORDS.add(name.toLowerCase());
+            if (!name.isEmpty()) POSSIBLE_WORDS.add(name);
         }
     }
 
@@ -84,6 +87,7 @@ public class SecretSociety {
         }
 
         societyStarted = true;
+        societyEnded = false;
         SessionTranscript.societyStarted();
         ticks = 0;
         resetMembers();
@@ -93,6 +97,7 @@ public class SecretSociety {
     public void forceEndSociety() {
         resetMembers();
         societyStarted = false;
+        societyEnded = true;
     }
 
     @Nullable
@@ -103,6 +108,11 @@ public class SecretSociety {
             }
         }
         return null;
+    }
+    
+    public boolean isMember(ServerPlayerEntity player) {
+        SocietyMember member = getMember(player);
+        return member != null;
     }
 
     public void chooseMembers(List<ServerPlayerEntity> allowedPlayers) {
@@ -162,11 +172,12 @@ public class SecretSociety {
     public void tick() {
         if (!SOCIETY_ENABLED) return;
         if (!societyStarted) return;
+        if (societyEnded) return;
         ticks++;
         if (ticks < 250) return;
         if (ticks % INITIATE_MESSAGE_DELAYS == 0) {
             for (SocietyMember member : members) {
-                if (member.initialized) continue;
+                if (member.initiated) continue;
                 ServerPlayerEntity player = member.getPlayer();
                 if (player == null) continue;
                 player.sendMessage(Text.of("§7When you are alone, type \"/initiate\""));
@@ -174,17 +185,17 @@ public class SecretSociety {
         }
     }
 
-    public void initializeMember(ServerPlayerEntity player) {
+    public void initiateMember(ServerPlayerEntity player) {
         if (!SOCIETY_ENABLED) return;
         SocietyMember member = getMember(player);
         if (member == null) return;
-        if (member.initialized) return;
-        member.initialized = true;
-        afterInitialize(player);
-        SessionTranscript.societyMemberInitialized(player);
+        if (member.initiated) return;
+        member.initiated = true;
+        afterInitiate(player);
+        SessionTranscript.societyMemberInitiated(player);
     }
 
-    public void afterInitialize(ServerPlayerEntity player) {
+    public void afterInitiate(ServerPlayerEntity player) {
         PlayerUtils.playSoundToPlayer(player, SoundEvent.of(Identifier.of("secretlife_task")), 1, 1);
 
         int currentTime = 20;
@@ -194,13 +205,21 @@ public class SecretSociety {
         currentTime += 50;
 
         int otherMembers = members.size()-1;
-        if (otherMembers > 1) {
+        if (otherMembers >= 1) {
             TaskScheduler.scheduleTask(currentTime, () -> {
-                player.sendMessage(Text.of("§7There are §c2§7 other members. Find them."), false);
+                player.sendMessage(TextUtils.formatLoosely("§7There {} §c{}§7 other {}. Find them.", TextUtils.pluralize("is", "are", otherMembers), otherMembers, TextUtils.pluralize("member", otherMembers)), false);
             });
             currentTime += 80;
             TaskScheduler.scheduleTask(currentTime, () -> {
                 player.sendMessage(TextUtils.formatLoosely("§7Together, secretly kill §c{}§7 other {} by §cnon-pvp§7 means.", KILL_COUNT, TextUtils.pluralize("player", KILL_COUNT)), false);
+            });
+            currentTime += 100;
+            TaskScheduler.scheduleTask(currentTime, () -> {
+                player.sendMessage(Text.of("§7Find the other members with the secret word:"), false);
+            });
+            currentTime += 80;
+            TaskScheduler.scheduleTask(currentTime, () -> {
+                player.sendMessage(Text.of("§d\""+secretWord+"\""), false);
             });
         }
         else {
@@ -213,14 +232,6 @@ public class SecretSociety {
             });
         }
 
-        currentTime += 100;
-        TaskScheduler.scheduleTask(currentTime, () -> {
-            player.sendMessage(Text.of("§7Find the other members with the secret word:"), false);
-        });
-        currentTime += 80;
-        TaskScheduler.scheduleTask(currentTime, () -> {
-            player.sendMessage(Text.of("§d\""+secretWord+"\""), false);
-        });
         currentTime += 80;
         TaskScheduler.scheduleTask(currentTime, () -> {
             player.sendMessage(Text.of("§7Type \"/society success\" when you complete your goal."), false);
@@ -235,7 +246,7 @@ public class SecretSociety {
         });
         currentTime += 70;
         TaskScheduler.scheduleTask(currentTime, () -> {
-            player.sendMessage(Text.of("§7Type \"/society fail\", and you all lose §c2 lives§7."), false);
+            player.sendMessage(TextUtils.formatLoosely("§7Type \"/society fail\", and you all lose §c{} {}§7.", Math.abs(PUNISHMENT_LIVES), TextUtils.pluralize("life", "lives", PUNISHMENT_LIVES)), false);
         });
     }
 
@@ -291,6 +302,7 @@ public class SecretSociety {
 
     public void endSociety() {
         societyStarted = false;
+        societyEnded = true;
         SessionTranscript.societyEnded();
         PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
     }
@@ -317,7 +329,7 @@ public class SecretSociety {
         TaskScheduler.scheduleTask(110, () -> {
             for (ServerPlayerEntity member : memberPlayers) {
                 PlayerUtils.damage(member, member.getDamageSources().playerAttack(member), 0.001f);
-                livesManager.addToPlayerLives(member, -2);
+                livesManager.addToPlayerLives(member, PUNISHMENT_LIVES);
             }
         });
         TaskScheduler.scheduleTask(150, () -> {

@@ -98,3 +98,7 @@ Players hidden from the tab list using the config now show up in commands (requi
 
 Disabling the boogeyman while a session is active now removes existing boogeymen.<br>
 Improved Secret Life task selection.
+
+----------
+
+Added the Secret Society.

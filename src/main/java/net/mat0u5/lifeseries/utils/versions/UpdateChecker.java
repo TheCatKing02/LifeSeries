@@ -26,10 +26,11 @@ public class UpdateChecker {
     public static String versionName;
     public static String versionDescription;
     public static int version;
-    public static final boolean FAKE_TEST_UPDATE = false;
+    public static final boolean TEST_UPDATE_FAKE = false;
+    public static final boolean TEST_UPDATE_LAST = false;
 
     public static void checkForMajorUpdates() {
-        if (FAKE_TEST_UPDATE) {
+        if (TEST_UPDATE_FAKE) {
             updateAvailable = true;
             versionName = "versionName";
             versionDescription = "versionDescription";
@@ -40,7 +41,7 @@ public class UpdateChecker {
             HttpURLConnection connection = null;
             try {
                 // Connect to the GitHub API
-                connection = (HttpURLConnection) new URI(Main.MAJOR_UPDATE_URL).toURL().openConnection();
+                connection = (HttpURLConnection) new URI(Main.LATEST_UPDATE_URL).toURL().openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0");
                 connection.setConnectTimeout(5000);
@@ -57,12 +58,12 @@ public class UpdateChecker {
                     int updateVersionNumber = VersionControl.getModVersionInt(name);
 
                     // Compare the current version with the latest version
-                    if (currentVersionNumber < updateVersionNumber) {
+                    if (currentVersionNumber < updateVersionNumber || TEST_UPDATE_LAST) {
                         Main.LOGGER.info("New major version found: "+name);
                         updateAvailable = true;
                         majorUpdateAvailable = true;
                         versionName = name;
-                        versionDescription = json.get("body").getAsString();
+                        versionDescription = formatDescription(json.get("body").getAsString());
                         version = updateVersionNumber;
                     }
 
@@ -114,7 +115,7 @@ public class UpdateChecker {
                                 Main.LOGGER.info("New minor version found: "+name);
                                 updateAvailable = true;
                                 versionName = name;
-                                if (!majorUpdateAvailable) versionDescription = json.get("body").getAsString();
+                                if (!majorUpdateAvailable) versionDescription = formatDescription(json.get("body").getAsString());
                                 version = updateVersionNumber;
                             }
                         }catch(Exception e) {
@@ -133,6 +134,16 @@ public class UpdateChecker {
                 }
             }
         });
+    }
+
+    public static String formatDescription(String rawDesctiption) {
+        if (rawDesctiption.contains("`")) {
+            String newDesctiption = rawDesctiption.split("`")[0];
+            if (!newDesctiption.isEmpty()) {
+                rawDesctiption = newDesctiption;
+            }
+        }
+        return rawDesctiption;
     }
 
     public static void onPlayerJoin(ServerPlayerEntity player) {

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class SocietyMember {
     public final UUID uuid;
-    public boolean initialized = false;
+    public boolean initiated = false;
     public SocietyMember(ServerPlayerEntity player) {
         this.uuid = player.getUuid();
     }

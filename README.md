@@ -174,6 +174,7 @@ This command **always** available
 *This command is only available when the Secret Society has been enabled in the config.*
 - `/society begin` - Starts the Society with a random word (Can be changed in the config).
 - `/society begin <secret_word>` - Starts the Society with a specific word you type.
+- `/society end` - Ends the Secret Society.
 - `/society members add <player>` - Adds `<player>` to the Society.
 - `/society members remove <player>` - Removes `<player>` from the Society.
 - `/society members list` - Shows you the current members of the Society.

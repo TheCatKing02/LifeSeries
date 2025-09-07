@@ -45,7 +45,7 @@ public class PastLife extends Season {
     public void requestSessionAction() {
         for (ServerPlayerEntity player : PlayerUtils.getAdminPlayers()) {
             if (NetworkHandlerServer.wasHandshakeSuccessful(player)) {
-                NetworkHandlerServer.sendStringPacket(player, PacketNames.UPDATE_HIDDEN_PLAYERS, "");
+                NetworkHandlerServer.sendStringPacket(player, PacketNames.PAST_LIFE_CHOOSE_TWIST, "");
             }
             else {
                 player.sendMessage(Text.of("§7Past Life session started:"));
