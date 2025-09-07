@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.seasons.boogeyman;
 
+import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.seasons.other.LivesManager;
 import net.mat0u5.lifeseries.seasons.session.SessionAction;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
@@ -28,6 +29,7 @@ public class BoogeymanManager {
     public double BOOGEYMAN_CHANCE_MULTIPLIER = 0.5;
     public int BOOGEYMAN_AMOUNT_MIN = 1;
     public int BOOGEYMAN_AMOUNT_MAX = 99;
+    public boolean BOOGEYMAN_ADVANCED_DEATHS = false;
     public double BOOGEYMAN_CHOOSE_MINUTE = 10;
     public boolean BOOGEYMAN_ANNOUNCE_OUTCOME = false;
     public List<String> BOOGEYMAN_IGNORE = new ArrayList<>();
@@ -348,7 +350,14 @@ public class BoogeymanManager {
         if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
             PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. They have been dropped to their §cLast Life§7.", player));
         }
-        livesManager.setPlayerLives(player, 1);
+
+        if (BOOGEYMAN_ADVANCED_DEATHS) {
+            AdvancedDeathsManager.setPlayerLives(player, 1);
+        }
+        else {
+            livesManager.setPlayerLives(player, 1);
+        }
+
         boogeyman.failed = true;
         boogeyman.cured = false;
     }
@@ -381,6 +390,7 @@ public class BoogeymanManager {
         BOOGEYMAN_CHANCE_MULTIPLIER = seasonConfig.BOOGEYMAN_CHANCE_MULTIPLIER.get(seasonConfig);
         BOOGEYMAN_AMOUNT_MIN = seasonConfig.BOOGEYMAN_MIN_AMOUNT.get(seasonConfig);
         BOOGEYMAN_AMOUNT_MAX = seasonConfig.BOOGEYMAN_MAX_AMOUNT.get(seasonConfig);
+        BOOGEYMAN_ADVANCED_DEATHS = seasonConfig.BOOGEYMAN_ADVANCED_DEATHS.get(seasonConfig);
         BOOGEYMAN_MESSAGE = seasonConfig.BOOGEYMAN_MESSAGE.get(seasonConfig);
         BOOGEYMAN_IGNORE.clear();
         BOOGEYMAN_FORCE.clear();

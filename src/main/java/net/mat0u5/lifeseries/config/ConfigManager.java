@@ -72,6 +72,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
 
                 ,BOOGEYMAN_MIN_AMOUNT
                 ,BOOGEYMAN_MAX_AMOUNT
+                ,BOOGEYMAN_ADVANCED_DEATHS
                 ,BOOGEYMAN_CHANCE_MULTIPLIER
                 ,BOOGEYMAN_IGNORE
                 ,BOOGEYMAN_FORCE

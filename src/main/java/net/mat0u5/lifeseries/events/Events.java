@@ -8,6 +8,7 @@ import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
 import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.resources.datapack.DatapackManager;
+import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.seasons.other.WatcherManager;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
@@ -170,6 +171,7 @@ public class Events {
             if (NetworkHandlerServer.updatedConfigThisTick) {
                 NetworkHandlerServer.onUpdatedConfig();
             }
+            AdvancedDeathsManager.tick();
         }catch(Exception e) {
             Main.LOGGER.error(e.getMessage());
         }
@@ -200,6 +202,7 @@ public class Events {
         try {
             if (!Main.isLogicalSide()) return;
             currentSeason.onPlayerDeath(player, source);
+            AdvancedDeathsManager.onPlayerDeath(player);
         } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
     }
 

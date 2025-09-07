@@ -146,6 +146,10 @@ public class DefaultConfigValues {
             "boogeyman_max_amount", 99, "global.boogeyman",
             "Maximum Boogeyman Amount", "The maximum amount of Boogeymen a session can have."
     );
+    public final ConfigFileEntry<Boolean> BOOGEYMAN_ADVANCED_DEATHS = new ConfigFileEntry<>(
+            "boogeyman_advanced_deaths", false, "global.boogeyman",
+            "Advanced Deaths", "Enables the advanced deaths (seen in Past Life), where you actually die by different causes instead of your lives just being set to 1."
+    );
     public final ConfigFileEntry<String> BOOGEYMAN_IGNORE = new ConfigFileEntry<>(
             "boogeyman_ignore", "[]", "global.boogeyman",
             "Boogeyman Ignore List", "A list of players that cannot become the boogeyman."

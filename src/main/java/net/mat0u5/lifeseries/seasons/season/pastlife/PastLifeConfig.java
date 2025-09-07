@@ -17,6 +17,7 @@ public class PastLifeConfig extends ConfigManager {
         BLACKLIST_CLAMPED_ENCHANTS.defaultValue = TextUtils.formatString("[{}]", ThirdLifeConfig.CLAMPED_ENCHANTMENTS);
         DEFAULT_LIVES.defaultValue = 6;
         BOOGEYMAN.defaultValue = true;
+        BOOGEYMAN_ADVANCED_DEATHS.defaultValue = true;
         SECRET_SOCIETY.defaultValue = true;
         super.instantiateProperties();
     }

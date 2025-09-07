@@ -114,3 +114,7 @@ Bug Fixes.
 The 'only_take_lives_in_session' config now works in Limited Life.<br>
 Wild Life zombies now show up in the tab list even if the 'tab_list_show_dead_players' is turned off.<br>
 Refactored command permission handling.
+
+----------
+
+Added the 'boogeyman_advanced_deaths' global config. Default value is false (except in Past Life).

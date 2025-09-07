@@ -232,6 +232,10 @@ public class LivesManager {
         currentSeason.reloadPlayerTeam(player);
     }
 
+    public void setScore(String playerName, int lives) {
+        ScoreboardUtils.setScore(ScoreHolder.fromName(playerName), SCOREBOARD_NAME, lives);
+    }
+
     @Nullable
     public Boolean isOnLastLife(ServerPlayerEntity player) {
         return isOnSpecificLives(player, 1);
