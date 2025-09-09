@@ -37,6 +37,7 @@ public class BoogeymanManager {
     public String BOOGEYMAN_MESSAGE = "§7You are the Boogeyman. You must by any means necessary kill a §2dark green§7, §agreen§7 or §eyellow§7 name by direct action to be cured of the curse. If you fail, you will become a §cred name§7. All loyalties and friendships are removed while you are the Boogeyman.";
     public boolean BOOGEYMAN_INFINITE = false;
     public int BOOGEYMAN_INFINITE_LAST_PICK = 1800;
+    public int BOOGEYMAN_INFINITE_AUTO_FAIL = 360000;
 
     public List<Boogeyman> boogeymen = new ArrayList<>();
     public List<UUID> rolledPlayers = new ArrayList<>();
@@ -248,7 +249,11 @@ public class BoogeymanManager {
         else {
             // Infinite mode, just pick one from the allowed players
             Collections.shuffle(allowedPlayers);
-            boogeyPlayers.add(allowedPlayers.getFirst());
+            for (ServerPlayerEntity player : allowedPlayers) {
+                if (isBoogeyman(player)) continue;
+                boogeyPlayers.add(player);
+                break;
+            }
         }
 
         for (ServerPlayerEntity player : allowedPlayers) {
@@ -324,7 +329,7 @@ public class BoogeymanManager {
     public void sessionEnd() {
         if (!BOOGEYMAN_ENABLED) return;
         if (server == null) return;
-        for (Boogeyman boogeyman : boogeymen) {
+        for (Boogeyman boogeyman : new ArrayList<>(boogeymen)) {
             if (boogeyman.died) continue;
 
             if (!boogeyman.cured) {
@@ -345,12 +350,12 @@ public class BoogeymanManager {
         playerFailBoogeyman(player);
     }
 
-    public void playerFailBoogeyman(ServerPlayerEntity player) {
-        if (!BOOGEYMAN_ENABLED) return;
+    public boolean playerFailBoogeyman(ServerPlayerEntity player) {
+        if (!BOOGEYMAN_ENABLED) return false;
         Boogeyman boogeyman = getBoogeyman(player);
-        if (boogeymen == null) return;
-        if (!livesManager.isAlive(player)) return;
-        if (livesManager.isOnLastLife(player, true)) return;
+        if (boogeymen == null) return false;
+        if (!livesManager.isAlive(player)) return false;
+        if (livesManager.isOnLastLife(player, true)) return false;
 
         if (BOOGEYMAN_ADVANCED_DEATHS) {
             PlayerUtils.sendTitle(player,Text.of("§cThe curse consumes you.."), 20, 30, 20);
@@ -370,6 +375,12 @@ public class BoogeymanManager {
 
         boogeyman.failed = true;
         boogeyman.cured = false;
+
+        if (BOOGEYMAN_INFINITE) {
+            boogeymen.remove(boogeyman);
+            TaskScheduler.scheduleTask(100, this::chooseNewBoogeyman);
+        }
+        return true;
     }
 
     public void playerLostAllLives(ServerPlayerEntity player) {
@@ -414,28 +425,66 @@ public class BoogeymanManager {
         BOOGEYMAN_ANNOUNCE_OUTCOME = seasonConfig.BOOGEYMAN_ANNOUNCE_OUTCOME.get(seasonConfig);
         BOOGEYMAN_INFINITE = seasonConfig.BOOGEYMAN_INFINITE.get(seasonConfig);
         BOOGEYMAN_INFINITE_LAST_PICK = seasonConfig.BOOGEYMAN_INFINITE_LAST_PICK.get(seasonConfig);
+        BOOGEYMAN_INFINITE_AUTO_FAIL = seasonConfig.BOOGEYMAN_INFINITE_AUTO_FAIL.get(seasonConfig);
     }
 
     public void onDisabledBoogeyman() {
         resetBoogeymen();
     }
 
-
     List<UUID> afterFailedMessaged = new ArrayList<>();
+    List<UUID> warningAutoFail = new ArrayList<>();
     public void tick() {
-        if (!afterFailedMessages()) return;
+        if (!BOOGEYMAN_ENABLED) return;
         for (Boogeyman boogeyman : boogeymen) {
-            if (!boogeyman.failed) {
-                afterFailedMessaged.remove(boogeyman.uuid);
-                continue;
-            }
-            if (afterFailedMessaged.contains(boogeyman.uuid)) continue;
-            ServerPlayerEntity player = boogeyman.getPlayer();
-            if (player == null) continue;
-            if (!player.isAlive()) continue;
-            if (AdvancedDeathsManager.hasQueuedDeath(player)) continue;
-            afterFailLogic(player);
+            boogeyman.tick();
+            autoFailTick(boogeyman);
+            failedMessagesTick(boogeyman);
         }
+    }
+
+    public void autoFailTick(Boogeyman boogeyman) {
+        if (!currentSession.statusStarted()) return;
+        if (boogeyman.failed) return;
+        if (boogeyman.cured) return;
+        if (boogeyman.died) return;
+
+        int boogeymanTime = boogeyman.ticks / 20;
+        if (boogeymanTime >= (BOOGEYMAN_INFINITE_AUTO_FAIL - 5*60) && boogeymanTime > 10) {
+            if (!warningAutoFail.contains(boogeyman.uuid)) {
+                ServerPlayerEntity player = boogeyman.getPlayer();
+                if (player != null) {
+                    warningAutoFail.add(boogeyman.uuid);
+                    player.sendMessage(Text.of("§cYou only have 5 minutes left to kill someone as the Boogeyman before you fail!"));
+                }
+            }
+        }
+        else {
+            warningAutoFail.remove(boogeyman.uuid);
+        }
+
+        if (boogeymanTime >= BOOGEYMAN_INFINITE_AUTO_FAIL) {
+            ServerPlayerEntity player = boogeyman.getPlayer();
+            if (player != null) {
+                if (!playerFailBoogeyman(player)) {
+                    boogeyman.failed = true;
+                }
+            }
+        }
+    }
+
+    public void failedMessagesTick(Boogeyman boogeyman) {
+        if (!afterFailedMessages()) return;
+        if (!boogeyman.failed) {
+            afterFailedMessaged.remove(boogeyman.uuid);
+            return;
+        }
+        if (afterFailedMessaged.contains(boogeyman.uuid)) return;
+        ServerPlayerEntity player = boogeyman.getPlayer();
+        if (player == null) return;
+        if (!player.isAlive()) return;
+        if (AdvancedDeathsManager.hasQueuedDeath(player)) return;
+        afterFailLogic(player);
     }
 
     public void afterFailLogic(ServerPlayerEntity player) {
@@ -455,7 +504,7 @@ public class BoogeymanManager {
     }
 
     public boolean afterFailedMessages() {
-        return false;
+        return BOOGEYMAN_ADVANCED_DEATHS;
     }
 
     public enum BoogeymanRollType {

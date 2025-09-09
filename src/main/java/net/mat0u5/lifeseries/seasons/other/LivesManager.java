@@ -138,6 +138,7 @@ public class LivesManager {
 
     @Nullable
     public Integer getPlayerLives(ServerPlayerEntity player) {
+        if (player == null) return null;
         if (isWatcher(player)) return null;
         return ScoreboardUtils.getScore(player, SCOREBOARD_NAME);
     }
@@ -290,6 +291,7 @@ public class LivesManager {
                 WorldUtils.summonHarmlessLightning(player);
             }
             if (livesBefore > 0) {
+                Necromancy.clearedPlayers.remove(player.getUuid());
                 if (FINAL_DEATH_SOUND != null) {
                     PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), FINAL_DEATH_SOUND);
                 }

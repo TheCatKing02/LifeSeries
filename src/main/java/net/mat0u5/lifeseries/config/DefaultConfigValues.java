@@ -181,6 +181,10 @@ public class DefaultConfigValues {
             "boogeyman_infinite_last_pick", 1800, ConfigTypes.SECONDS, "global.boogeyman.infinite[new]",
             "Last Roll Before End Of Session", "Controls how long before the end of session the infinite boogey picking will stop, in seconds."
     );
+    public final ConfigFileEntry<Integer> BOOGEYMAN_INFINITE_AUTO_FAIL = new ConfigFileEntry<>(
+            "boogeyman_infinite_auto_fail", 360000, ConfigTypes.SECONDS, "global.boogeyman.infinite[new]",
+            "Automatic Fail", "Controls how a Boogeyman has to kill someone before they automatically fail, in seconds."
+    );
 
     public final ConfigFileEntry<Boolean> SECRET_SOCIETY = new ConfigFileEntry<>(
             "secret_society", false, "{global.society}[new]",

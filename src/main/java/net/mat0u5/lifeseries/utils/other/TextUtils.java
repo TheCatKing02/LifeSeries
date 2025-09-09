@@ -200,11 +200,16 @@ public class TextUtils {
             return name;
         }
         if (arg instanceof List<?> list) {
-            return Text.of(
-                    list.stream()
-                    .map(Objects::toString)
-                    .collect(Collectors.joining(", "))
-            );
+            MutableText text = Text.empty();
+            int index = 0;
+            for (Object obj : list) {
+                if (index != 0) {
+                    text.append(Text.of(", "));
+                }
+                text.append(getTextForArgument(obj));
+                index++;
+            }
+            return text;
         }
         return Text.of(arg.toString());
     }

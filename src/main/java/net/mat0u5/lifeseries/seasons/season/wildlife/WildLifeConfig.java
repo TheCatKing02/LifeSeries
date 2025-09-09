@@ -73,7 +73,7 @@ public class WildLifeConfig extends ConfigManager {
     );
 
     public static final ConfigFileEntry<Integer> WILDCARD_HUNGER_RANDOMIZE_INTERVAL = new ConfigFileEntry<>(
-            "wildcard_hunger_randomize_interval", 1800, ConfigTypes.SECONDS, "season.hunger",
+            "wildcard_hunger_randomize_interval_", 1800, ConfigTypes.SECONDS, "season.hunger",
             "Randomize Interval", "The duration between food changes, in seconds."
     );
     public static final ConfigFileEntry<Integer> WILDCARD_HUNGER_EFFECT_LEVEL = new ConfigFileEntry<>(
@@ -142,11 +142,11 @@ public class WildLifeConfig extends ConfigManager {
 
 
     public static final ConfigFileEntry<Integer> WILDCARD_MOBSWAP_START_SPAWN_DELAY = new ConfigFileEntry<>(
-            "wildcard_mobswap_start_spawn_delay", 360, ConfigTypes.SECONDS, "season.mobswap",
+            "wildcard_mobswap_start_spawn_delay_", 360, ConfigTypes.SECONDS, "season.mobswap",
             "Session Start Spawn Delay", "The delay between mob spawns at the START of the session, in seconds."
     );
     public static final ConfigFileEntry<Integer> WILDCARD_MOBSWAP_END_SPAWN_DELAY = new ConfigFileEntry<>(
-            "wildcard_mobswap_end_spawn_delay", 120, ConfigTypes.SECONDS, "season.mobswap",
+            "wildcard_mobswap_end_spawn_delay_", 120, ConfigTypes.SECONDS, "season.mobswap",
             "Session End Spawn Delay", "The delay between mob spawns at the END of the session, in seconds."
     );
     public static final ConfigFileEntry<Integer> WILDCARD_MOBSWAP_SPAWN_MOBS = new ConfigFileEntry<>(
@@ -176,7 +176,7 @@ public class WildLifeConfig extends ConfigManager {
     );
     public static final ConfigFileEntry<Boolean> WILDCARD_SUPERPOWERS_DISABLE_INTRO_THEME = new ConfigFileEntry<>(
             "wildcard_superpowers_disable_intro_theme", false, "season.superpowers",
-            "Superpowers: Disable Intro Theme", "Disables the theme music that plays when this wildcard is activated."
+            "Disable Intro Theme", "Disables the theme music that plays when this wildcard is activated."
     );
     public static final ConfigFileEntry<String> WILDCARD_SUPERPOWERS_POWER_BLACKLIST = new ConfigFileEntry<>(
             "wildcard_superpowers_power_blacklist", "[]", ConfigTypes.STRING_LIST, "season.superpowers[new]",

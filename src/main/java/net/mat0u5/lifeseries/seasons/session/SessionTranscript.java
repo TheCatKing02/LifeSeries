@@ -38,11 +38,7 @@ public class SessionTranscript {
     }
 
     public static void societyMembersChosen(List<ServerPlayerEntity> players) {
-        List<String> names = new ArrayList<>();
-        for (ServerPlayerEntity player : players) {
-            names.add(player.getNameForScoreboard());
-        }
-        addMessageWithTime(TextUtils.formatString("Secret Society members chosen: {}", names));
+        addMessageWithTime(TextUtils.formatString("Secret Society members chosen: {}", players));
     }
     public static void societyStarted() {
         addMessageWithTime("The Secret Society has started.");
@@ -88,11 +84,7 @@ public class SessionTranscript {
     }
 
     public static void logPlayers() {
-        List<String> names = new ArrayList<>();
-        for (ServerPlayerEntity player : PlayerUtils.getAllPlayers()) {
-            names.add(player.getNameForScoreboard());
-        }
-        addMessageWithTime(TextUtils.formatString("Players online: {}", names));
+        addMessageWithTime(TextUtils.formatString("Players online: {}", PlayerUtils.getAllPlayers()));
     }
 
     public static void rerollTask(ServerPlayerEntity player) {
@@ -149,11 +141,7 @@ public class SessionTranscript {
     }
 
     public static void boogeymenChosen(List<ServerPlayerEntity> players) {
-        List<String> names = new ArrayList<>();
-        for (ServerPlayerEntity player : players) {
-            names.add(player.getNameForScoreboard());
-        }
-        addMessageWithTime(TextUtils.formatString("Boogeymen chosen: {}", names));
+        addMessageWithTime(TextUtils.formatString("Boogeymen chosen: {}", players));
     }
 
     public static void sessionStart() {

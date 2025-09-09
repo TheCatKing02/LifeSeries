@@ -35,7 +35,7 @@ public class GivelifeCommand {
 
     public static boolean checkBanned(ServerCommandSource source) {
         if (isAllowed()) return false;
-        source.sendError(Text.of("This command is not available."));
+        source.sendError(Text.of("This command is only available when the givelife command has been enabled in the Life Series config."));
         return true;
     }
 

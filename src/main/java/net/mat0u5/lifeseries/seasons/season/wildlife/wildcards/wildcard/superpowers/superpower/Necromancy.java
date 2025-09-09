@@ -26,7 +26,7 @@ import static net.mat0u5.lifeseries.Main.*;
 public class Necromancy extends Superpower {
     private static final List<UUID> ressurectedPlayers = new ArrayList<>();
     private static final List<UUID> queuedRessurectedPlayers = new ArrayList<>();
-    private static final List<UUID> clearedPlayers = new ArrayList<>();
+    public static final List<UUID> clearedPlayers = new ArrayList<>();
     private List<UUID> perPlayerRessurections = new ArrayList<>();
 
     public Necromancy(ServerPlayerEntity player) {

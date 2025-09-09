@@ -25,9 +25,4 @@ public class PastLifeBoogeymanManager extends BoogeymanManager {
             boogey.sendMessage(Text.of("§7Voluntary sacrifices will not cure the curse."));
         });
     }
-
-    @Override
-    public boolean afterFailedMessages() {
-        return true;
-    }
 }

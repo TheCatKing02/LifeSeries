@@ -90,6 +90,7 @@ public class PastLifeCommands {
             else {
                 currentSeason.secretSociety.addSessionActions();
             }
+            currentSession.getSessionActions().getLast().sessionMessage = "Randomly Selected Twist";
             return 1;
         }
         return 1;

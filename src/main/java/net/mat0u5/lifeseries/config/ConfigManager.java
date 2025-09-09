@@ -82,6 +82,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
                 ,BOOGEYMAN_ANNOUNCE_OUTCOME
                     ,BOOGEYMAN_INFINITE // Group
                 ,BOOGEYMAN_INFINITE_LAST_PICK
+                ,BOOGEYMAN_INFINITE_AUTO_FAIL
 
                 ,SECRET_SOCIETY_MEMBER_AMOUNT
                 ,SECRET_SOCIETY_START_TIME

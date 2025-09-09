@@ -194,24 +194,24 @@ public class BoogeymanCommand {
         BoogeymanManager bm = getBM();
         if (bm == null) return -1;
 
-        List<String> allBoogeymen = new ArrayList<>();
-        List<String> curedBoogeymen = new ArrayList<>();
-        List<String> failedBoogeymen = new ArrayList<>();
+        int allBoogeymen = 0;
+        int curedBoogeymen = 0;
+        int failedBoogeymen = 0;
         for (Boogeyman boogeyman : bm.boogeymen) {
             if (boogeyman.cured) {
-                curedBoogeymen.add(boogeyman.name);
+                curedBoogeymen++;
             }
             else if (boogeyman.failed) {
-                failedBoogeymen.add(boogeyman.name);
+                failedBoogeymen++;
             }
             else {
-                allBoogeymen.add(boogeyman.name);
+                allBoogeymen++;
             }
         }
 
-        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Remaining Boogeymen: {}", allBoogeymen.size()));
-        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Cured Boogeymen: {}", curedBoogeymen.size()));
-        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Failed Boogeymen: {}", failedBoogeymen.size()));
+        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Remaining Boogeymen: {}", allBoogeymen));
+        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Cured Boogeymen: {}", curedBoogeymen));
+        OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Failed Boogeymen: {}", failedBoogeymen));
         return 1;
     }
 

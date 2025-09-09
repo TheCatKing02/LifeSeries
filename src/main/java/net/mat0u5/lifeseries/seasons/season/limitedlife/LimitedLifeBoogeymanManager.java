@@ -4,6 +4,7 @@ import net.mat0u5.lifeseries.seasons.boogeyman.Boogeyman;
 import net.mat0u5.lifeseries.seasons.boogeyman.BoogeymanManager;
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.seasons.other.LivesManager;
+import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.player.ScoreboardUtils;
@@ -45,13 +46,16 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
         }
     }
     @Override
-    public void playerFailBoogeyman(ServerPlayerEntity player) {
-        if (!livesManager.isAlive(player)) return;
-        if (livesManager.isOnLastLife(player, true)) return;
+    public boolean playerFailBoogeyman(ServerPlayerEntity player) {
+        if (!BOOGEYMAN_ENABLED) return false;
+        Boogeyman boogeyman = getBoogeyman(player);
+        if (boogeymen == null) return false;
+        if (!livesManager.isAlive(player)) return false;
+        if (livesManager.isOnLastLife(player, true)) return false;
         Integer currentLives = livesManager.getPlayerLives(player);
-        if (currentLives == null) return;
+        if (currentLives == null) return false;
         Integer setToLives = LimitedLife.getNextLivesColorLives(currentLives);
-        if (setToLives == null) return;
+        if (setToLives == null) return false;
 
         if (BOOGEYMAN_ADVANCED_DEATHS) {
             PlayerUtils.sendTitle(player,Text.of("§cThe curse consumes you.."), 20, 30, 20);
@@ -70,6 +74,12 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
                 PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. Their time has been dropped to {}", player, setTo));
             }
         }
+
+        if (BOOGEYMAN_INFINITE) {
+            boogeymen.remove(boogeyman);
+            TaskScheduler.scheduleTask(100, this::chooseNewBoogeyman);
+        }
+        return true;
     }
 
     @Override
@@ -77,7 +87,9 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
         List<ServerPlayerEntity> boogeyPlayers = super.getRandomBoogeyPlayers(allowedPlayers, rollType);
         int chooseBoogeymen = getBoogeymanAmount(rollType) - boogeyPlayers.size();
         if (chooseBoogeymen > 0) {
-            for (ServerPlayerEntity player : livesManager.getRedPlayers()) {
+            List<ServerPlayerEntity> redPlayers = livesManager.getRedPlayers();
+            Collections.shuffle(redPlayers);
+            for (ServerPlayerEntity player : redPlayers) {
                 // Third loop for red boogeymen if necessary
                 if (chooseBoogeymen <= 0) break;
                 if (isBoogeyman(player)) continue;

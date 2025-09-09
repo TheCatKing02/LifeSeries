@@ -11,6 +11,7 @@ public class Boogeyman {
     public boolean cured = false;
     public boolean failed = false;
     public boolean died = false;
+    public int ticks = 0;
 
     public Boogeyman(ServerPlayerEntity player) {
         uuid = player.getUuid();
@@ -19,5 +20,9 @@ public class Boogeyman {
 
     public ServerPlayerEntity getPlayer() {
         return PlayerUtils.getPlayer(uuid);
+    }
+
+    public void tick() {
+        ticks++;
     }
 }

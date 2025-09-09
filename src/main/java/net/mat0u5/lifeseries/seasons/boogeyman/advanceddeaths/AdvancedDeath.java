@@ -64,4 +64,9 @@ public abstract class AdvancedDeath {
     public boolean isFinished() {
         return finished;
     }
+
+    @Override
+    public String toString() {
+        return getDeathType().toString();
+    }
 }

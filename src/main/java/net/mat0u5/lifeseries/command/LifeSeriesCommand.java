@@ -10,12 +10,10 @@ import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.mat0u5.lifeseries.utils.versions.VersionControl;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -73,26 +71,6 @@ public class LifeSeriesCommand {
                     )
                 )
         );
-
-        if (VersionControl.isDevVersion()) {
-            dispatcher.register(
-                literal("ls")
-                    .requires(PermissionManager::isAdmin)
-                    .then(literal("test")
-                        .executes(context -> test(context.getSource()))
-                    )
-                    .then(literal("test1")
-                        .executes(context -> test1(context.getSource()))
-                    )
-                    .then(literal("test2")
-                        .executes(context -> test2(context.getSource()))
-                    )
-                    .then(literal("test3")
-                        .executes(context -> test3(context.getSource()))
-                    )
-            );
-        }
-
     }
 
     public static int chooseSeason(ServerCommandSource source) {
@@ -203,54 +181,6 @@ public class LifeSeriesCommand {
                 ", and this mod, created by §fMat0u5§7, aims to recreate every single season one-to-one."));
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7This mod uses sounds created by §fOli (TheOrionSound)§7, and uses recreated snail model (first created by §fDanny§7), and a recreated trivia bot model (first created by §fHoffen§7)."));
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7This mod bundles other mods to improve the experience, such as §fPolymer§7 and §fBlockbench Import Library."));
-        return 1;
-    }
-
-    public static int test(ServerCommandSource source) {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) return -1;
-
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("v.1.3.6.25"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("1.3.6.25"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.3.6.25"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("1.3.6.25-personname"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.3.6.25-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-1.3.6.25-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1.3.-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1..3.-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1......3.-personname-two"))));
-
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("1.4.0"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.3.7.30"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.4.0-pre1"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.4.0-pre2"))));
-
-        return 1;
-    }
-
-    public static int test1(ServerCommandSource source) {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) return -1;
-
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of("Test Command 1"));
-
-        return 1;
-    }
-
-    public static int test2(ServerCommandSource source) {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) return -1;
-
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of("Test Command 2"));
-
-        return 1;
-    }
-    public static int test3(ServerCommandSource source) {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) return -1;
-
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of("Test Command 3"));
-
         return 1;
     }
 }

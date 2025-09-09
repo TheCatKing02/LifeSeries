@@ -37,6 +37,7 @@ public class ModRegistries {
         CommandRegistrationCallback.EVENT.register(SelfMessageCommand::register);
         CommandRegistrationCallback.EVENT.register(WatcherCommand::register);
         CommandRegistrationCallback.EVENT.register(SocietyCommands::register);
+        CommandRegistrationCallback.EVENT.register(TestingCommands::register);
     }
 
     private static void registerEvents() {

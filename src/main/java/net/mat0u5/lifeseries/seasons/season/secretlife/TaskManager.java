@@ -232,7 +232,8 @@ public class TaskManager {
         });
         TaskScheduler.scheduleTask(130, () -> {
             for (ServerPlayerEntity player : allowedPlayers) {
-                AnimationUtils.playSecretLifeTotemAnimation(player, type == TaskTypes.RED);
+                boolean redTask = type == TaskTypes.RED || (type == null && livesManager.isOnLastLife(player, false));
+                AnimationUtils.playSecretLifeTotemAnimation(player, redTask);
             }
         });
         TaskScheduler.scheduleTask(165, () -> {

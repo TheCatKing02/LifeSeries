@@ -81,11 +81,12 @@ public class DoubleLifeBoogeymanManager extends BoogeymanManager {
     }
 
     @Override
-    public void playerFailBoogeyman(ServerPlayerEntity player) {
-        super.playerFailBoogeyman(player);
+    public boolean playerFailBoogeyman(ServerPlayerEntity player) {
+        boolean returnValue = super.playerFailBoogeyman(player);
         if (currentSeason instanceof DoubleLife doubleLife) {
             doubleLife.syncSoulboundLives(player);
         }
+        return returnValue;
     }
 
     @Override

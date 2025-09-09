@@ -318,7 +318,7 @@ public class SecretLife extends Season {
             if (amountGained > 0) {
                 addPlayerHealth(killer, amountGained);
                 double roundedHearts = Math.ceil(amountGained) / 2.0;
-                String text = TextUtils.pluralize(TextUtils.formatString("+{} Heart{}", roundedHearts), roundedHearts);
+                String text = TextUtils.pluralize(TextUtils.formatString("+{} Heart", roundedHearts), roundedHearts);
                 PlayerUtils.sendTitle(killer, Text.literal(text).formatted(Formatting.RED), 0, 40, 20);
             }
         }

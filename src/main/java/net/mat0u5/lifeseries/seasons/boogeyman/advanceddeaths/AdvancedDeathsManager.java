@@ -58,15 +58,8 @@ public class AdvancedDeathsManager {
             amountOfDeaths = (int) Math.ceil(((double) amountOfDeaths) / Math.abs(LimitedLife.DEATH_NORMAL));
         }
 
-        List<AdvancedDeath> queuedPlayerDeaths = new ArrayList<>();
-        AdvancedDeaths lastDeath = null;
-        for (int i = 0; i < amountOfDeaths; i++) {
-            AdvancedDeath death = getPseudoRandomDeath(player, lastDeath);
-            if (death != null) {
-                queuedPlayerDeaths.add(death);
-                lastDeath = death.getDeathType();
-            }
-        }
+        List<AdvancedDeath> queuedPlayerDeaths = getRandomDeaths(player, amountOfDeaths);
+
         if (queuedPlayerDeaths.isEmpty()) {
             livesManager.setPlayerLives(player, lives);
             return;
@@ -90,15 +83,38 @@ public class AdvancedDeathsManager {
         return queuedDeaths.containsKey(player.getUuid());
     }
 
-    @Nullable
-    private static AdvancedDeath getPseudoRandomDeath(ServerPlayerEntity player, AdvancedDeaths lastDeath) {
-        List<AdvancedDeaths> advancedDeaths = AdvancedDeaths.getAllDeaths();
-        if (lastDeath != null) advancedDeaths.remove(lastDeath);
-        if (advancedDeaths.isEmpty()) {
-            if (lastDeath == null) return null;
-            return lastDeath.getInstance(player);
+    public static List<AdvancedDeath> getRandomDeaths(ServerPlayerEntity player, int deathCount) {
+        List<AdvancedDeaths> allDeaths = AdvancedDeaths.getAllDeaths();
+        List<AdvancedDeath> result = new ArrayList<>();
+        Collections.shuffle(allDeaths);
+
+        AdvancedDeaths lastDeath = null;
+        for (int i = 0; i < deathCount; i++) {
+            AdvancedDeaths death;
+            if (i < allDeaths.size()) {
+                death = allDeaths.get(i);
+            }
+            else {
+                List<AdvancedDeaths> newDeaths = AdvancedDeaths.getAllDeaths();
+                if (lastDeath != null) {
+                    newDeaths.remove(lastDeath);
+                }
+                if (newDeaths.isEmpty()) {
+                    death = lastDeath;
+                }
+                else {
+                    death = newDeaths.get(rnd.nextInt(newDeaths.size()));
+                }
+            }
+
+            lastDeath = death;
+            if (death == null) continue;
+            AdvancedDeath deathInstance = death.getInstance(player);
+            if (deathInstance == null) continue;
+            result.add(deathInstance);
         }
-        return advancedDeaths.get(rnd.nextInt(advancedDeaths.size())).getInstance(player);
+
+        return result;
     }
 
     public record PlayerAdvancedDeath(String nameForScoreboard, int lives, List<AdvancedDeath> queuedDeaths) {}
