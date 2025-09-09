@@ -271,6 +271,7 @@ public class BoogeymanManager {
 
         for (ServerPlayerEntity player : nonRedPlayers) {
             // First loop for the forced boogeymen
+            if (isBoogeyman(player)) continue;
             if (!allowedPlayers.contains(player)) continue;
             if (rolledPlayers.contains(player.getUuid())) continue;
             if (BOOGEYMAN_IGNORE.contains(player.getNameForScoreboard().toLowerCase())) continue;
@@ -282,6 +283,7 @@ public class BoogeymanManager {
         for (ServerPlayerEntity player : nonRedPlayers) {
             // Second loop for the non-forced boogeymen
             if (chooseBoogeymen <= 0) break;
+            if (isBoogeyman(player)) continue;
             if (!allowedPlayers.contains(player)) continue;
             if (rolledPlayers.contains(player.getUuid())) continue;
             if (BOOGEYMAN_IGNORE.contains(player.getNameForScoreboard().toLowerCase())) continue;

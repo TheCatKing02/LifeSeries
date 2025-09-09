@@ -106,8 +106,9 @@ public class TextHud {
     }
 
     public static long lastSessionSeconds = 0;
-    public static boolean sessionSecondChanged = false;
+    public static boolean sessionSecondChanged = true;
     public static int renderSessionTimer(MinecraftClient client, DrawContext context, int y) {
+        sessionSecondChanged = true;
         if (!MainClient.SESSION_TIMER) return 0;
         if (System.currentTimeMillis()-MainClient.sessionTimeLastUpdated > 15000) return 0;
         if (MainClient.sessionTime == SessionTimerStates.OFF.getValue()) return 0;
@@ -121,11 +122,11 @@ public class TextHud {
             long seconds = remainingTime/1000;
             if (lastSessionSeconds != seconds) {
                 lastSessionSeconds = seconds;
-                sessionSecondChanged = true;
             }
             else {
                 sessionSecondChanged = false;
             }
+
             if (remainingTime < 0) timerText = timerText.append(Text.of("§7Session has ended"));
             else timerText = timerText.append(TextUtils.formatLoosely("§7Session {}", OtherUtils.formatTimeMillis(remainingTime)));
         }
@@ -144,7 +145,7 @@ public class TextHud {
         if (System.currentTimeMillis()-MainClient.limitedLifeTimeLastUpdated > 15000) return 0;
 
         MutableText timerText = Text.empty();
-        if (sessionSecondChanged || MainClient.sessionTime <= 0) {
+        if (sessionSecondChanged || MainClient.sessionTime <= 0 || Math.abs(limitedLifeTime - MainClient.limitedLifeLives) > 10) {
             limitedLifeTime = MainClient.limitedLifeLives;
         }
         if (limitedLifeTime == -1) timerText = timerText.append(TextUtils.formatLoosely("{}0:00:00", MainClient.limitedLifeTimerColor));

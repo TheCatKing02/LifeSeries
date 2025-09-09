@@ -80,6 +80,7 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
             for (ServerPlayerEntity player : livesManager.getRedPlayers()) {
                 // Third loop for red boogeymen if necessary
                 if (chooseBoogeymen <= 0) break;
+                if (isBoogeyman(player)) continue;
                 if (!allowedPlayers.contains(player)) continue;
                 if (rolledPlayers.contains(player.getUuid())) continue;
                 if (BOOGEYMAN_IGNORE.contains(player.getNameForScoreboard().toLowerCase())) continue;

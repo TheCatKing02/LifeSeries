@@ -25,7 +25,7 @@ public class DeathLightning extends AdvancedDeath {
 
     @Override
     protected int maxTime() {
-        return 200;
+        return 180;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DeathLightning extends AdvancedDeath {
     @Override
     protected void begin(ServerPlayerEntity player) {
         world = PlayerUtils.getServerWorld(player);
-        world.setWeather(0, 180, true, true);
+        world.setWeather(0, 200, true, true);
     }
 
     @Override

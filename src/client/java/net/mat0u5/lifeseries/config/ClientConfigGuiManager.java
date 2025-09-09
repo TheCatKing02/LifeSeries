@@ -47,6 +47,10 @@ public class ClientConfigGuiManager {
                 Main.LOGGER.error("Config entry is null");
                 continue;
             }
+            if (groupInfo.contains("[new]")) {
+                groupInfo = groupInfo.replace("[new]","");
+                configEntry.setNew();
+            }
 
             if (groupInfo.startsWith("{") && groupInfo.contains("}")) {
                 String groupPath = groupInfo.substring(1);

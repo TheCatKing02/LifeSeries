@@ -305,8 +305,8 @@ public class SecretSociety {
         if (!SOCIETY_ENABLED) return;
         if (societyStarted && !societyEnded) {
             TaskScheduler.scheduleTask(40, () -> {
-                PlayerUtils.broadcastMessageToAdmins(Text.of("The Secret Society has not been ended by any Member!"));
-                PlayerUtils.broadcastMessageToAdmins(Text.of("Run \"/society members list\" to see the Members."));
+                PlayerUtils.broadcastMessageToAdmins(Text.of("§c The Secret Society has not been ended by any Member!"));
+                PlayerUtils.broadcastMessageToAdmins(Text.of("§c Run \"/society members list\" to see the Members."));
             });
         }
     }

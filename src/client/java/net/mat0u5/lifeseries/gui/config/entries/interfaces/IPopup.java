@@ -10,7 +10,9 @@ public interface IPopup {
     void renderContent(DrawContext context, int x, int y, int width, int height, int mouseX, int mouseY, float tickDelta);
 
     default int getActualPopupWidth() {
-        return getPopupWidth() + getPadding();
+        int width = getPopupWidth() + getPadding();
+        if (width % 2 != 0) width++;
+        return width;
     }
 
     default int getActualPopupHeight() {

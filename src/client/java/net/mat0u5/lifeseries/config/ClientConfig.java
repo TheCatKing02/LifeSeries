@@ -32,15 +32,15 @@ public class ClientConfig extends ConfigManager {
     );
 
     public static final ConfigFileEntry<Boolean> COLORED_HEARTS = new ConfigFileEntry<>(
-            "colored_hearts", false, "{coloredhearts}",
+            "colored_hearts", false, "{coloredhearts}[new]",
             "Colored Hearts Based on Lives", "Makes your hearts the same color as how many lives you have."
     );
     public static final ConfigFileEntry<Boolean> COLORED_HEARTS_HARDCORE_LAST_LIFE = new ConfigFileEntry<>(
-            "colored_hearts_hardcore_last_life", true, "coloredhearts",
+            "colored_hearts_hardcore_last_life", true, "coloredhearts[new]",
             "Show Last Life as Hardcore", "When you are on your last life, the hearts will appear as though you are in hardcore."
     );
     public static final ConfigFileEntry<Boolean> COLORED_HEARTS_HARDCORE_ALL_LIVES = new ConfigFileEntry<>(
-            "colored_hearts_hardcore_all_lives", false, "coloredhearts",
+            "colored_hearts_hardcore_all_lives", false, "coloredhearts[new]",
             "Show All Lives as Hardcore", "Hearts will always appear as though you are in hardcore."
     );
 

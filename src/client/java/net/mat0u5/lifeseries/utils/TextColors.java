@@ -8,6 +8,8 @@ public class TextColors {
     public static int WHITE = rgb(224, 224, 224);
     public static int WHITE_BORDER = rgb(208, 208, 208);
     public static int BLACK = rgb(0, 0, 0);
+    public static int PURPLE = rgb(120, 0, 165);
+    public static int PURPLE_A128 = argb(128, 120, 0, 165);
 
     public static int ORANGE = rgb(214, 150, 26);
     public static int RED = rgb(191, 34, 34);

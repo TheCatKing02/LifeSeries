@@ -67,7 +67,7 @@ public class DefaultConfigValues {
             "Default Lives", "The number of lives every player will have by default."
     );
     public final ConfigFileEntry<Boolean> ONLY_TAKE_LIVES_IN_SESSION = new ConfigFileEntry<>(
-            "only_take_lives_in_session", false, "global.lives",
+            "only_take_lives_in_session", false, "global.lives[new]",
             "Only Lose Lives In Session", "Makes players only lose lives when they die while a session is active."
     );
     public final ConfigFileEntry<Boolean> CUSTOM_ENCHANTER_ALGORITHM = new ConfigFileEntry<>(
@@ -115,7 +115,7 @@ public class DefaultConfigValues {
             "Broadcast Givelife", "Broadcasts the message when a player gives a life to another player using /givelife."
     );
     public final ConfigFileEntry<Boolean> GIVELIFE_CAN_REVIVE = new ConfigFileEntry<>(
-            "givelife_can_revive", false, "global.givelife",
+            "givelife_can_revive", false, "global.givelife[new]",
             "Givelife Can Revive Dead Players", "Controls whether players can revive dead players using /givelife."
     );
     public final ConfigFileEntry<Boolean> TAB_LIST_SHOW_DEAD_PLAYERS = new ConfigFileEntry<>(
@@ -147,7 +147,7 @@ public class DefaultConfigValues {
             "Maximum Boogeyman Amount", "The maximum amount of Boogeymen a session can have."
     );
     public final ConfigFileEntry<Boolean> BOOGEYMAN_ADVANCED_DEATHS = new ConfigFileEntry<>(
-            "boogeyman_advanced_deaths", false, "global.boogeyman",
+            "boogeyman_advanced_deaths", false, "global.boogeyman[new]",
             "Advanced Deaths", "Enables the advanced deaths (seen in Past Life), where you actually die by different causes instead of your lives just being set to 1."
     );
     public final ConfigFileEntry<String> BOOGEYMAN_IGNORE = new ConfigFileEntry<>(
@@ -174,44 +174,44 @@ public class DefaultConfigValues {
             "Boogeyman Announce Outcome", "Shows a message in chat when the boogeyman succeeds or fails."
     );
     public final ConfigFileEntry<Boolean> BOOGEYMAN_INFINITE = new ConfigFileEntry<>(
-            "boogeyman_infinite", false, "{global.boogeyman.infinite}",
+            "boogeyman_infinite", false, "{global.boogeyman.infinite}[new]",
             "Boogeyman Infinite Rolling", "When any boogeyman is cured, a new one will replace them immediatelly."
     );
     public final ConfigFileEntry<Integer> BOOGEYMAN_INFINITE_LAST_PICK = new ConfigFileEntry<>(
-            "boogeyman_infinite_last_pick", 1800, ConfigTypes.SECONDS, "global.boogeyman.infinite",
+            "boogeyman_infinite_last_pick", 1800, ConfigTypes.SECONDS, "global.boogeyman.infinite[new]",
             "Last Roll Before End Of Session", "Controls how long before the end of session the infinite boogey picking will stop, in seconds."
     );
 
     public final ConfigFileEntry<Boolean> SECRET_SOCIETY = new ConfigFileEntry<>(
-            "secret_society", false, "{global.society}",
+            "secret_society", false, "{global.society}[new]",
             "Secret Society Enabled", "Enables the Secret Society in the session."
     );
     public final ConfigFileEntry<Integer> SECRET_SOCIETY_MEMBER_AMOUNT = new ConfigFileEntry<>(
-            "secret_society_member_amount", 3, "global.society",
+            "secret_society_member_amount", 3, "global.society[new]",
             "Member Amount", "The number of players that are a part of the Secret Society"
     );
     public final ConfigFileEntry<Double> SECRET_SOCIETY_START_TIME = new ConfigFileEntry<>(
-            "secret_society_start_time", 5.0, ConfigTypes.MINUTES, "global.society",
+            "secret_society_start_time", 5.0, ConfigTypes.MINUTES, "global.society[new]",
             "Society Start Time", "Controls when in the session the Society will start, in minutes."
     );
     public final ConfigFileEntry<String> SECRET_SOCIETY_FORCE = new ConfigFileEntry<>(
-            "secret_society_force", "[]", "global.society",
+            "secret_society_force", "[]", "global.society[new]",
             "Member Force List", "A list of players that are forced to become a Member in the society."
     );
     public final ConfigFileEntry<String> SECRET_SOCIETY_IGNORE = new ConfigFileEntry<>(
-            "secret_society_ignore", "[]", "global.society",
+            "secret_society_ignore", "[]", "global.society[new]",
             "Member Ignore List", "A list of players that cannot become a Member in the society."
     );
     public final ConfigFileEntry<String> SECRET_SOCIETY_WORDS = new ConfigFileEntry<>(
-            "secret_society_words", "[Hammer, Magnet, Throne, Gravity, Puzzle, Spiral, Pivot, Flare]", "global.society",
+            "secret_society_words", "[Hammer, Magnet, Throne, Gravity, Puzzle, Spiral, Pivot, Flare]", "global.society[new]",
             "Random Words", "List of words that can be picked as the secret word."
     );
     public final ConfigFileEntry<Integer> SECRET_SOCIETY_PUNISHMENT_LIVES = new ConfigFileEntry<>(
-            "secret_society_punishment_lives", -2, "global.society",
+            "secret_society_punishment_lives", -2, "global.society[new]",
             "Punishment Lives", "The amount of lives all Members of the society lose if they fail."
     );
     public final ConfigFileEntry<Integer> SECRET_SOCIETY_KILLS_REQUIRED = new ConfigFileEntry<>(
-            "secret_society_kills_required", 2, "global.society",
+            "secret_society_kills_required", 2, "global.society[new]",
             "Kills Required To Succeed", "The number of kills the Members need to succeed in the Society."
     );
 
@@ -228,15 +228,15 @@ public class DefaultConfigValues {
             "Allow Self Defense Kills", "Controls whether self-defense kills should count as unjustified."
     );
     public final ConfigFileEntry<Boolean> SEE_FRIENDLY_INVISIBLE_PLAYERS = new ConfigFileEntry<>(
-            "see_friendly_invisible_players", false, "global",
+            "see_friendly_invisible_players", false, "global[new]",
             "See Friendly Invisible Players", "Controls whether players can see other invisible players on the same life color."
     );
     public final ConfigFileEntry<Boolean> SHOW_LOGIN_COMMAND_INFO = new ConfigFileEntry<>(
-            "show_login_command_info", true, "global",
+            "show_login_command_info", true, "global[new]",
             "Show Command Info On Login", "Controls whether players get a message in chat showing the available commands when the login."
     );
     public final ConfigFileEntry<Boolean> HIDE_UNJUSTIFIED_KILL_MESSAGES = new ConfigFileEntry<>(
-            "hide_unjustified_kills", false, "global",
+            "hide_unjustified_kills", false, "global[new]",
             "Hide Unjustified Kill Messages", "Controls whether unjustified kill messages show up in admin chat."
     );
 

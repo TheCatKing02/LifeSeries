@@ -81,19 +81,19 @@ public class WildLifeConfig extends ConfigManager {
             "Hunger Effect Level", "Controls the hunger effect level."
     );
     public static final ConfigFileEntry<Double> WILDCARD_HUNGER_NUTRITION_CHANCE = new ConfigFileEntry<>(
-            "wildcard_hunger_nutrition_chance", 0.4, ConfigTypes.PERCENTAGE, "season.hunger",
+            "wildcard_hunger_nutrition_chance", 0.4, ConfigTypes.PERCENTAGE, "season.hunger[new]",
             "Nutrition Chance", "Chance for food to have nutrition (give hunger bars)."
     );
     public static final ConfigFileEntry<Double> WILDCARD_HUNGER_SATURATION_CHANCE = new ConfigFileEntry<>(
-            "wildcard_hunger_saturation_chance", 0.5, ConfigTypes.PERCENTAGE, "season.hunger",
+            "wildcard_hunger_saturation_chance", 0.5, ConfigTypes.PERCENTAGE, "season.hunger[new]",
             "Saturation Chance", "Chance for food to have saturation (needs to have nutrition to have saturation too btw)."
     );
     public static final ConfigFileEntry<Double> WILDCARD_HUNGER_EFFECT_CHANCE = new ConfigFileEntry<>(
-            "wildcard_hunger_effect_chance", 0.65, ConfigTypes.PERCENTAGE, "season.hunger",
+            "wildcard_hunger_effect_chance", 0.65, ConfigTypes.PERCENTAGE, "season.hunger[new]",
             "Effect Chance", "Chance for food to give a random effect."
     );
     public static final ConfigFileEntry<Integer> WILDCARD_HUNGER_AVG_EFFECT_DURATION = new ConfigFileEntry<>(
-            "wildcard_hunger_avg_effect_duration", 10, ConfigTypes.SECONDS, "season.hunger",
+            "wildcard_hunger_avg_effect_duration", 10, ConfigTypes.SECONDS, "season.hunger[new]",
             "Average Random Effect Duration", "Average random effect duration, in seconds."
     );
 
@@ -179,17 +179,17 @@ public class WildLifeConfig extends ConfigManager {
             "Superpowers: Disable Intro Theme", "Disables the theme music that plays when this wildcard is activated."
     );
     public static final ConfigFileEntry<String> WILDCARD_SUPERPOWERS_POWER_BLACKLIST = new ConfigFileEntry<>(
-            "wildcard_superpowers_power_blacklist", "[]", ConfigTypes.STRING_LIST, "season.superpowers",
+            "wildcard_superpowers_power_blacklist", "[]", ConfigTypes.STRING_LIST, "season.superpowers[new]",
             "Blacklisted Powers", "List of superpowers that cannot be rolled randomly.", Superpowers.getAllStr()
     );
 
 
     public static final ConfigFileEntry<String> WILDCARD_CALLBACK_WILDCARDS_BLACKLIST = new ConfigFileEntry<>(
-            "wildcard_callback_wildcards_blacklist", "[hunger]", ConfigTypes.STRING_LIST, "season.callback",
+            "wildcard_callback_wildcards_blacklist", "[hunger]", ConfigTypes.STRING_LIST, "season.callback[new]",
             "Blacklisted Wildcards", "List of wildcards that cannot be activated in Callback.", Wildcards.getWildcardsStr()
     );
     public static final ConfigFileEntry<Double> WILDCARD_CALLBACK_TURN_OFF = new ConfigFileEntry<>(
-            "wildcard_callback_turn_off", 0.75, ConfigTypes.PERCENTAGE, "season.callback",
+            "wildcard_callback_turn_off", 0.75, ConfigTypes.PERCENTAGE, "season.callback[new]",
             "Turn Off In Session", "Controls when in the session the callback wildcard turns off (percentage)."
     );
 

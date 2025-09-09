@@ -45,6 +45,7 @@ public abstract class ConfigEntry {
     protected boolean isHovered = false;
     private boolean isFocused = false;
     protected GroupConfigEntry<?> parentGroup;
+    private boolean isNew = false;
 
     public ConfigEntry(String fieldName, String displayName, String description) {
         this.fieldName = fieldName;
@@ -52,6 +53,10 @@ public abstract class ConfigEntry {
         this.description = description;
         this.textRenderer = MinecraftClient.getInstance().textRenderer;
         initializeResetButton();
+    }
+
+    public void setNew() {
+        isNew = true;
     }
 
     private void initializeResetButton() {
@@ -115,6 +120,10 @@ public abstract class ConfigEntry {
                 /*context.drawTooltip(textRenderer, textRenderer.wrapLines(descriptionText, MAX_DESCRIPTION_WIDTH), HoveredTooltipPositioner.INSTANCE, mouseX, mouseY, false);
                 *///?}
             }
+        }
+
+        if (isNew) {
+            context.drawTextWithShadow(textRenderer, "New", 2, labelY, TextColors.LIGHT_GRAY_A128);
         }
 
 

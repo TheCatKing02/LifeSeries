@@ -292,7 +292,9 @@ public class LimitedLife extends Season {
         return LimitedLifeLivesManager.DEFAULT_TIME;
     }
 
-    public static int getNextLivesColorLives(int currentLives) {
+    public static Integer getNextLivesColorLives(Integer currentLives) {
+        if (currentLives == null) return null;
+
         if (currentLives > LimitedLifeLivesManager.DEFAULT_TIME) return LimitedLifeLivesManager.DEFAULT_TIME;
         else if (currentLives > LimitedLifeLivesManager.YELLOW_TIME) return LimitedLifeLivesManager.YELLOW_TIME;
         else if (currentLives > LimitedLifeLivesManager.RED_TIME) return LimitedLifeLivesManager.RED_TIME;
