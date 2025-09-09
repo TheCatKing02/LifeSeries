@@ -63,6 +63,7 @@ public class SecretSociety {
     }
 
     public void addSessionActions() {
+        if (!SOCIETY_ENABLED) return;
         currentSession.addSessionAction(new SessionAction(OtherUtils.minutesToTicks(START_TIME), TextUtils.formatString("§7Begin Secret Society §f[{}]", OtherUtils.formatTime(OtherUtils.minutesToTicks(START_TIME))), "Begin Secret Society") {
             @Override
             public void trigger() {
@@ -242,8 +243,12 @@ public class SecretSociety {
         });
         currentTime += 70;
         TaskScheduler.scheduleTask(currentTime, () -> {
-            player.sendMessage(TextUtils.formatLoosely("§7Type \"/society fail\", and you all lose §c{} {}§7.", Math.abs(PUNISHMENT_LIVES), TextUtils.pluralize("life", "lives", PUNISHMENT_LIVES)), false);
+            player.sendMessage(getPunishmentText(), false);
         });
+    }
+
+    public Text getPunishmentText() {
+        return TextUtils.formatLoosely("§7Type \"/society fail\", and you all lose §c{} {}§7.", Math.abs(PUNISHMENT_LIVES), TextUtils.pluralize("life", "lives", PUNISHMENT_LIVES));
     }
 
     public void removeMember(ServerPlayerEntity player) {
@@ -334,12 +339,16 @@ public class SecretSociety {
         });
         TaskScheduler.scheduleTask(110, () -> {
             for (ServerPlayerEntity member : memberPlayers) {
-                PlayerUtils.damage(member, member.getDamageSources().playerAttack(member), 0.001f);
-                livesManager.addToPlayerLives(member, PUNISHMENT_LIVES);
+                punishPlayer(member);
             }
         });
         TaskScheduler.scheduleTask(150, () -> {
             PlayerUtils.sendTitleWithSubtitleToPlayers(memberPlayers, Text.empty(), Text.of("§cYou are still sworn to secrecy"), 20, 30, 20);
         });
+    }
+
+    public void punishPlayer(ServerPlayerEntity member) {
+        PlayerUtils.damage(member, member.getDamageSources().playerAttack(member), 0.001f);
+        livesManager.addToPlayerLives(member, PUNISHMENT_LIVES);
     }
 }

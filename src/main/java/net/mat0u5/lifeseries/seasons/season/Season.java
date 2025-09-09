@@ -265,6 +265,7 @@ public abstract class Season {
     }
 
     public void tick(MinecraftServer server) {
+        boogeymanManager.tick();
         secretSociety.tick();
     }
     public void tickSessionOn(MinecraftServer server) {}
@@ -298,7 +299,7 @@ public abstract class Season {
         if (!killedByPlayer) {
             onPlayerDiedNaturally(player);
         }
-        if (livesManager.canChangeLivesNaturally()) {
+        if (livesManager.canChangeLivesNaturally(player)) {
             livesManager.removePlayerLife(player);
         }
     }

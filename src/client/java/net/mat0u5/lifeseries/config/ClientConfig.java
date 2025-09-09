@@ -22,10 +22,6 @@ public class ClientConfig extends ConfigManager {
             "session_timer", true, "",
             "Session Timer", "Enables the session timer in the bottom right of the screen."
     );
-    public static final ConfigFileEntry<Boolean> SESSION_TIMER_LIMITEDLIFE = new ConfigFileEntry<>(
-            "session_timer_limitedlife", false, "",
-            "Session Timer", "Enables the session timer in the bottom right of the screen."
-    );
     public static final ConfigFileEntry<Boolean> COLORBLIND_SUPPORT = new ConfigFileEntry<>(
             "colorblind_support", false, "",
             "Colorblind Support", "Enables a feature that shows the team color name next to a players' usernames."
@@ -50,14 +46,9 @@ public class ClientConfig extends ConfigManager {
 
     @Override
     protected List<ConfigFileEntry<?>> getDefaultConfigEntries() {
-        ConfigFileEntry<?> sessionTimer = SESSION_TIMER;
-        if (MainClient.clientCurrentSeason == Seasons.LIMITED_LIFE) {
-            sessionTimer = SESSION_TIMER_LIMITEDLIFE;
-        }
-
         List<ConfigFileEntry<?>> result = new ArrayList<>(List.of(
                 MINIMAL_ARMOR
-                ,sessionTimer
+                ,SESSION_TIMER
                 ,COLORBLIND_SUPPORT
                 ,COLORED_HEARTS // Group
 

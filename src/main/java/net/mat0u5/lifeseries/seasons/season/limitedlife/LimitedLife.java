@@ -6,6 +6,7 @@ import net.mat0u5.lifeseries.seasons.boogeyman.BoogeymanManager;
 import net.mat0u5.lifeseries.seasons.other.LivesManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
+import net.mat0u5.lifeseries.seasons.secretsociety.SecretSociety;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.enums.SessionTimerStates;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
@@ -30,7 +31,7 @@ public class LimitedLife extends Season {
     public static final String COMMANDS_TEXT = "/claimkill, /lives";
 
     private boolean SHOW_DEATH_TITLE = true;
-    private int DEATH_NORMAL = -3600;
+    public static int DEATH_NORMAL = -3600;
     private int DEATH_BOOGEYMAN = -7200;
     private int KILL_NORMAL = 1800;
     private int KILL_BOOGEYMAN = 3600;
@@ -49,6 +50,11 @@ public class LimitedLife extends Season {
     @Override
     public BoogeymanManager createBoogeymanManager() {
         return new LimitedLifeBoogeymanManager();
+    }
+
+    @Override
+    public SecretSociety createSecretSociety() {
+        return new LimitedLifeSecretSociety();
     }
 
     @Override
@@ -164,7 +170,7 @@ public class LimitedLife extends Season {
             }
         }
         onPlayerDiedNaturally(player);
-        if (livesManager.canChangeLivesNaturally()) {
+        if (livesManager.canChangeLivesNaturally(player)) {
             livesManager.addToPlayerLives(player, DEATH_NORMAL);
             if (livesManager.isAlive(player)) {
                 PlayerUtils.sendTitle(player, Text.literal(OtherUtils.formatSecondsToReadable(DEATH_NORMAL)).formatted(Formatting.RED), 20, 80, 20);
@@ -284,5 +290,12 @@ public class LimitedLife extends Season {
     @Override
     public Integer getDefaultLives() {
         return LimitedLifeLivesManager.DEFAULT_TIME;
+    }
+
+    public static int getNextLivesColorLives(int currentLives) {
+        if (currentLives > LimitedLifeLivesManager.DEFAULT_TIME) return LimitedLifeLivesManager.DEFAULT_TIME;
+        else if (currentLives > LimitedLifeLivesManager.YELLOW_TIME) return LimitedLifeLivesManager.YELLOW_TIME;
+        else if (currentLives > LimitedLifeLivesManager.RED_TIME) return LimitedLifeLivesManager.RED_TIME;
+        return 0;
     }
 }

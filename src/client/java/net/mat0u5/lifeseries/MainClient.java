@@ -115,12 +115,7 @@ public class MainClient implements ClientModInitializer, IClientHelper {
 
     public static void reloadConfig() {
         COLORBLIND_SUPPORT = ClientConfig.COLORBLIND_SUPPORT.get(clientConfig);
-        if (clientCurrentSeason == Seasons.LIMITED_LIFE) {
-            SESSION_TIMER = ClientConfig.SESSION_TIMER_LIMITEDLIFE.get(clientConfig);
-        }
-        else {
-            SESSION_TIMER = ClientConfig.SESSION_TIMER.get(clientConfig);
-        }
+        SESSION_TIMER = ClientConfig.SESSION_TIMER.get(clientConfig);
         RUN_COMMAND = ClientConfig.RUN_COMMAND.get(clientConfig);
         if (RUN_COMMAND.startsWith("/")) {
             RUN_COMMAND = RUN_COMMAND.substring(1);

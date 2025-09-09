@@ -1,12 +1,11 @@
 package net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.deaths;
 
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeath;
+import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeaths;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -19,6 +18,11 @@ public class DeathAnvil extends AdvancedDeath {
     private Vec3d playerPos = null;
     public DeathAnvil(ServerPlayerEntity player) {
         super(player);
+    }
+
+    @Override
+    public AdvancedDeaths getDeathType() {
+        return AdvancedDeaths.ANVIL;
     }
 
     @Override

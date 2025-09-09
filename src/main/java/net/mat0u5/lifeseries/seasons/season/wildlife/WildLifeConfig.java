@@ -176,7 +176,7 @@ public class WildLifeConfig extends ConfigManager {
     );
     public static final ConfigFileEntry<Boolean> WILDCARD_SUPERPOWERS_DISABLE_INTRO_THEME = new ConfigFileEntry<>(
             "wildcard_superpowers_disable_intro_theme", false, "season.superpowers",
-            "Superspeed: Disable Intro Theme", "Disables the theme music that plays when this wildcard is activated."
+            "Superpowers: Disable Intro Theme", "Disables the theme music that plays when this wildcard is activated."
     );
     public static final ConfigFileEntry<String> WILDCARD_SUPERPOWERS_POWER_BLACKLIST = new ConfigFileEntry<>(
             "wildcard_superpowers_power_blacklist", "[]", ConfigTypes.STRING_LIST, "season.superpowers",

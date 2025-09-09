@@ -93,7 +93,7 @@ public class BoogeymanManager {
 
     public boolean isBoogeymanThatCanBeCured(ServerPlayerEntity player, ServerPlayerEntity victim) {
         Boogeyman boogeyman = getBoogeyman(player);
-        return boogeyman != null && !boogeyman.cured && !livesManager.isOnLastLife(victim, true);
+        return boogeyman != null && !boogeyman.cured && !boogeyman.failed && !livesManager.isOnLastLife(victim, true);
     }
 
     public Boogeyman getBoogeyman(ServerPlayerEntity player) {
@@ -416,6 +416,44 @@ public class BoogeymanManager {
 
     public void onDisabledBoogeyman() {
         resetBoogeymen();
+    }
+
+
+    List<UUID> afterFailedMessaged = new ArrayList<>();
+    public void tick() {
+        if (!afterFailedMessages()) return;
+        for (Boogeyman boogeyman : boogeymen) {
+            if (!boogeyman.failed) {
+                afterFailedMessaged.remove(boogeyman.uuid);
+                continue;
+            }
+            if (afterFailedMessaged.contains(boogeyman.uuid)) continue;
+            ServerPlayerEntity player = boogeyman.getPlayer();
+            if (player == null) continue;
+            if (!player.isAlive()) continue;
+            if (AdvancedDeathsManager.hasQueuedDeath(player)) continue;
+            afterFailLogic(player);
+        }
+    }
+
+    public void afterFailLogic(ServerPlayerEntity player) {
+        if (!afterFailedMessages()) return;
+        afterFailedMessaged.add(player.getUuid());
+        int delay = 20;
+        if (!BOOGEYMAN_ADVANCED_DEATHS) {
+            delay = 140;
+        }
+        TaskScheduler.scheduleTask(delay, () -> {
+            PlayerUtils.sendTitle(player, Text.of("§cYou lives are taken..."), 20, 80, 20);
+        });
+        delay += 140;
+        TaskScheduler.scheduleTask(delay, () -> {
+            PlayerUtils.sendTitle(player, Text.of("§c...Now take theirs."), 20, 80, 20);
+        });
+    }
+
+    public boolean afterFailedMessages() {
+        return false;
     }
 
     public enum BoogeymanRollType {

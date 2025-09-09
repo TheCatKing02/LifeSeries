@@ -34,6 +34,7 @@ public class LastLifeLivesManager extends LivesManager {
         for (ServerPlayerEntity player : PlayerUtils.getAllFunctioningPlayers()) {
             if (livesManager.hasAssignedLives(player)) continue;
             assignTo.add(player);
+            PlayerUtils.broadcastMessageToAdmins(TextUtils.format("§7Assigning random lives to {}§7...", player));
         }
         if (assignTo.isEmpty()) return;
         assignRandomLives(assignTo);

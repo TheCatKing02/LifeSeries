@@ -1,15 +1,18 @@
 package net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths;
 
+import net.mat0u5.lifeseries.seasons.season.Seasons;
+import net.mat0u5.lifeseries.seasons.season.limitedlife.LimitedLife;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.Main.livesManager;
 
 public class AdvancedDeathsManager {
-    private static int lastDeathIndex = new Random().nextInt(1000);
+    private static final Random rnd = new Random();
     private static final Map<UUID, PlayerAdvancedDeath> queuedDeaths = new HashMap<>();
 
     public static void tick() {
@@ -20,8 +23,9 @@ public class AdvancedDeathsManager {
             PlayerAdvancedDeath playerAdvancedDeath = entry.getValue();
 
             ServerPlayerEntity player = PlayerUtils.getPlayer(uuid);
-            if (player == null || playerAdvancedDeath.queuedDeaths().isEmpty() ||
-                    Objects.equals(livesManager.getPlayerLives(player), playerAdvancedDeath.lives())) {
+            Integer playerLives = livesManager.getPlayerLives(player);
+            if (player == null || playerAdvancedDeath.queuedDeaths().isEmpty() || playerLives == null
+                    || playerLives <= playerAdvancedDeath.lives()) {
                 toRemove.add(uuid);
                 continue;
             }
@@ -49,12 +53,18 @@ public class AdvancedDeathsManager {
             livesManager.setPlayerLives(player, lives);
             return;
         }
+        int amountOfDeaths = currentLives - lives;
+        if (currentSeason.getSeason() == Seasons.LIMITED_LIFE) {
+            amountOfDeaths = (int) Math.ceil(((double) amountOfDeaths) / Math.abs(LimitedLife.DEATH_NORMAL));
+        }
 
         List<AdvancedDeath> queuedPlayerDeaths = new ArrayList<>();
-        for (int i = currentLives; i > lives; i--) {
-            AdvancedDeath death = getPseudoRandomDeath(player);
+        AdvancedDeaths lastDeath = null;
+        for (int i = 0; i < amountOfDeaths; i++) {
+            AdvancedDeath death = getPseudoRandomDeath(player, lastDeath);
             if (death != null) {
                 queuedPlayerDeaths.add(death);
+                lastDeath = death.getDeathType();
             }
         }
         if (queuedPlayerDeaths.isEmpty()) {
@@ -76,11 +86,19 @@ public class AdvancedDeathsManager {
         }
     }
 
+    public static boolean hasQueuedDeath(ServerPlayerEntity player) {
+        return queuedDeaths.containsKey(player.getUuid());
+    }
+
     @Nullable
-    private static AdvancedDeath getPseudoRandomDeath(ServerPlayerEntity player) {
+    private static AdvancedDeath getPseudoRandomDeath(ServerPlayerEntity player, AdvancedDeaths lastDeath) {
         List<AdvancedDeaths> advancedDeaths = AdvancedDeaths.getAllDeaths();
-        lastDeathIndex = (lastDeathIndex + 1) % advancedDeaths.size();
-        return advancedDeaths.get(lastDeathIndex).getInstance(player);
+        if (lastDeath != null) advancedDeaths.remove(lastDeath);
+        if (advancedDeaths.isEmpty()) {
+            if (lastDeath == null) return null;
+            return lastDeath.getInstance(player);
+        }
+        return advancedDeaths.get(rnd.nextInt(advancedDeaths.size())).getInstance(player);
     }
 
     public record PlayerAdvancedDeath(String nameForScoreboard, int lives, List<AdvancedDeath> queuedDeaths) {}

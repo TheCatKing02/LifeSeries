@@ -25,6 +25,7 @@ import static net.mat0u5.lifeseries.Main.*;
 
 public class Necromancy extends Superpower {
     private static final List<UUID> ressurectedPlayers = new ArrayList<>();
+    private static final List<UUID> queuedRessurectedPlayers = new ArrayList<>();
     private static final List<UUID> clearedPlayers = new ArrayList<>();
     private List<UUID> perPlayerRessurections = new ArrayList<>();
 
@@ -61,6 +62,10 @@ public class Necromancy extends Superpower {
             affectedPlayer.addStatusEffect(blindness);
         }
 
+        for (ServerPlayerEntity deadPlayer : getDeadSpectatorPlayers()) {
+            queuedRessurectedPlayers.add(deadPlayer.getUuid());
+        }
+
         TaskScheduler.scheduleTask(100, () -> {
             ServerPlayerEntity updatedPlayer = getPlayer();
             if (updatedPlayer != null) {
@@ -81,6 +86,7 @@ public class Necromancy extends Superpower {
                     WorldUtils.summonHarmlessLightning(deadPlayer);
                     ressurectedPlayers.add(deadPlayer.getUuid());
                     perPlayerRessurections.add(deadPlayer.getUuid());
+                    queuedRessurectedPlayers.remove(deadPlayer.getUuid());
                 }
             }
         });
@@ -102,6 +108,7 @@ public class Necromancy extends Superpower {
         }
         ressurectedPlayers.removeAll(deadAgain);
         perPlayerRessurections.removeAll(deadAgain);
+        queuedRessurectedPlayers.removeAll(deadAgain);
     }
 
     @Override
@@ -111,6 +118,7 @@ public class Necromancy extends Superpower {
             if (player != null && livesManager.isAlive(player)) {
                 perPlayerRessurections.remove(uuid);
                 ressurectedPlayers.remove(uuid);
+                queuedRessurectedPlayers.remove(uuid);
                 AttributeUtils.resetAttributesOnPlayerJoin(player);
             }
         }
@@ -131,5 +139,9 @@ public class Necromancy extends Superpower {
 
     public static boolean isRessurectedPlayer(ServerPlayerEntity player) {
         return ressurectedPlayers.contains(player.getUuid());
+    }
+
+    public static boolean preIsRessurectedPlayer(ServerPlayerEntity player) {
+        return queuedRessurectedPlayers.contains(player.getUuid()) || ressurectedPlayers.contains(player.getUuid());
     }
 }

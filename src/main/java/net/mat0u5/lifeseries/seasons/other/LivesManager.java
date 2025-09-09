@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.seasons.other;
 
+import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.superpower.Necromancy;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
@@ -234,6 +235,7 @@ public class LivesManager {
 
     public void setScore(String playerName, int lives) {
         ScoreboardUtils.setScore(ScoreHolder.fromName(playerName), SCOREBOARD_NAME, lives);
+        currentSeason.reloadAllPlayerTeams();
     }
 
     @Nullable
@@ -363,6 +365,13 @@ public class LivesManager {
             return true;
         }
         return false;
+    }
+
+    public boolean canChangeLivesNaturally(ServerPlayerEntity player) {
+        if (ONLY_TAKE_LIVES_IN_SESSION && currentSession != null && !AdvancedDeathsManager.hasQueuedDeath(player)) {
+            return currentSession.statusStarted();
+        }
+        return true;
     }
 
     public boolean canChangeLivesNaturally() {

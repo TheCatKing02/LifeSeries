@@ -13,7 +13,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class TextHud {
     public static void renderText(DrawContext context) {
@@ -106,6 +105,8 @@ public class TextHud {
         }
     }
 
+    public static long lastSessionSeconds = 0;
+    public static boolean sessionSecondChanged = false;
     public static int renderSessionTimer(MinecraftClient client, DrawContext context, int y) {
         if (!MainClient.SESSION_TIMER) return 0;
         if (System.currentTimeMillis()-MainClient.sessionTimeLastUpdated > 15000) return 0;
@@ -117,6 +118,14 @@ public class TextHud {
         else if (MainClient.sessionTime == SessionTimerStates.NOT_STARTED.getValue()) timerText = timerText.append(Text.of("§7Session has not started"));
         else {
             long remainingTime = roundTime(MainClient.sessionTime) - System.currentTimeMillis();
+            long seconds = remainingTime/1000;
+            if (lastSessionSeconds != seconds) {
+                lastSessionSeconds = seconds;
+                sessionSecondChanged = true;
+            }
+            else {
+                sessionSecondChanged = false;
+            }
             if (remainingTime < 0) timerText = timerText.append(Text.of("§7Session has ended"));
             else timerText = timerText.append(TextUtils.formatLoosely("§7Session {}", OtherUtils.formatTimeMillis(remainingTime)));
         }
@@ -129,14 +138,18 @@ public class TextHud {
         return -client.textRenderer.fontHeight-5;
     }
 
+    private static long limitedLifeTime = -1;
     public static int renderLimitedLifeTimer(MinecraftClient client, DrawContext context, int y) {
         if (MainClient.clientCurrentSeason != Seasons.LIMITED_LIFE) return 0;
         if (System.currentTimeMillis()-MainClient.limitedLifeTimeLastUpdated > 15000) return 0;
 
         MutableText timerText = Text.empty();
-        if (MainClient.limitedLifeLives == -1) timerText = timerText.append(TextUtils.formatLoosely("{}0:00:00", MainClient.limitedLifeTimerColor));
+        if (sessionSecondChanged || MainClient.sessionTime <= 0) {
+            limitedLifeTime = MainClient.limitedLifeLives;
+        }
+        if (limitedLifeTime == -1) timerText = timerText.append(TextUtils.formatLoosely("{}0:00:00", MainClient.limitedLifeTimerColor));
         else {
-            long remainingTime = roundTime(MainClient.limitedLifeLives*1000);
+            long remainingTime = limitedLifeTime * 1000;
 
             if (remainingTime < 0) timerText = timerText.append(TextUtils.formatLoosely("{}0:00:00", MainClient.limitedLifeTimerColor));
             else timerText = timerText.append(Text.of(MainClient.limitedLifeTimerColor+ OtherUtils.formatTimeMillis(remainingTime)));

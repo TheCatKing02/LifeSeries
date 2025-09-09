@@ -15,6 +15,7 @@ public abstract class AdvancedDeath {
         this.playerUUID = player.getUuid();
     }
 
+    protected abstract AdvancedDeaths getDeathType();
     protected abstract void tick(ServerPlayerEntity player);
     protected abstract void begin(ServerPlayerEntity player);
     protected abstract void end();

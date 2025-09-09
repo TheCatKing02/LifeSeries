@@ -213,9 +213,6 @@ public class NetworkHandlerClient {
 
         if (name == PacketNames.TOGGLE_TIMER) {
             String key = ClientConfig.SESSION_TIMER.key;
-            if (MainClient.clientCurrentSeason == Seasons.LIMITED_LIFE) {
-                key = ClientConfig.SESSION_TIMER_LIMITEDLIFE.key;
-            }
             MainClient.clientConfig.setProperty(key, String.valueOf(!MainClient.SESSION_TIMER));
             MainClient.reloadConfig();
         }

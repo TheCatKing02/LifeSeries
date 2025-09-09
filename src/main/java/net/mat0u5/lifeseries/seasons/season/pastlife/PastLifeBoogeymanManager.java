@@ -16,7 +16,7 @@ public class PastLifeBoogeymanManager extends BoogeymanManager {
             boogey.sendMessage(Text.of("§7by direct action to be cured of the curse."));
         });
         TaskScheduler.scheduleTask(220, () -> {
-            boogey.sendMessage(Text.of("§7If you fail, you will become a §cred name§7"));
+            boogey.sendMessage(Text.of("§7If you fail, you will become a §cred name§7."));
         });
         TaskScheduler.scheduleTask(280, () -> {
             boogey.sendMessage(Text.of("§7Other players may defend themselves."));
@@ -24,5 +24,10 @@ public class PastLifeBoogeymanManager extends BoogeymanManager {
         TaskScheduler.scheduleTask(340, () -> {
             boogey.sendMessage(Text.of("§7Voluntary sacrifices will not cure the curse."));
         });
+    }
+
+    @Override
+    public boolean afterFailedMessages() {
+        return true;
     }
 }

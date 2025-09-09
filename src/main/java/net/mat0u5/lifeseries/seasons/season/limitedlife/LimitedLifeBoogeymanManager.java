@@ -2,6 +2,7 @@ package net.mat0u5.lifeseries.seasons.season.limitedlife;
 
 import net.mat0u5.lifeseries.seasons.boogeyman.Boogeyman;
 import net.mat0u5.lifeseries.seasons.boogeyman.BoogeymanManager;
+import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.seasons.other.LivesManager;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
@@ -34,14 +35,9 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
                     if (currentLives <= LimitedLifeLivesManager.RED_TIME) continue;
 
                     if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
-                        PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. They have been dropped to their §cLast Life§7.", boogeyman.name));
+                        PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. Their time has been dropped to the next color.", boogeyman.name));
                     }
-                    if (currentLives > LimitedLifeLivesManager.RED_TIME && currentLives <= LimitedLifeLivesManager.YELLOW_TIME) {
-                        ScoreboardUtils.setScore(ScoreHolder.fromName(boogeyman.name), LivesManager.SCOREBOARD_NAME, LimitedLifeLivesManager.RED_TIME);
-                    }
-                    if (currentLives > LimitedLifeLivesManager.YELLOW_TIME) {
-                        ScoreboardUtils.setScore(ScoreHolder.fromName(boogeyman.name), LivesManager.SCOREBOARD_NAME, LimitedLifeLivesManager.YELLOW_TIME);
-                    }
+                    ScoreboardUtils.setScore(ScoreHolder.fromName(boogeyman.name), LivesManager.SCOREBOARD_NAME, LimitedLife.getNextLivesColorLives(currentLives));
                     continue;
                 }
                 playerFailBoogeyman(player);
@@ -52,18 +48,27 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
     public void playerFailBoogeyman(ServerPlayerEntity player) {
         if (!livesManager.isAlive(player)) return;
         if (livesManager.isOnLastLife(player, true)) return;
-        if (livesManager.isOnSpecificLives(player, 3, false)) {
-            livesManager.setPlayerLives(player, LimitedLifeLivesManager.YELLOW_TIME);
-        }
-        else if (livesManager.isOnSpecificLives(player, 2, false)) {
-            livesManager.setPlayerLives(player, LimitedLifeLivesManager.RED_TIME);
-        }
-        Text setTo = livesManager.getFormattedLives(player);
+        Integer currentLives = livesManager.getPlayerLives(player);
+        if (currentLives == null) return;
+        Integer setToLives = LimitedLife.getNextLivesColorLives(currentLives);
+        if (setToLives == null) return;
 
-        PlayerUtils.sendTitle(player,Text.of("§cYou have failed."), 20, 30, 20);
-        PlayerUtils.playSoundToPlayer(player, SoundEvent.of(Identifier.of("minecraft","lastlife_boogeyman_fail")));
-        if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
-            PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. Their time has been dropped to {}", player, setTo));
+        if (BOOGEYMAN_ADVANCED_DEATHS) {
+            PlayerUtils.sendTitle(player,Text.of("§cThe curse consumes you.."), 20, 30, 20);
+            if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
+                PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. They have been consumed by the curse.", player));
+            }
+            AdvancedDeathsManager.setPlayerLives(player, setToLives);
+        }
+        else {
+            livesManager.setPlayerLives(player, setToLives);
+            Text setTo = livesManager.getFormattedLives(player);
+
+            PlayerUtils.sendTitle(player,Text.of("§cYou have failed."), 20, 30, 20);
+            PlayerUtils.playSoundToPlayer(player, SoundEvent.of(Identifier.of("minecraft","lastlife_boogeyman_fail")));
+            if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
+                PlayerUtils.broadcastMessage(TextUtils.format("{}§7 failed to kill a player while being the §cBoogeyman§7. Their time has been dropped to {}", player, setTo));
+            }
         }
     }
 

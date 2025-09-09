@@ -1,7 +1,7 @@
 package net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.deaths;
 
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeath;
-import net.mat0u5.lifeseries.utils.other.OtherUtils;
+import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeaths;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.damage.DamageSource;
@@ -16,6 +16,11 @@ public class DeathLightning extends AdvancedDeath {
     private ServerWorld world;
     public DeathLightning(ServerPlayerEntity player) {
         super(player);
+    }
+
+    @Override
+    public AdvancedDeaths getDeathType() {
+        return AdvancedDeaths.LIGHTNING;
     }
 
     @Override

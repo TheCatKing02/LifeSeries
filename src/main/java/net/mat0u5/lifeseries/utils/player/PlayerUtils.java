@@ -300,7 +300,7 @@ public class PlayerUtils {
 
                 boolean hidePlayer = false;
 
-                if (!currentSeason.TAB_LIST_SHOW_DEAD_PLAYERS && livesManager.isAlive(receivingPlayer) && !livesManager.isAlive(player) && !WatcherManager.isWatcher(player) && !Necromancy.isRessurectedPlayer(player)) {
+                if (!currentSeason.TAB_LIST_SHOW_DEAD_PLAYERS && livesManager.isAlive(receivingPlayer) && !livesManager.isAlive(player) && !WatcherManager.isWatcher(player) && !Necromancy.preIsRessurectedPlayer(player)) {
                     hidePlayer = true;
                 }
                 if (!currentSeason.WATCHERS_IN_TAB && !WatcherManager.isWatcher(receivingPlayer) && WatcherManager.isWatcher(player)) {

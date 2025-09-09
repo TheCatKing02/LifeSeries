@@ -1,6 +1,7 @@
 package net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.deaths;
 
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeath;
+import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeaths;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -11,6 +12,11 @@ import net.minecraft.sound.SoundEvents;
 public class DeathWither extends AdvancedDeath {
     public DeathWither(ServerPlayerEntity player) {
         super(player);
+    }
+
+    @Override
+    public AdvancedDeaths getDeathType() {
+        return AdvancedDeaths.WITHER;
     }
 
     @Override
