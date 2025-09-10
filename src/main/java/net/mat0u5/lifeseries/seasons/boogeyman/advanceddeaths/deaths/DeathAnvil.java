@@ -37,7 +37,7 @@ public class DeathAnvil extends AdvancedDeath {
 
     @Override
     protected void tick(ServerPlayerEntity player) {
-        if (ticks > 100) {
+        if (ticks > 80) {
             if (playerPos == null) {
                 playerPos = player.getPos();
             }

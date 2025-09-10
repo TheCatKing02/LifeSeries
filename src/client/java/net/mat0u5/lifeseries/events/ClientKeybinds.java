@@ -9,13 +9,19 @@ import org.lwjgl.glfw.GLFW;
 
 public class ClientKeybinds {
     public static KeyBinding superpower;
+    public static KeyBinding openConfig;
+
     public static KeyBinding runCommand;
+
     public static void tick() {
         while (superpower != null && superpower.wasPressed()) {
             NetworkHandlerClient.pressSuperpowerKey();
         }
         while (runCommand != null && runCommand.wasPressed() && VersionControl.isDevVersion()) {
             NetworkHandlerClient.pressRunCommandKey();
+        }
+        while (openConfig != null && openConfig.wasPressed()) {
+            NetworkHandlerClient.pressOpenConfigKey();
         }
     }
     public static void registerKeybinds() {
@@ -28,11 +34,16 @@ public class ClientKeybinds {
                 /*GLFW.GLFW_KEY_R,
                  *///?}
                 "key.categories.lifeseries"));
+        openConfig = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.lifeseries.openconfig",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_UNKNOWN,
+                "key.categories.lifeseries"));
         if (VersionControl.isDevVersion()) {
             runCommand = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.lifeseries.runcommand",
                     InputUtil.Type.KEYSYM,
-                    GLFW.GLFW_KEY_LEFT_ALT,
+                    GLFW.GLFW_KEY_RIGHT_ALT,
                     "key.categories.lifeseries"));
         }
     }

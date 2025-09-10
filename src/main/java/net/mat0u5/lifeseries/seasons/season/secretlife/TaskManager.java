@@ -110,7 +110,6 @@ public class TaskManager {
             SecretLifeUsedTasks.deleteAllTasks(usedTasksConfig, hardTasks);
         }
 
-        //TODO test
         if (type == TaskTypes.EASY && !easyTasks.isEmpty()) {
             selectedTask = getRandomTask(owner, type, easyTasks);
             if (!selectedTask.isEmpty()) easyTasks.remove(selectedTask);

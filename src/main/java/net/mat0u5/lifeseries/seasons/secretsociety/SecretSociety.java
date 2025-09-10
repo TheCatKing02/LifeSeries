@@ -28,6 +28,7 @@ public class SecretSociety {
     public List<String> POSSIBLE_WORDS = new ArrayList<>(List.of("Hammer","Magnet","Throne","Gravity","Puzzle","Spiral","Pivot","Flare"));
     public int KILL_COUNT = 2;
     public int PUNISHMENT_LIVES = -2;
+    public boolean SOUND_ONLY_MEMBERS = false;
 
     public static final int INITIATE_MESSAGE_DELAYS = 15*20;
     public List<SocietyMember> members = new ArrayList<>();
@@ -47,6 +48,7 @@ public class SecretSociety {
         START_TIME = seasonConfig.SECRET_SOCIETY_START_TIME.get(seasonConfig);
         KILL_COUNT = seasonConfig.SECRET_SOCIETY_KILLS_REQUIRED.get(seasonConfig);
         PUNISHMENT_LIVES = seasonConfig.SECRET_SOCIETY_PUNISHMENT_LIVES.get(seasonConfig);
+        SOUND_ONLY_MEMBERS = seasonConfig.SECRET_SOCIETY_SOUND_ONLY_MEMBERS.get(seasonConfig);
 
         FORCE_MEMBERS.clear();
         IGNORE_MEMBERS.clear();
@@ -126,7 +128,9 @@ public class SecretSociety {
         memberPlayers.forEach(this::addMember);
         SessionTranscript.societyMembersChosen(memberPlayers);
 
-        PlayerUtils.playSoundToPlayers(nonMemberPlayers, SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
+        if (!SOUND_ONLY_MEMBERS) {
+            PlayerUtils.playSoundToPlayers(nonMemberPlayers, SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
+        }
         PlayerUtils.playSoundToPlayers(memberPlayers, SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
         PlayerUtils.sendTitleToPlayers(memberPlayers, Text.of("§cThe Society calls"), 0, 30, 0);
 
@@ -315,7 +319,12 @@ public class SecretSociety {
         societyStarted = false;
         societyEnded = true;
         SessionTranscript.societyEnded();
-        PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
+        if (SOUND_ONLY_MEMBERS) {
+            PlayerUtils.playSoundToPlayers(getMembers(), SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
+        }
+        else {
+            PlayerUtils.playSoundToPlayers(PlayerUtils.getAllPlayers(), SoundEvent.of(Identifier.of("minecraft","secretlife_task")));
+        }
     }
 
     public void endSuccess() {

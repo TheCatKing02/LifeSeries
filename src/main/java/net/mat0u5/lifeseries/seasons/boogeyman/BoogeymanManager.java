@@ -2,6 +2,7 @@ package net.mat0u5.lifeseries.seasons.boogeyman;
 
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.seasons.other.LivesManager;
+import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.session.SessionAction;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
@@ -94,7 +95,11 @@ public class BoogeymanManager {
 
     public boolean isBoogeymanThatCanBeCured(ServerPlayerEntity player, ServerPlayerEntity victim) {
         Boogeyman boogeyman = getBoogeyman(player);
-        return boogeyman != null && !boogeyman.cured && !boogeyman.failed && !livesManager.isOnLastLife(victim, true);
+        if (boogeyman == null) return false;
+        if (boogeyman.cured) return false;
+        if (boogeyman.failed) return false;
+        if (livesManager.isOnLastLife(victim, true)) return false;
+        return true;
     }
 
     public Boogeyman getBoogeyman(ServerPlayerEntity player) {
@@ -155,10 +160,6 @@ public class BoogeymanManager {
         if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
             PlayerUtils.broadcastMessage(TextUtils.format("{}§7 is cured of the Boogeyman curse!", player));
         }
-        if (BOOGEYMAN_INFINITE) {
-            boogeymen.remove(boogeyman);
-            TaskScheduler.scheduleTask(100, this::chooseNewBoogeyman);
-        }
     }
 
     public void chooseNewBoogeyman() {
@@ -206,6 +207,7 @@ public class BoogeymanManager {
     }
     public void chooseBoogeymen(List<ServerPlayerEntity> allowedPlayers, BoogeymanRollType rollType) {
         if (!BOOGEYMAN_ENABLED) return;
+        allowedPlayers.removeIf(this::isBoogeyman);
         showRolling(allowedPlayers);
         TaskScheduler.scheduleTask(180, () -> boogeymenChooseRandom(allowedPlayers, rollType));
     }
@@ -238,6 +240,8 @@ public class BoogeymanManager {
         if (!BOOGEYMAN_ENABLED) return;
         if (BOOGEYMAN_AMOUNT_MAX <= 0) return;
         if (BOOGEYMAN_AMOUNT_MAX < BOOGEYMAN_AMOUNT_MIN) return;
+        allowedPlayers.removeIf(this::isBoogeyman);
+        if (allowedPlayers.isEmpty()) return;
 
         List<ServerPlayerEntity> normalPlayers = new ArrayList<>();
         List<ServerPlayerEntity> boogeyPlayers = new ArrayList<>();
@@ -249,11 +253,7 @@ public class BoogeymanManager {
         else {
             // Infinite mode, just pick one from the allowed players
             Collections.shuffle(allowedPlayers);
-            for (ServerPlayerEntity player : allowedPlayers) {
-                if (isBoogeyman(player)) continue;
-                boogeyPlayers.add(player);
-                break;
-            }
+            boogeyPlayers.add(allowedPlayers.getFirst());
         }
 
         for (ServerPlayerEntity player : allowedPlayers) {
@@ -302,11 +302,8 @@ public class BoogeymanManager {
     }
 
     public List<ServerPlayerEntity> getAllowedBoogeyPlayers() {
-        List<ServerPlayerEntity> result = new ArrayList<>();
-        for (ServerPlayerEntity player : livesManager.getNonRedPlayers()) {
-            if (isBoogeyman(player)) continue;
-            result.add(player);
-        }
+        List<ServerPlayerEntity> result = new ArrayList<>(livesManager.getNonRedPlayers());
+        result.removeIf(this::isBoogeyman);
         return result;
     }
 
@@ -332,7 +329,7 @@ public class BoogeymanManager {
         for (Boogeyman boogeyman : new ArrayList<>(boogeymen)) {
             if (boogeyman.died) continue;
 
-            if (!boogeyman.cured) {
+            if (!boogeyman.cured && !boogeyman.failed) {
                 ServerPlayerEntity player = PlayerUtils.getPlayer(boogeyman.uuid);
                 if (player == null) {
                     if (BOOGEYMAN_ANNOUNCE_OUTCOME) {
@@ -375,11 +372,6 @@ public class BoogeymanManager {
 
         boogeyman.failed = true;
         boogeyman.cured = false;
-
-        if (BOOGEYMAN_INFINITE) {
-            boogeymen.remove(boogeyman);
-            TaskScheduler.scheduleTask(100, this::chooseNewBoogeyman);
-        }
         return true;
     }
 
@@ -438,19 +430,30 @@ public class BoogeymanManager {
         if (!BOOGEYMAN_ENABLED) return;
         for (Boogeyman boogeyman : boogeymen) {
             boogeyman.tick();
+            infiniteBoogeymenTick(boogeyman);
             autoFailTick(boogeyman);
             failedMessagesTick(boogeyman);
         }
     }
 
+    public void infiniteBoogeymenTick(Boogeyman boogeyman) {
+        if (!BOOGEYMAN_INFINITE) return;
+        if (!currentSession.statusStarted()) return;
+        if (!boogeyman.failed && !boogeyman.cured && !boogeyman.died) return;
+        boogeymen.remove(boogeyman);
+        TaskScheduler.scheduleTask(100, this::chooseNewBoogeyman);
+    }
+
     public void autoFailTick(Boogeyman boogeyman) {
+        if (!BOOGEYMAN_INFINITE) return;
         if (!currentSession.statusStarted()) return;
         if (boogeyman.failed) return;
         if (boogeyman.cured) return;
         if (boogeyman.died) return;
 
         int boogeymanTime = boogeyman.ticks / 20;
-        if (boogeymanTime >= (BOOGEYMAN_INFINITE_AUTO_FAIL - 5*60) && boogeymanTime > 10) {
+        int warningTime = (BOOGEYMAN_INFINITE_AUTO_FAIL - 5*60);
+        if (boogeymanTime >= warningTime && warningTime >= 0) {
             if (!warningAutoFail.contains(boogeyman.uuid)) {
                 ServerPlayerEntity player = boogeyman.getPlayer();
                 if (player != null) {
@@ -494,6 +497,10 @@ public class BoogeymanManager {
         if (!BOOGEYMAN_ADVANCED_DEATHS) {
             delay = 140;
         }
+        if (currentSeason.getSeason() == Seasons.LIMITED_LIFE) {
+            delay = 140;
+        }
+
         TaskScheduler.scheduleTask(delay, () -> {
             PlayerUtils.sendTitle(player, Text.of("§cYou lives are taken..."), 20, 80, 20);
         });

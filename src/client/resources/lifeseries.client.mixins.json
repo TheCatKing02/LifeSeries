@@ -27,6 +27,7 @@
   ],
   "mixins": [
     "EntityMixin",
+    "GameRendererMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin"
   ]

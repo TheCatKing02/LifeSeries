@@ -91,6 +91,7 @@ public class PlayerUtils {
 
     public static void playSoundToPlayers(Collection<ServerPlayerEntity> players, SoundEvent sound, SoundCategory soundCategory, float volume, float pitch) {
         for (ServerPlayerEntity player : players) {
+            if (player == null) continue;
             player.playSoundToPlayer(sound, soundCategory, volume, pitch);
         }
     }
@@ -473,7 +474,7 @@ public class PlayerUtils {
         player.setHealth(0.0001f);
         damage(player, source, 10);
         if (player.isAlive()) {
-            //?if <= 1.21 {
+            //? if <= 1.21 {
             player.kill();
             //?} else {
             /*player.kill(getServerWorld(player));

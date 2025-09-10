@@ -218,6 +218,10 @@ public class DefaultConfigValues {
             "secret_society_kills_required", 2, "global.society[new]",
             "Kills Required To Succeed", "The number of kills the Members need to succeed in the Society."
     );
+    public final ConfigFileEntry<Boolean> SECRET_SOCIETY_SOUND_ONLY_MEMBERS = new ConfigFileEntry<>(
+            "secret_society_sound_only_members", false, "global.society[new]",
+            "Whisper Sound Only For Members", "Makes the whispering sound only play for Society Members, thus making the Society fully secret."
+    );
 
     public final ConfigFileEntry<Boolean> WATCHERS_IN_TAB = new ConfigFileEntry<>(
             "watchers_in_tab", true, "global.watchers",

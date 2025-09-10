@@ -25,6 +25,7 @@ public class UpdateChecker {
     public static boolean updateAvailable = false;
     public static String versionName;
     public static String versionDescription;
+    public static String changelogLink = null;
     public static int version;
     public static final boolean TEST_UPDATE_FAKE = false;
     public static final boolean TEST_UPDATE_LAST = false;
@@ -63,8 +64,8 @@ public class UpdateChecker {
                         updateAvailable = true;
                         majorUpdateAvailable = true;
                         versionName = name;
-                        versionDescription = formatDescription(json.get("body").getAsString());
                         version = updateVersionNumber;
+                        versionDescription = formatDescription(json.get("body").getAsString());
                     }
 
 
@@ -115,8 +116,8 @@ public class UpdateChecker {
                                 Main.LOGGER.info("New minor version found: "+name);
                                 updateAvailable = true;
                                 versionName = name;
-                                if (!majorUpdateAvailable) versionDescription = formatDescription(json.get("body").getAsString());
                                 version = updateVersionNumber;
+                                if (!majorUpdateAvailable) versionDescription = formatDescription(json.get("body").getAsString());
                             }
                         }catch(Exception e) {
                             Main.LOGGER.error(TextUtils.formatString("Error while parsing version number for update: {} - {}", name, e.getMessage()));
@@ -136,11 +137,36 @@ public class UpdateChecker {
         });
     }
 
+    public static String getChangelogLink() {
+        if (changelogLink != null) return changelogLink;
+        return "https://github.com/Mat0u5/LifeSeries/blob/main/docs/changelogs/"+versionName+".md";
+    }
+
     public static String formatDescription(String rawDesctiption) {
-        if (rawDesctiption.contains("`")) {
-            String newDesctiption = rawDesctiption.split("`")[0];
+        if (rawDesctiption.contains("~~")) {
+            String[] split = rawDesctiption.split("~~");
+            String newDesctiption = split[0];
             if (!newDesctiption.isEmpty()) {
                 rawDesctiption = newDesctiption;
+            }
+            if (split.length >= 2) {
+                for (int i = 1; i < split.length; i++) {
+                    try {
+                        String line = split[i].trim();
+                        if (line.startsWith("changelogLink=")) {
+                            changelogLink = line.replace("changelogLink=","");
+                        }
+                        if (line.startsWith("versionName=")) {
+                            versionName = line.replace("versionName=","");
+                        }
+                        if (line.startsWith("versionDescription=")) {
+                            rawDesctiption = line.replace("versionDescription=","");
+                        }
+                        if (line.startsWith("version=")) {
+                            version = Integer.parseInt(line.replace("version=",""));
+                        }
+                    }catch(Exception ignored) {}
+                }
             }
         }
         return rawDesctiption;

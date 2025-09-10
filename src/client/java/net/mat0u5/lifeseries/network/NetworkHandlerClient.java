@@ -366,6 +366,9 @@ public class NetworkHandlerClient {
     public static void pressRunCommandKey() {
         ClientUtils.runCommand(MainClient.RUN_COMMAND);
     }
+    public static void pressOpenConfigKey() {
+        ClientUtils.runCommand("/lifeseries config");
+    }
 
     public static void sendStringPacket(PacketNames name, String value) {
         ClientPlayNetworking.send(new StringPayload(name.getName(), value));

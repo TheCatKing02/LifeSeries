@@ -22,13 +22,23 @@ import static net.mat0u5.lifeseries.Main.*;
 
 public class LimitedLifeBoogeymanManager extends BoogeymanManager {
     @Override
+    public boolean isBoogeymanThatCanBeCured(ServerPlayerEntity player, ServerPlayerEntity victim) {
+        Boogeyman boogeyman = getBoogeyman(player);
+        if (boogeyman == null) return false;
+        if (boogeyman.cured) return false;
+        if (boogeyman.failed) return false;
+        if (livesManager.isOnLastLife(victim, true) && !livesManager.isOnLastLife(player, true)) return false;
+        return true;
+    }
+
+    @Override
     public void sessionEnd() {
         if (!BOOGEYMAN_ENABLED) return;
         if (server == null) return;
-        for (Boogeyman boogeyman : boogeymen) {
+        for (Boogeyman boogeyman : new ArrayList<>(boogeymen)) {
             if (boogeyman.died) continue;
 
-            if (!boogeyman.cured) {
+            if (!boogeyman.cured && !boogeyman.failed) {
                 ServerPlayerEntity player = PlayerUtils.getPlayer(boogeyman.uuid);
                 if (player == null) {
                     Integer currentLives = ScoreboardUtils.getScore(ScoreHolder.fromName(boogeyman.name), LivesManager.SCOREBOARD_NAME);
@@ -75,10 +85,8 @@ public class LimitedLifeBoogeymanManager extends BoogeymanManager {
             }
         }
 
-        if (BOOGEYMAN_INFINITE) {
-            boogeymen.remove(boogeyman);
-            TaskScheduler.scheduleTask(100, this::chooseNewBoogeyman);
-        }
+        boogeyman.failed = true;
+        boogeyman.cured = false;
         return true;
     }
 

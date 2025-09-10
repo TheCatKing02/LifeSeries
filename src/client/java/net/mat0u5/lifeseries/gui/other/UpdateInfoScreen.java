@@ -4,6 +4,7 @@ import net.mat0u5.lifeseries.gui.DefaultScreen;
 import net.mat0u5.lifeseries.render.RenderUtils;
 import net.mat0u5.lifeseries.utils.TextColors;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.mat0u5.lifeseries.utils.versions.UpdateChecker;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -32,7 +33,7 @@ public class UpdateInfoScreen extends DefaultScreen {
         );
         this.addDrawableChild(
                 ButtonWidget.builder(Text.literal("Full Changelog").withColor(TextColors.PASTEL_WHITE), btn -> {
-                            Util.getOperatingSystem().open("https://github.com/Mat0u5/LifeSeries/blob/main/docs/changelogs/"+versionName+".md");
+                            Util.getOperatingSystem().open(UpdateChecker.getChangelogLink());
                         })
                         .position(endX - 80 - 8, endY - 28)
                         .size(80, 20)

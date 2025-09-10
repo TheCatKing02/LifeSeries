@@ -106,9 +106,11 @@ public class TextHud {
     }
 
     public static long lastSessionSeconds = 0;
+    public static long sessionSeconds = -1;
     public static boolean sessionSecondChanged = true;
     public static int renderSessionTimer(MinecraftClient client, DrawContext context, int y) {
         sessionSecondChanged = true;
+        sessionSeconds = -1;
         if (!MainClient.SESSION_TIMER) return 0;
         if (System.currentTimeMillis()-MainClient.sessionTimeLastUpdated > 15000) return 0;
         if (MainClient.sessionTime == SessionTimerStates.OFF.getValue()) return 0;
@@ -119,9 +121,9 @@ public class TextHud {
         else if (MainClient.sessionTime == SessionTimerStates.NOT_STARTED.getValue()) timerText = timerText.append(Text.of("§7Session has not started"));
         else {
             long remainingTime = roundTime(MainClient.sessionTime) - System.currentTimeMillis();
-            long seconds = remainingTime/1000;
-            if (lastSessionSeconds != seconds) {
-                lastSessionSeconds = seconds;
+            sessionSeconds = (int) Math.ceil(remainingTime / 1000.0);
+            if (lastSessionSeconds != sessionSeconds) {
+                lastSessionSeconds = sessionSeconds;
             }
             else {
                 sessionSecondChanged = false;
@@ -150,7 +152,14 @@ public class TextHud {
         }
         if (limitedLifeTime == -1) timerText = timerText.append(TextUtils.formatLoosely("{}0:00:00", MainClient.limitedLifeTimerColor));
         else {
-            long remainingTime = limitedLifeTime * 1000;
+            long currentSeconds = limitedLifeTime;
+            if (sessionSeconds != -1 && currentSeconds > 60) {
+                long secondsDifference = (sessionSeconds % 60) - (currentSeconds % 60);
+                if (Math.abs(secondsDifference) <= 5) {
+                    currentSeconds += secondsDifference;
+                }
+            }
+            long remainingTime = currentSeconds * 1000;
 
             if (remainingTime < 0) timerText = timerText.append(TextUtils.formatLoosely("{}0:00:00", MainClient.limitedLifeTimerColor));
             else timerText = timerText.append(Text.of(MainClient.limitedLifeTimerColor+ OtherUtils.formatTimeMillis(remainingTime)));
