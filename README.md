@@ -16,12 +16,12 @@ The mod is *server-side required* and optional (**but very much recommended**) o
 Join the [Discord](https://discord.gg/QWJxfb4zQZ) or make an issue if you want to submit any bugs or give suggestions.
 ## Features
 
-This mod contains every single season of the Life Series, so that's Third Life, Last Life, Double Life, Limited Life, Secret Life, and **even Wild Life**!<br>
+This mod contains every single season of the Life Series, so that's Third Life, Last Life, Double Life, Limited Life, Secret Life, Wild Life and Past Life.<br>
 It also contains april fools seasons, Real Life and Simple Life.
 
-| Third Life | Last Life | Double Life | Limited Life | Secret Life | **Wild Life** |
-|------------|-----------|-------------|--------------|-------------|---------------|
-| Completed  | Completed | Completed   | Completed    | Completed   | Completed     |
+| Third Life | Last Life | Double Life | Limited Life | Secret Life | **Wild Life** | Past Life |
+|------------|-----------|-------------|--------------|-------------|---------------|-----------|
+| Completed  | Completed | Completed   | Completed    | Completed   | Completed     | Completed |
 
 ## Wild Life
 This is the *only* full recreation of Wild Life that exists publicly, and it took a lot of work to make, so enjoy!<br>
