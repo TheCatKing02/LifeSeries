@@ -33,6 +33,9 @@ public class TextColors {
     public static int DARK_GRAY = rgb(64, 64, 64);
     public static int LIGHT_BLACK = rgb(32, 32, 32);
 
+    public static int GUI_BACKGROUND = rgb(198, 198, 198);
+    public static int GUI_GRAY = rgb(85, 85, 85);
+
     public static int rgb(int red, int green, int blue) {
         return argb(255, red, green, blue);
     }

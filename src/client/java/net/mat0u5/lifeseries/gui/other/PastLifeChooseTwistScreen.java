@@ -1,16 +1,16 @@
 package net.mat0u5.lifeseries.gui.other;
 
-import net.mat0u5.lifeseries.gui.DefaultSmallScreen;
+import net.mat0u5.lifeseries.gui.DefaultScreen;
 import net.mat0u5.lifeseries.render.RenderUtils;
 import net.mat0u5.lifeseries.utils.ClientUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
-public class PastLifeChooseTwistScreen extends DefaultSmallScreen {
+public class PastLifeChooseTwistScreen extends DefaultScreen {
 
     public PastLifeChooseTwistScreen() {
-        super(Text.of("Choose Twist"), 1.6f, 1.2f);
+        super(Text.of("Choose Twist"), 240, 80);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class PastLifeChooseTwistScreen extends DefaultSmallScreen {
                             this.close();
                             ClientUtils.runCommand("/pastlife boogeyman");
                         })
-                        .position(firstX - 50, startY + 24)
+                        .position(firstX - 50, startY + 27)
                         .size(100, 20)
                         .build()
         );
@@ -35,7 +35,7 @@ public class PastLifeChooseTwistScreen extends DefaultSmallScreen {
                             this.close();
                             ClientUtils.runCommand("/pastlife society");
                         })
-                        .position(secondsX - 50, startY + 24)
+                        .position(secondsX - 50, startY + 27)
                         .size(100, 20)
                         .build()
         );
@@ -45,7 +45,7 @@ public class PastLifeChooseTwistScreen extends DefaultSmallScreen {
                             this.close();
                             ClientUtils.runCommand("/pastlife pickRandom");
                         })
-                        .position(firstX - 50, startY + 49)
+                        .position(firstX - 50, startY + 52)
                         .size(100, 20)
                         .build()
         );
@@ -54,7 +54,7 @@ public class PastLifeChooseTwistScreen extends DefaultSmallScreen {
                 ButtonWidget.builder(Text.literal("No Twist"), btn -> {
                             this.close();
                         })
-                        .position(secondsX - 50, startY + 49)
+                        .position(secondsX - 50, startY + 52)
                         .size(100, 20)
                         .build()
         );

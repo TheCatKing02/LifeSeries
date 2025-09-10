@@ -19,7 +19,7 @@ public class PastLifeInfoScreen extends DefaultScreen {
             "§8Past Life is still fully playable here (with this mod), it just won't have the different versions aspect.";
 
     protected PastLifeInfoScreen() {
-        super(Text.of("Past Life Info"), 1.3f, 1.2f);
+        super(Text.of("Past Life Info"), 410, 210);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PastLifeInfoScreen extends DefaultScreen {
                             this.close();
                             Util.getOperatingSystem().open("https://modrinth.com/mod/past-life");
                         })
-                        .position(centerX - 90, endY - 30)
+                        .position(centerX - 90, endY - 25)
                         .size(180, 20)
                         .build()
         );
@@ -41,7 +41,7 @@ public class PastLifeInfoScreen extends DefaultScreen {
                 ButtonWidget.builder(Text.literal("Close"), btn -> {
                             this.close();;
                         })
-                        .position(endX - 70, endY - 30)
+                        .position(endX - 70, endY - 25)
                         .size(60, 20)
                         .build()
         );
@@ -49,7 +49,7 @@ public class PastLifeInfoScreen extends DefaultScreen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY) {
-        RenderUtils.drawTextCenterScaled(context, this.textRenderer, Text.of("§0Past Life"), centerX, startY + 10, 2f, 2f);
-        RenderUtils.drawTextLeftWrapLines(context, this.textRenderer, TextColors.PASTEL_RED, Text.of(pastLifeInfoText), startX + 15, startY + 30, BG_WIDTH-30, 6);
+        RenderUtils.drawTextCenterScaled(context, this.textRenderer, Text.of("§0Past Life"), centerX, startY + 7, 2f, 2f);
+        RenderUtils.drawTextLeftWrapLines(context, this.textRenderer, TextColors.PASTEL_RED, Text.of(pastLifeInfoText), startX + 12, startY + 30, BG_WIDTH-30, 6);
     }
 }

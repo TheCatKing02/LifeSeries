@@ -1,6 +1,6 @@
 package net.mat0u5.lifeseries.gui.seasons;
 
-import net.mat0u5.lifeseries.gui.DefaultSmallScreen;
+import net.mat0u5.lifeseries.gui.DefaultScreen;
 import net.mat0u5.lifeseries.network.NetworkHandlerClient;
 import net.mat0u5.lifeseries.render.RenderUtils;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseExtraSeasonScreen extends DefaultSmallScreen {
+public class ChooseExtraSeasonScreen extends DefaultScreen {
 
     public static boolean hasSelectedBefore = false;
     private List<ChooseSeasonScreen.SeasonRegion> seasonRegions = new ArrayList<>();
@@ -23,7 +23,7 @@ public class ChooseExtraSeasonScreen extends DefaultSmallScreen {
     private static final int LOGO_SIZE = (int) (LOGO_TEXTURE_SIZE * LOGO_SCALE);
 
     public ChooseExtraSeasonScreen(boolean hasSelectedBefore) {
-        super(Text.literal("Choose April Season Screen"), 1.3f, 1.6f);
+        super(Text.literal("Choose April Season Screen"), 190, 100);
         this.hasSelectedBefore = hasSelectedBefore;
     }
 
@@ -41,7 +41,7 @@ public class ChooseExtraSeasonScreen extends DefaultSmallScreen {
 
         List<List<Seasons>> rows = ChooseSeasonScreen.splitIntoRows(seasons, ROWS);
         int currentRegionIndex = 1;
-        int currentY = startY + 35;
+        int currentY = startY + 30;
         for (List<Seasons> row : rows) {
             int columns = row.size();
             int currentX = startX + (BG_WIDTH - (LOGO_SIZE * columns + PADDING * (columns-1))) / 2;
@@ -67,7 +67,7 @@ public class ChooseExtraSeasonScreen extends DefaultSmallScreen {
         int textWidth = textRenderer.getWidth(goBack);
         int textHeight = textRenderer.fontHeight;
 
-        Rectangle rect = new Rectangle(startX+9, endY-11-textHeight, textWidth+1, textHeight+1);
+        Rectangle rect = new Rectangle(startX+6, endY-8-textHeight, textWidth+1, textHeight+1);
         if (x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height) {
             return -1;
         }
@@ -114,13 +114,13 @@ public class ChooseExtraSeasonScreen extends DefaultSmallScreen {
         }
 
         String prompt = "Select the season you want to play.";
-        RenderUtils.drawTextCenter(context, this.textRenderer, Text.of(prompt), centerX, startY + 20);
+        RenderUtils.drawTextCenter(context, this.textRenderer, Text.of(prompt), centerX, startY + 15);
 
         Text goBack = Text.of("Go Back");
         int textWidth = textRenderer.getWidth(goBack);
         int textHeight = textRenderer.fontHeight;
 
-        Rectangle rect = new Rectangle(startX+9, endY-11-textHeight, textWidth+1, textHeight+1);
+        Rectangle rect = new Rectangle(startX+6, endY-8-textHeight, textWidth+1, textHeight+1);
 
         context.fill(rect.x - 1, rect.y - 1, rect.x + rect.width + 1, rect.y, DEFAULT_TEXT_COLOR); // top border
         context.fill(rect.x - 1, rect.y + rect.height, rect.x + rect.width + 2, rect.y + rect.height + 2, DEFAULT_TEXT_COLOR); // bottom

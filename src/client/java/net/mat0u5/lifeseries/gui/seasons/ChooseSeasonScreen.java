@@ -25,7 +25,7 @@ public class ChooseSeasonScreen extends DefaultScreen {
     private List<SeasonRegion> seasonRegions = new ArrayList<>();
 
     public ChooseSeasonScreen(boolean hasSelectedBefore) {
-        super(Text.literal("Choose Season Screen"), 1f, 1.03f);
+        super(Text.literal("Choose Season Screen"), 320, 185);
         this.hasSelectedBefore = hasSelectedBefore;
     }
 

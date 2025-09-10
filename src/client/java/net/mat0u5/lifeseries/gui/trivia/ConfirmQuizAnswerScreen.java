@@ -1,18 +1,18 @@
 package net.mat0u5.lifeseries.gui.trivia;
 
 import net.mat0u5.lifeseries.features.Trivia;
-import net.mat0u5.lifeseries.gui.DefaultSmallScreen;
+import net.mat0u5.lifeseries.gui.DefaultScreen;
 import net.mat0u5.lifeseries.render.RenderUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
-public class ConfirmQuizAnswerScreen extends DefaultSmallScreen {
+public class ConfirmQuizAnswerScreen extends DefaultScreen {
     private final QuizScreen parent;
     private final int answerIndex;
 
     public ConfirmQuizAnswerScreen(QuizScreen parent, int answerIndex) {
-        super(Text.literal("Confirm Answer"));
+        super(Text.literal("Confirm Answer"), 150, 60);
         this.parent = parent;
         this.answerIndex = answerIndex;
     }
@@ -48,7 +48,7 @@ public class ConfirmQuizAnswerScreen extends DefaultSmallScreen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY) {
-        RenderUtils.drawTextCenter(context, textRenderer, Text.of("Submit answer?"), centerX, startY + 20);
+        RenderUtils.drawTextCenter(context, textRenderer, Text.of("Submit answer?"), centerX, startY + 10);
     }
 
     @Override

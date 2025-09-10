@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 public class ChooseWildcardScreen extends DefaultScreen {
 
     public ChooseWildcardScreen() {
-        super(Text.literal("Choose Wildcard Screen"));
+        super(Text.literal("Choose Wildcard Screen"), 230, 150);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"size_shifting");
                         })
-                        .position(oneThirdX - 40, startY  + 45)
+                        .position(oneThirdX - 50, startY  + 40)
                         .size(80, 20)
                         .build()
         );
@@ -35,7 +35,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"hunger");
                         })
-                        .position(oneThirdX - 40, startY  + 75)
+                        .position(oneThirdX - 50, startY  + 65)
                         .size(80, 20)
                         .build()
         );
@@ -44,7 +44,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"snails");
                         })
-                        .position(oneThirdX - 40, startY  + 105)
+                        .position(oneThirdX - 50, startY  + 90)
                         .size(80, 20)
                         .build()
         );
@@ -53,7 +53,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"time_dilation");
                         })
-                        .position(oneThirdX - 40, startY  + 135)
+                        .position(oneThirdX - 50, startY  + 115)
                         .size(80, 20)
                         .build()
         );
@@ -68,7 +68,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"trivia");
                         })
-                        .position(twoThirdX - 40, startY  + 45)
+                        .position(twoThirdX - 30, startY  + 40)
                         .size(80, 20)
                         .build()
         );
@@ -78,7 +78,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"mob_swap");
                         })
-                        .position(twoThirdX - 40, startY  + 75)
+                        .position(twoThirdX - 30, startY  + 65)
                         .size(80, 20)
                         .build()
         );
@@ -87,7 +87,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"superpowers");
                         })
-                        .position(twoThirdX - 40, startY  + 105)
+                        .position(twoThirdX - 30, startY  + 90)
                         .size(80, 20)
                         .build()
         );
@@ -96,7 +96,7 @@ public class ChooseWildcardScreen extends DefaultScreen {
                             this.close();
                             NetworkHandlerClient.sendStringPacket(PacketNames.SELECTED_WILDCARD,"callback");
                         })
-                        .position(twoThirdX - 40, startY  + 135)
+                        .position(twoThirdX - 30, startY  + 115)
                         .size(80, 20)
                         .build()
         );

@@ -15,7 +15,7 @@ public class UpdateInfoScreen extends DefaultScreen {
     private String description;
 
     public UpdateInfoScreen(String versionName, String description) {
-        super(Text.of("New Life Series Update"), 1.3f, 1.3f);
+        super(Text.of("New Life Series Update"), 420, 230);
         this.versionName = versionName;
         this.description = description.replace("\r","");
     }
@@ -27,7 +27,7 @@ public class UpdateInfoScreen extends DefaultScreen {
                 ButtonWidget.builder(Text.literal("Join Discord").withColor(TextColors.PASTEL_WHITE),btn -> {
                             Util.getOperatingSystem().open("https://discord.gg/QWJxfb4zQZ");
                         })
-                        .position(startX + 8, endY - 28)
+                        .position(startX + 5, endY - 25)
                         .size(80, 20)
                         .build()
         );
@@ -35,7 +35,7 @@ public class UpdateInfoScreen extends DefaultScreen {
                 ButtonWidget.builder(Text.literal("Full Changelog").withColor(TextColors.PASTEL_WHITE), btn -> {
                             Util.getOperatingSystem().open(UpdateChecker.getChangelogLink());
                         })
-                        .position(endX - 80 - 8, endY - 28)
+                        .position(endX - 80 - 5, endY - 25)
                         .size(80, 20)
                         .build()
         );
@@ -44,7 +44,7 @@ public class UpdateInfoScreen extends DefaultScreen {
                             this.close();
                             Util.getOperatingSystem().open("https://modrinth.com/mod/life-series"); //Same as having a text with a click event, but that doesnt work in GUIs
                         })
-                        .position(centerX - 85, endY - 28)
+                        .position(centerX - 85, endY - 25)
                         .size(170, 20)
                         .build()
         );
@@ -52,8 +52,8 @@ public class UpdateInfoScreen extends DefaultScreen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY) {
-        RenderUtils.drawTextCenter(context, this.textRenderer, Text.of("§0§nA new Life Series mod update is available!"), centerX, startY + 10);
-        RenderUtils.drawTextLeft(context, this.textRenderer, TextUtils.formatLoosely("§0§nChangelog in version §l{}§0:",versionName), startX + 10, startY + 25 + textRenderer.fontHeight);
-        RenderUtils.drawTextLeftWrapLines(context, this.textRenderer, DEFAULT_TEXT_COLOR, Text.of(description), startX + 10, startY + 30 + textRenderer.fontHeight*2, backgroundWidth-20, 5);
+        RenderUtils.drawTextCenter(context, this.textRenderer, Text.of("§0§nA new Life Series mod update is available!"), centerX, startY + 7);
+        RenderUtils.drawTextLeft(context, this.textRenderer, TextUtils.formatLoosely("§0§nChangelog in version §l{}§0:",versionName), startX + 7, startY + 25 + textRenderer.fontHeight);
+        RenderUtils.drawTextLeftWrapLines(context, this.textRenderer, DEFAULT_TEXT_COLOR, Text.of(description), startX + 7, startY + 30 + textRenderer.fontHeight*2, backgroundWidth-14, 5);
     }
 }

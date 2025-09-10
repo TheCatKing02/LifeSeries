@@ -1,6 +1,6 @@
 package net.mat0u5.lifeseries.gui.seasons;
 
-import net.mat0u5.lifeseries.gui.DefaultSmallScreen;
+import net.mat0u5.lifeseries.gui.DefaultScreen;
 import net.mat0u5.lifeseries.network.NetworkHandlerClient;
 import net.mat0u5.lifeseries.render.RenderUtils;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
@@ -11,12 +11,12 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
-public class ConfirmSeasonAnswerScreen extends DefaultSmallScreen {
+public class ConfirmSeasonAnswerScreen extends DefaultScreen {
     private final Screen parent;
     private final Seasons season;
 
     public ConfirmSeasonAnswerScreen(Screen parent, Seasons season) {
-        super(Text.literal("Confirm Answer"), 2.2f, 1.6f);
+        super(Text.literal("Confirm Answer"), 325, 110);
         this.parent = parent;
         this.season = season;
     }

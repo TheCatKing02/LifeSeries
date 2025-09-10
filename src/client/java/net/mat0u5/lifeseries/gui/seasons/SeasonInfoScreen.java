@@ -22,7 +22,7 @@ public class SeasonInfoScreen extends DefaultScreen {
     public static Seasons season;
 
     public SeasonInfoScreen(Seasons season) {
-        super(Text.literal("Season Info Screen"), 1.3f, 1.3f);
+        super(Text.literal("Season Info Screen"), 410, 230);
         this.season = season;
     }
 
@@ -31,8 +31,8 @@ public class SeasonInfoScreen extends DefaultScreen {
         // Background + images
         Identifier logo = season.getLogo();
         if (logo != null) {
-            RenderUtils.drawTextureScaled(context, logo, startX+10, endY - 64 - 5, 0, 0, 256, 256, 0.25f, 0.25f);
-            RenderUtils.drawTextureScaled(context, logo, endX - 64 - 10, endY - 64 - 5, 0, 0, 256, 256, 0.25f, 0.25f);
+            RenderUtils.drawTextureScaled(context, logo, startX + 5, endY - 64, 0, 0, 256, 256, 0.25f, 0.25f);
+            RenderUtils.drawTextureScaled(context, logo, endX - 64 - 5, endY - 64, 0, 0, 256, 256, 0.25f, 0.25f);
         }
 
         String seasonName = season.getName();
@@ -44,13 +44,13 @@ public class SeasonInfoScreen extends DefaultScreen {
         if (adminCommandsTextActual != null) {
             MutableText combined = adminCommandsText.copy().append(adminCommandsTextActual);
             if (textRenderer.getWidth(combined) < (endX - startX)) {
-                RenderUtils.drawTextLeft(context, this.textRenderer, combined, startX + 20, currentY);
+                RenderUtils.drawTextLeft(context, this.textRenderer, combined, startX + 15, currentY);
                 currentY += textRenderer.fontHeight + 5;
             }
             else {
-                RenderUtils.drawTextLeft(context, this.textRenderer, adminCommandsText, startX + 20, currentY);
+                RenderUtils.drawTextLeft(context, this.textRenderer, adminCommandsText, startX + 15, currentY);
                 currentY += textRenderer.fontHeight + 5;
-                RenderUtils.drawTextLeft(context, this.textRenderer, TextUtils.format("  {}", adminCommandsTextActual), startX + 20, currentY);
+                RenderUtils.drawTextLeft(context, this.textRenderer, TextUtils.format("  {}", adminCommandsTextActual), startX + 15, currentY);
                 currentY += textRenderer.fontHeight + 8;
             }
         }
@@ -60,31 +60,31 @@ public class SeasonInfoScreen extends DefaultScreen {
         if (commandsTextActual != null) {
             MutableText combined = commandsText.copy().append(commandsTextActual);
             if (textRenderer.getWidth(combined) < (endX - startX)) {
-                RenderUtils.drawTextLeft(context, this.textRenderer, combined, startX + 20, currentY);
+                RenderUtils.drawTextLeft(context, this.textRenderer, combined, startX + 15, currentY);
                 currentY += textRenderer.fontHeight + 10;
             }
             else {
-                RenderUtils.drawTextLeft(context, this.textRenderer, commandsText, startX + 20, currentY);
+                RenderUtils.drawTextLeft(context, this.textRenderer, commandsText, startX + 15, currentY);
                 currentY += textRenderer.fontHeight + 5;
-                RenderUtils.drawTextLeft(context, this.textRenderer, TextUtils.format("  {}", commandsTextActual), startX + 20, currentY);
+                RenderUtils.drawTextLeft(context, this.textRenderer, TextUtils.format("  {}", commandsTextActual), startX + 15, currentY);
                 currentY += textRenderer.fontHeight + 10;
             }
         }
 
         Text howToStart = Text.of("§0§nHow to start a session");
-        RenderUtils.drawTextLeftScaled(context, this.textRenderer, howToStart, startX + 20, currentY+3, 1.3f, 1.3f);
+        RenderUtils.drawTextLeftScaled(context, this.textRenderer, howToStart, startX + 15, currentY+3, 1.3f, 1.3f);
         currentY += textRenderer.fontHeight + 13;
 
         Text sessionTimer = Text.of("§8Run §3'/session timer set <time>'§8 to set the desired session time.");
-        RenderUtils.drawTextLeft(context, this.textRenderer, sessionTimer, startX + 20, currentY);
+        RenderUtils.drawTextLeft(context, this.textRenderer, sessionTimer, startX + 15, currentY);
         currentY += textRenderer.fontHeight + 5;
 
         Text sessionStart = Text.of("§8After that, run §3'/session start'§8 to start the session.");
-        RenderUtils.drawTextLeft(context, this.textRenderer, sessionStart, startX + 20, currentY);
+        RenderUtils.drawTextLeft(context, this.textRenderer, sessionStart, startX + 15, currentY);
         currentY += textRenderer.fontHeight + 15;
 
         Text configText = Text.of("§0§nRun §8§n'/lifeseries config'§0§n to open the Life Series configuration!");
-        RenderUtils.drawTextLeft(context, this.textRenderer, configText, startX + 20, currentY);
+        RenderUtils.drawTextLeft(context, this.textRenderer, configText, startX + 15, currentY);
         currentY += textRenderer.fontHeight + 5;
     }
 

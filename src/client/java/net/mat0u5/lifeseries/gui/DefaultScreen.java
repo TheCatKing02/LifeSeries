@@ -5,28 +5,17 @@ import net.mat0u5.lifeseries.utils.TextColors;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public abstract class DefaultScreen extends Screen {
-    private static final Identifier BACKGROUND_TEXTURE_LEFT = Identifier.of("lifeseries","textures/gui/gui_left.png");
-    private static final Identifier BACKGROUND_TEXTURE_RIGHT = Identifier.of("lifeseries","textures/gui/gui_right.png");
 
     protected int BG_WIDTH;
     protected int BG_HEIGHT;
-    protected int BG_WIDTH_UNSCALED;
-    protected int BG_HEIGHT_UNSCALED;
-    protected float scaleX = 1;
-    protected float scaleY = 1;
     protected static final int DEFAULT_TEXT_COLOR = TextColors.DEFAULT;
 
-    protected DefaultScreen(Text name, float scaleX, float scaleY) {
+    protected DefaultScreen(Text name, int widthX, int widthY) {
         super(name);
-        this.BG_WIDTH = (int) (320.0 * scaleX);
-        this.BG_HEIGHT = (int) (180.0 * scaleY);
-        this.BG_WIDTH_UNSCALED = 320;
-        this.BG_HEIGHT_UNSCALED = 180;
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
+        this.BG_WIDTH = widthX;
+        this.BG_HEIGHT = widthY;
         calculateCoordinates();
     }
 
@@ -34,8 +23,6 @@ public abstract class DefaultScreen extends Screen {
         super(name);
         this.BG_WIDTH = 320;
         this.BG_HEIGHT = 180;
-        this.BG_WIDTH_UNSCALED = 320;
-        this.BG_HEIGHT_UNSCALED = 180;
         calculateCoordinates();
     }
 
@@ -60,10 +47,6 @@ public abstract class DefaultScreen extends Screen {
         endY = startY + BG_HEIGHT;
         centerY = (startY + endY) / 2;
         backgroundHeight = endY - startY;
-    }
-
-    public boolean isScaled() {
-        return scaleX != 1 || scaleY != 1;
     }
 
     public boolean allowCloseButton() {
@@ -100,31 +83,42 @@ public abstract class DefaultScreen extends Screen {
     }
 
     public void renderBackground(DrawContext context, int mouseX, int mouseY) {
-        //? if <= 1.21 {
-        if (!isScaled()) {
-            RenderUtils.drawTexture(context, BACKGROUND_TEXTURE_LEFT, startX, startY, 0, 0, BG_WIDTH/2, BG_HEIGHT);
-            RenderUtils.drawTexture(context, BACKGROUND_TEXTURE_RIGHT, startX+BG_WIDTH/2, startY, 0, 0, BG_WIDTH/2, BG_HEIGHT);
-        }
-        else {
-            RenderUtils.drawTextureScaled(context, BACKGROUND_TEXTURE_LEFT, startX, startY, 0, 0, BG_WIDTH_UNSCALED/2, BG_HEIGHT_UNSCALED, scaleX, scaleY);
-            RenderUtils.drawTextureScaled(context, BACKGROUND_TEXTURE_RIGHT, startX+BG_WIDTH/2, startY, 0, 0, BG_WIDTH_UNSCALED/2, BG_HEIGHT_UNSCALED, scaleX, scaleY);
-        }
-        //?} else {
-        /*if (!isScaled()) {
-            RenderUtils.drawTexture(context, BACKGROUND_TEXTURE_LEFT, startX, startY, 0, 0, BG_WIDTH/2, BG_HEIGHT, 256, 256);
-            RenderUtils.drawTexture(context, BACKGROUND_TEXTURE_RIGHT, startX+BG_WIDTH/2, startY, 0, 0, BG_WIDTH/2, BG_HEIGHT, 256, 256);
-        }
-        else {
-            RenderUtils.drawTextureScaled(context, BACKGROUND_TEXTURE_LEFT, startX, startY, 0, 0, BG_WIDTH_UNSCALED/2, BG_HEIGHT_UNSCALED, 256, 256, scaleX, scaleY);
-            RenderUtils.drawTextureScaled(context, BACKGROUND_TEXTURE_RIGHT, startX+BG_WIDTH/2, startY, 0, 0, BG_WIDTH_UNSCALED/2, BG_HEIGHT_UNSCALED, 256, 256, scaleX, scaleY);
-        }
-        *///?}
+        // Thick borders
+        context.fill(startX-2, startY-2, endX, endY, TextColors.PURE_WHITE);
+        context.fill(startX, startY, endX+2, endY+2, TextColors.GUI_GRAY);
+
+        // Background
+        context.fill(startX, startY, endX, endY, TextColors.GUI_BACKGROUND);
+
+        // Borders
+        context.fill(startX-1, startY-3, endX, startY-2, TextColors.BLACK);
+        context.fill(startX-3, startY-1, startX-2, endY, TextColors.BLACK);
+        context.fill(startX, endY+3, endX+1, endY+2, TextColors.BLACK);
+        context.fill(endX+3, startY, endX+2, endY+1, TextColors.BLACK);
+
+
+        // Single Pixels
+        // Top Left
+        context.fill(startX-2, startY-2, startX-1, startY-1, TextColors.BLACK);
+        context.fill(startX, startY, startX+1, startY+1, TextColors.PURE_WHITE);
+        // Top Right
+        context.fill(endX, startY, endX+1, startY-1, TextColors.GUI_BACKGROUND);
+        context.fill(endX, startY-1, endX+1, startY-2, TextColors.BLACK);
+        context.fill(endX+1, startY, endX+2, startY-1, TextColors.BLACK);
+        // Bottom Left
+        context.fill(startX, endY, startX-1, endY+1, TextColors.GUI_BACKGROUND);
+        context.fill(startX-1, endY, startX-2, endY+1, TextColors.BLACK);
+        context.fill(startX, endY+1, startX-1, endY+2, TextColors.BLACK);
+        // Bottom Right
+        context.fill(endX+1, endY+1, endX+2, endY+2, TextColors.BLACK);
+        context.fill(endX-1, endY-1, endX, endY, TextColors.GUI_GRAY);
+
         if (allowCloseButton()) renderClose(context, mouseX, mouseY);
     }
 
     public void renderClose(DrawContext context, int mouseX, int mouseY) {
-        if (isInCloseRegion(mouseX, mouseY)) RenderUtils.drawTextRight(context, textRenderer, Text.of("§l✖"), endX - 4, startY + 4);
-        else RenderUtils.drawTextRight(context, textRenderer, Text.of("✖"), endX - 4, startY + 4);
+        if (isInCloseRegion(mouseX, mouseY)) RenderUtils.drawTextRight(context, textRenderer, Text.of("§l✖"), endX - 1, startY + 1);
+        else RenderUtils.drawTextRight(context, textRenderer, Text.of("✖"), endX - 1, startY + 1);
     }
 
     @Override
