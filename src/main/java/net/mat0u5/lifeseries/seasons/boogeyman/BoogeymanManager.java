@@ -502,7 +502,7 @@ public class BoogeymanManager {
         }
 
         TaskScheduler.scheduleTask(delay, () -> {
-            PlayerUtils.sendTitle(player, Text.of("§cYou lives are taken..."), 20, 80, 20);
+            PlayerUtils.sendTitle(player, Text.of("§cYour lives are taken..."), 20, 80, 20);
         });
         delay += 140;
         TaskScheduler.scheduleTask(delay, () -> {
