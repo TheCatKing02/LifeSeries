@@ -20,7 +20,10 @@
     "MinecraftClientMixin",
     "PlayerEntityRendererMixin",
     "PlayerListHudMixin",
+    "AbstractSoundInstanceAccessor",
+    "SoundManagerAccessor",
     "SoundManagerMixin",
+    "SoundSystemAccessor",
     "SoundSystemMixin"
   ],
   "mixins": [
