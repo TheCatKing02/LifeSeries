@@ -357,7 +357,7 @@ public class SecretLife extends Season {
         if (player == null) return;
         if (health < 0.1) health = 0.1;
         AttributeUtils.setMaxPlayerHealth(player, health);
-        if (health > player.getHealth() && !player.isDead()) {
+        if (health > player.getHealth() && player.isAlive()) {
             player.setHealth((float) health);
         }
     }
@@ -372,7 +372,7 @@ public class SecretLife extends Season {
 
     public void syncPlayerHealth(ServerPlayerEntity player) {
         if (player == null) return;
-        if (player.isDead()) return;
+        if (!player.isAlive()) return;
         setPlayerHealth(player, player.getHealth());
     }
 

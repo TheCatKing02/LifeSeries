@@ -49,7 +49,7 @@ public class PlayerUtils {
     public static void sendTitleWithSubtitle(ServerPlayerEntity player, Text title, Text subtitle, int fadeIn, int stay, int fadeOut) {
         if (server == null) return;
         if (player == null) return;
-        if (player.isDead()) {
+        if (!player.isAlive()) {
             TaskScheduler.scheduleTask(5, () -> sendTitleWithSubtitle(getPlayer(player.getUuid()), title, subtitle, fadeIn, stay, fadeOut));
             return;
         }
@@ -64,7 +64,7 @@ public class PlayerUtils {
     public static void sendTitle(ServerPlayerEntity player, Text title, int fadeIn, int stay, int fadeOut) {
         if (server == null) return;
         if (player == null) return;
-        if (player.isDead()) {
+        if (!player.isAlive()) {
             TaskScheduler.scheduleTask(5, () -> sendTitle(getPlayer(player.getUuid()), title, fadeIn, stay, fadeOut));
             return;
         }

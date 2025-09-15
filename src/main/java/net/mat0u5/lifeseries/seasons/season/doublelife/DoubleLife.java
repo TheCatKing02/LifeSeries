@@ -366,7 +366,7 @@ public class DoubleLife extends Season {
 
         ServerPlayerEntity soulmate = getSoulmate(player);
         if (soulmate == null) return;
-        if (soulmate.isDead()) return;
+        if (!soulmate.isAlive()) return;
 
         float newHealth = Math.min(soulmate.getHealth() + amount, soulmate.getMaxHealth());
         soulmate.setHealth(newHealth);
@@ -383,7 +383,7 @@ public class DoubleLife extends Season {
 
         ServerPlayerEntity soulmate = getSoulmate(player);
         if (soulmate == null) return;
-        if (soulmate.isDead()) return;
+        if (!soulmate.isAlive()) return;
 
         if (soulmate.hurtTime == 0) {
             //? if <=1.21 {
@@ -415,7 +415,7 @@ public class DoubleLife extends Season {
         ServerPlayerEntity soulmate = getSoulmate(player);
 
         if (soulmate == null) return;
-        if (soulmate.isDead()) return;
+        if (!soulmate.isAlive()) return;
         if (SOULBOUND_INVENTORIES && server != null && !server.getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) {
             soulmate.getInventory().clear();
         }
@@ -455,7 +455,7 @@ public class DoubleLife extends Season {
 
     public void syncPlayers(ServerPlayerEntity player, ServerPlayerEntity soulmate) {
         if (player == null || soulmate == null) return;
-        if (player.isDead() || soulmate.isDead()) return;
+        if (!player.isAlive() || !soulmate.isAlive()) return;
         if (player.getHealth() != soulmate.getHealth()) {
             float sharedHealth = Math.min(player.getHealth(), soulmate.getHealth());
             if (sharedHealth != 0.0F) {
@@ -484,7 +484,7 @@ public class DoubleLife extends Season {
         ServerPlayerEntity soulmate = getSoulmate(player);
         if (lives == null) return;
         if (soulmate == null) return;
-        if (player.isDead() || soulmate.isDead()) return;
+        if (!player.isAlive() || !soulmate.isAlive()) return;
         livesManager.setPlayerLives(soulmate, lives);
     }
 
@@ -500,7 +500,7 @@ public class DoubleLife extends Season {
         if (isMainSoulmate(player)) return;
         ServerPlayerEntity soulmate = getSoulmate(player);
         if (soulmate == null) return;
-        if (soulmate.isDead()) return;
+        if (!soulmate.isAlive()) return;
 
         boolean canHealWithSaturationOther = soulmate.getHungerManager().getSaturationLevel() > 2.0F && soulmate.getHungerManager().getFoodLevel() >= 20;
 
@@ -592,7 +592,7 @@ public class DoubleLife extends Season {
     }
 
     public boolean isRecentlyDead(ServerPlayerEntity player) {
-        return player.isDead() || respawningPlayers.contains(player.getUuid());
+        return !player.isAlive() || respawningPlayers.contains(player.getUuid());
     }
 
     public void setPlayerInventory(ServerPlayerEntity player, PlayerInventory inventory) {

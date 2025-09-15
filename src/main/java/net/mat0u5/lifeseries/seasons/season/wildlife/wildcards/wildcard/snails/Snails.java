@@ -35,7 +35,7 @@ public class Snails extends Wildcard {
     public void activate() {
         snails.clear();
         for (ServerPlayerEntity player : livesManager.getAlivePlayers()) {
-            if (player.isDead()) continue;
+            if (!player.isAlive()) continue;
             spawnSnailFor(player);
         }
         loadSnailNames();
@@ -57,11 +57,11 @@ public class Snails extends Wildcard {
         ticks++;
         if (ticks % 100 == 0) {
             for (ServerPlayerEntity player : livesManager.getAlivePlayers()) {
-                if (player.isDead()) continue;
+                if (!player.isAlive()) continue;
                 UUID playerUUID = player.getUuid();
                 if (snails.containsKey(playerUUID)) {
                     Snail snail = snails.get(playerUUID);
-                    if (snail == null || snail.isDead() || snail.isRemoved()) {
+                    if (snail == null || !snail.isAlive()) {
                         snails.remove(playerUUID);
                         spawnSnailFor(player);
                     }

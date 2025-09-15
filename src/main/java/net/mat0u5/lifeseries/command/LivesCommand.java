@@ -23,6 +23,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -378,7 +379,7 @@ public class LivesCommand {
             OtherUtils.sendCommandFeedback(source, TextUtils.format("§7Assigning random lives to {}§7 targets...", players.size()));
         }
         if (livesManager instanceof LastLifeLivesManager lastLifeLivesManager) {
-            lastLifeLivesManager.assignRandomLives(players);
+            lastLifeLivesManager.assignRandomLives(new ArrayList<>(players));
         }
         return 1;
     }

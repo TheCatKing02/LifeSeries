@@ -196,7 +196,7 @@ public abstract class Season {
 
     public void reloadPlayerTeam(ServerPlayerEntity player) {
         if (player == null) return;
-        if (!player.isDead()) {
+        if (player.isAlive()) {
             reloadPlayerTeamActual(player);
         }
         else {

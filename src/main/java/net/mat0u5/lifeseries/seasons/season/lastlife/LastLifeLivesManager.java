@@ -40,51 +40,33 @@ public class LastLifeLivesManager extends LivesManager {
         assignRandomLives(assignTo);
     }
 
-    public void assignRandomLives(Collection<ServerPlayerEntity> players) {
-        HashMap<ServerPlayerEntity, Integer> lives = new HashMap<>();
-        for (ServerPlayerEntity player : players) {
-            if (WatcherManager.isWatcher(player)) continue;
-            if (lives.containsKey(player)) continue;
-            lives.put(player,-1);
-        }
+    public void assignRandomLives(List<ServerPlayerEntity> players) {
+        players.forEach(this::resetPlayerLife);
         PlayerUtils.sendTitleToPlayers(players, Text.literal("You will have...").formatted(Formatting.GRAY), 10, 40, 10);
         int delay = 60;
-        TaskScheduler.scheduleTask(delay, ()-> lifeRoll( 0, -1, lives));
+        TaskScheduler.scheduleTask(delay, ()-> rollLives(players));
     }
 
-    public void lifeRoll(int currentStep, int lastNum,  Map<ServerPlayerEntity, Integer> lives) {
-        //TODO refactor
-        int delay = 1;
-        if (currentStep >= 30) delay = 2;
-        if (currentStep >= 50) delay = 4;
-        if (currentStep >= 65) delay = 8;
-        if (currentStep >= 75) delay = 20;
-        if (currentStep == 80) {
-            //Choose the amount of lives a player will have
+    public void rollLives(List<ServerPlayerEntity> players) {
+        int delay = showRandomNumbers(players) + 20;
 
-            int totalSize = lives.size();
-            int chosenNotRandomly = LastLife.ROLL_MIN_LIVES;
-            for (ServerPlayerEntity player : lives.keySet()) {
-                Integer currentLives = livesManager.getPlayerLives(player);
-                if (currentLives != null) {
-                    lives.put(player, currentLives);
-                    continue;
-                }
-                int diff = LastLife.ROLL_MAX_LIVES-LastLife.ROLL_MIN_LIVES+2;
-                if (chosenNotRandomly <= LastLife.ROLL_MAX_LIVES && totalSize > diff) {
-                    lives.put(player, chosenNotRandomly);
-                    chosenNotRandomly++;
-                    continue;
-                }
+        HashMap<ServerPlayerEntity, Integer> lives = new HashMap<>();
 
-                int minLives = LastLife.ROLL_MIN_LIVES;
-                int maxLives = LastLife.ROLL_MAX_LIVES;
-                int randomLives = rnd.nextInt(minLives, maxLives+1);
-
-                lives.put(player, randomLives);
+        int totalSize = players.size();
+        int chosenNotRandomly = LastLife.ROLL_MIN_LIVES;
+        for (ServerPlayerEntity player : players) {
+            int diff = LastLife.ROLL_MAX_LIVES-LastLife.ROLL_MIN_LIVES+2;
+            if (chosenNotRandomly <= LastLife.ROLL_MAX_LIVES && totalSize > diff) {
+                lives.put(player, chosenNotRandomly);
+                chosenNotRandomly++;
+                continue;
             }
 
+            int randomLives = getRandomLife();
+            lives.put(player, randomLives);
+        }
 
+        TaskScheduler.scheduleTask(delay, () -> {
             //Show the actual amount of lives for one cycle
             for (Map.Entry<ServerPlayerEntity, Integer> playerEntry : lives.entrySet()) {
                 Integer livesNum = playerEntry.getValue();
@@ -92,36 +74,69 @@ public class LastLifeLivesManager extends LivesManager {
                 Text textLives = livesManager.getFormattedLives(livesNum);
                 PlayerUtils.sendTitle(player, textLives, 0, 25, 0);
             }
-            PlayerUtils.playSoundToPlayers(lives.keySet(), SoundEvents.UI_BUTTON_CLICK.value());
-            TaskScheduler.scheduleTask(delay, ()-> lifeRoll( currentStep+1, -1, lives));
-            return;
-        }
-        if (currentStep == 81) {
+            PlayerUtils.playSoundToPlayers(players, SoundEvents.UI_BUTTON_CLICK.value());
+        });
+
+        delay += 20;
+
+        TaskScheduler.scheduleTask(delay, () -> {
             //Show "x lives." screen
             for (Map.Entry<ServerPlayerEntity, Integer> playerEntry : lives.entrySet()) {
                 Integer livesNum = playerEntry.getValue();
                 ServerPlayerEntity player = playerEntry.getKey();
                 Text textLives = TextUtils.format("{}§a lives.", livesManager.getFormattedLives(livesNum));
                 PlayerUtils.sendTitle(player, textLives, 0, 60, 20);
-                if (livesManager.hasAssignedLives(player)) continue;
                 SessionTranscript.assignRandomLives(player, livesNum);
                 livesManager.setPlayerLives(player, livesNum);
             }
             PlayerUtils.playSoundToPlayers(lives.keySet(), SoundEvents.BLOCK_END_PORTAL_SPAWN);
             currentSeason. reloadAllPlayerTeams();
-            return;
+        });
+    }
+
+    public int showRandomNumbers(List<ServerPlayerEntity> players) {
+        int currentDelay = 0;
+        int lastLives = -1;
+        for (int i = 0; i < 80; i++) {
+            if (i >= 75) currentDelay += 20;
+            else if (i >= 65) currentDelay += 8;
+            else if (i >= 50) currentDelay += 4;
+            else if (i >= 30) currentDelay += 2;
+            else currentDelay += 1;
+
+            int lives = getRandomLife(lastLives);
+            lastLives = lives;
+
+            TaskScheduler.scheduleTask(currentDelay, () -> {
+                PlayerUtils.sendTitleToPlayers(players, livesManager.getFormattedLives(lives), 0, 25, 0);
+                PlayerUtils.playSoundToPlayers(players, SoundEvents.UI_BUTTON_CLICK.value());
+            });
         }
+
+        return currentDelay;
+    }
+
+    public int getRandomLife() {
         int minLives = LastLife.ROLL_MIN_LIVES;
         int maxLives = LastLife.ROLL_MAX_LIVES;
-        int displayLives;
-        do {
-            // Just so that the random cycle can't have two of the same number in a row
-            displayLives = rnd.nextInt(minLives, maxLives+1);
-        } while(displayLives == lastNum && minLives != maxLives);
+        return rnd.nextInt(minLives, maxLives+1);
+    }
 
-        int finalDisplayLives = displayLives;
-        PlayerUtils.sendTitleToPlayers(lives.keySet(), livesManager.getFormattedLives(finalDisplayLives), 0, 25, 0);
-        PlayerUtils.playSoundToPlayers(lives.keySet(), SoundEvents.UI_BUTTON_CLICK.value());
-        TaskScheduler.scheduleTask(delay, ()-> lifeRoll( currentStep+1, finalDisplayLives, lives));
+    public boolean onlyOnePossibleLife() {
+        return LastLife.ROLL_MIN_LIVES == LastLife.ROLL_MAX_LIVES;
+    }
+
+    public int getRandomLife(int except) {
+        if (!onlyOnePossibleLife()){
+            int tries = 0;
+            while (tries < 100) {
+                tries++;
+                int lives = getRandomLife();
+                if (lives != except) {
+                    return lives;
+                }
+            }
+        }
+        return getRandomLife();
     }
 }

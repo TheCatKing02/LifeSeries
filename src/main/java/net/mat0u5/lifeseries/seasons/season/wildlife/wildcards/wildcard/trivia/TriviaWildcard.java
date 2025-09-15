@@ -61,7 +61,7 @@ public class TriviaWildcard extends Wildcard {
                 UUID playerUUID = player.getUuid();
                 if (snails.containsKey(playerUUID)) {
                     Snail snail = snails.get(playerUUID);
-                    if (snail == null || snail.isDead() || snail.isRemoved()) {
+                    if (snail == null || !snail.isAlive()) {
                         snails.remove(playerUUID);
                     }
                 }
@@ -175,7 +175,7 @@ public class TriviaWildcard extends Wildcard {
             UUID playerUUID = player.getUuid();
             if (bots.containsKey(playerUUID)) {
                 TriviaBot bot = bots.get(playerUUID);
-                if (bot == null || bot.isDead() || bot.isRemoved()) {
+                if (bot == null || !bot.isAlive()) {
                     bots.remove(playerUUID);
                 }
             }
@@ -197,7 +197,7 @@ public class TriviaWildcard extends Wildcard {
     public static void handleAnswer(ServerPlayerEntity player, int answer) {
         if (bots.containsKey(player.getUuid())) {
             TriviaBot bot = bots.get(player.getUuid());
-            if (!bot.isDead() && !bot.isRemoved()) {
+            if (bot.isAlive()) {
                 bot.handleAnswer(answer);
             }
         }
@@ -221,7 +221,7 @@ public class TriviaWildcard extends Wildcard {
     public static void resetPlayerOnBotSpawn(ServerPlayerEntity player) {
         if (bots.containsKey(player.getUuid())) {
             TriviaBot bot = bots.get(player.getUuid());
-            if (!bot.isDead() && !bot.isRemoved()) {
+            if (bot.isAlive()) {
                 bot.despawn();
             }
         }

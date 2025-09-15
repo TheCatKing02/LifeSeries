@@ -251,8 +251,8 @@ public class Session {
         activeActions = remaining;
     }
 
+    private Map<UUID, Vec3d> lastNonBorderPositions = new HashMap<>();
     public void checkPlayerPosition(ServerPlayerEntity player) {
-        //TODO improve teleporting
         WorldBorder border = player.getWorld().getWorldBorder();
         double playerSize = player.getBoundingBox().getLengthX()/2;
         double minX = Math.floor(border.getBoundWest()) + playerSize;
@@ -263,15 +263,23 @@ public class Session {
         double playerX = player.getX();
         double playerZ = player.getZ();
 
-        if (playerX < minX || playerX > maxX || playerZ < minZ || playerZ > maxZ) {
-            // Clamp player position inside the border
+        UUID uuid = player.getUuid();
 
+        if (playerX < minX || playerX > maxX || playerZ < minZ || playerZ > maxZ) {
+            if (lastNonBorderPositions.containsKey(uuid)) {
+                PlayerUtils.teleport(player, lastNonBorderPositions.get(uuid));
+                return;
+            }
+
+            // Clamp player position inside the border
             double clampedX = Math.clamp(playerX, minX, maxX);
             double clampedZ = Math.clamp(playerZ, minZ, maxZ);
-            double safeY = WorldUtils.findTopSafeY(player.getWorld(), new Vec3d(clampedX, player.getY(), clampedZ));
 
             // Teleport player inside the world border
-            PlayerUtils.teleport(player, clampedX, safeY, clampedZ);
+            PlayerUtils.teleport(player, clampedX, player.getY(), clampedZ);
+        }
+        else {
+            lastNonBorderPositions.put(uuid, player.getPos());
         }
     }
     public static final Map<UUID, Integer> skipTimer = new HashMap<>();

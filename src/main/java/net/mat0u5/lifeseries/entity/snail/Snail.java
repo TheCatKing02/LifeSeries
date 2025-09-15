@@ -504,7 +504,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
     public void damageFromDrowning() {
         ServerPlayerEntity player = getBoundPlayer();
         if (player == null) return;
-        if (player.isDead()) return;
+        if (!player.isAlive()) return;
         ServerWorld world = PlayerUtils.getServerWorld(player);
         //? if <=1.21 {
         DamageSource damageSource = new DamageSource(world.getRegistryManager()
@@ -517,7 +517,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
         player.setAttacker(this);
         player.damage(world, damageSource, 2);
         *///?}
-        if (player.isDead()) {
+        if (!player.isAlive()) {
             despawn();
         }
     }
