@@ -23,3 +23,7 @@ Client-side version checking.<br>
 Added the 'show_advancements' global config. Default value is true.<br>
 You can now only hear some trivia sounds from the closest trivia bot.<br>
 Trivia bot punishments are now weighted based on life count and question difficulty.
+
+----------
+
+Added trivia questions from the final episode of Wild Life.
