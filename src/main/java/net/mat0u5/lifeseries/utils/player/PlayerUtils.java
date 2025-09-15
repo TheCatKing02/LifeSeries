@@ -2,6 +2,7 @@ package net.mat0u5.lifeseries.utils.player;
 
 import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
+import net.mat0u5.lifeseries.mixin.PlayerListS2CPacketAccessor;
 import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.seasons.other.WatcherManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
@@ -14,9 +15,11 @@ import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.encryption.PublicPlayerSession;
 import net.minecraft.network.packet.s2c.common.ResourcePackRemoveS2CPacket;
 import net.minecraft.network.packet.s2c.common.ResourcePackSendS2CPacket;
 import net.minecraft.network.packet.s2c.play.*;
@@ -26,6 +29,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.Nullables;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -288,44 +292,65 @@ public class PlayerUtils {
         if (server == null) return;
         if (currentSeason == null) return;
 
-
         List<ServerPlayerEntity> allPlayers = server.getPlayerManager().getPlayerList();
 
         for (ServerPlayerEntity receivingPlayer : allPlayers) {
-            List<ServerPlayerEntity> visiblePlayers = new ArrayList<>();
-            List<UUID> hiddenPlayerUUIDs = new ArrayList<>();
-            List<String> hiddenPlayerNames = new ArrayList<>();
 
+            PlayerListS2CPacket packet = PlayerListS2CPacket.entryFromPlayer(List.of(receivingPlayer));
+            List<PlayerListS2CPacket.Entry> newEntries = new ArrayList<>();
             for (ServerPlayerEntity player : allPlayers) {
                 if (player == receivingPlayer) continue;
 
-                boolean hidePlayer = false;
+                boolean hidePlayer = hidePlayerFrom(receivingPlayer, player);
 
-                if (!currentSeason.TAB_LIST_SHOW_DEAD_PLAYERS && livesManager.isAlive(receivingPlayer) && !livesManager.isAlive(player) && !WatcherManager.isWatcher(player) && !Necromancy.preIsRessurectedPlayer(player)) {
-                    hidePlayer = true;
-                }
-                if (!currentSeason.WATCHERS_IN_TAB && !WatcherManager.isWatcher(receivingPlayer) && WatcherManager.isWatcher(player)) {
-                    hidePlayer = true;
-                }
-
-                if (hidePlayer) {
-                    hiddenPlayerUUIDs.add(player.getUuid());
-                    hiddenPlayerNames.add(player.getNameForScoreboard());
-                }
-                else {
-                    visiblePlayers.add(player);
-                }
-            }
-            if (!visiblePlayers.isEmpty()) {
-                receivingPlayer.networkHandler.sendPacket(PlayerListS2CPacket.entryFromPlayer(visiblePlayers));
-            }
-            if (!hiddenPlayerUUIDs.isEmpty()) {
-                PlayerRemoveS2CPacket hidePacket = new PlayerRemoveS2CPacket(hiddenPlayerUUIDs);
-                receivingPlayer.networkHandler.sendPacket(hidePacket);
+                PlayerListS2CPacket.Entry entry = getPlayerListEntry(player, !hidePlayer);
+                newEntries.add(entry);
             }
 
-            NetworkHandlerServer.sendStringListPacket(receivingPlayer, PacketNames.UPDATE_HIDDEN_PLAYERS, hiddenPlayerNames);
+            if (packet instanceof PlayerListS2CPacketAccessor accessor) {
+                accessor.setEntries(newEntries);
+            }
+            receivingPlayer.networkHandler.sendPacket(packet);
         }
+    }
+
+    public static PlayerListS2CPacket.Entry getPlayerListEntry(ServerPlayerEntity player, boolean listed) {
+        //? if <= 1.21 {
+        return new PlayerListS2CPacket.Entry(player.getUuid(), player.getGameProfile(), listed, player.networkHandler.getLatency(), player.interactionManager.getGameMode(), player.getPlayerListName(), (PublicPlayerSession.Serialized) Nullables.map(player.getSession(), PublicPlayerSession::toSerialized));
+        //?} else if <= 1.21.2 {
+        /*return new PlayerListS2CPacket.Entry(player.getUuid(), player.getGameProfile(), listed, player.networkHandler.getLatency(), player.interactionManager.getGameMode(), player.getPlayerListName(), player.getPlayerListOrder(), (PublicPlayerSession.Serialized)Nullables.map(player.getSession(), PublicPlayerSession::toSerialized));
+        *///?} else {
+        /*return new PlayerListS2CPacket.Entry(player.getUuid(), player.getGameProfile(), listed, player.networkHandler.getLatency(), player.interactionManager.getGameMode(), player.getPlayerListName(), player.isPartVisible(PlayerModelPart.HAT), player.getPlayerListOrder(), (PublicPlayerSession.Serialized)Nullables.map(player.getSession(), PublicPlayerSession::toSerialized));
+        *///?}
+    }
+
+    public static boolean hidePlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
+        if (PlayerUtils.isFakePlayer(player)) return true;
+        if (hideDeadPlayerFrom(receivingPlayer, player)) return true;
+        if (hideWatcherPlayerFrom(receivingPlayer, player)) return true;
+        return false;
+    }
+
+    public static boolean hideDeadPlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
+        if (receivingPlayer.isSpectator()) return false;
+        if (!player.isSpectator()) return false;
+
+        if (currentSeason.TAB_LIST_SHOW_DEAD_PLAYERS) return false;
+        if (!livesManager.isAlive(receivingPlayer)) return false;
+        if (livesManager.isAlive(player)) return false;
+        if (WatcherManager.isWatcher(player)) return false;
+        if (Necromancy.preIsRessurectedPlayer(player)) return false;
+        return true;
+    }
+
+    public static boolean hideWatcherPlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
+        if (receivingPlayer.isSpectator()) return false;
+        if (!player.isSpectator()) return false;
+
+        if (currentSeason.WATCHERS_IN_TAB) return false;
+        if (WatcherManager.isWatcher(receivingPlayer)) return false;
+        if (!WatcherManager.isWatcher(player)) return false;
+        return true;
     }
 
     public static ServerWorld getServerWorld(ServerPlayerEntity player) {

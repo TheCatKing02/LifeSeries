@@ -38,12 +38,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class Main implements ModInitializer {
-	public static final String MOD_VERSION = "dev-1.4.0.1";
+	public static final String MOD_VERSION = "dev-1.4.0.2";
 	public static final String MOD_ID = "lifeseries";
 	public static final String LATEST_UPDATE_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases/latest";
 	public static final String ALL_UPDATES_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases";
 	public static final boolean DEBUG = false;
-	public static final boolean ISOLATED_ENVIROMENT = false;
+	public static final boolean ISOLATED_ENVIRONMENT = false;
 	public static final Seasons DEFAULT_SEASON = Seasons.UNASSIGNED;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -80,7 +80,7 @@ public class Main implements ModInitializer {
 		Seasons.getSeasons().forEach(seasons -> seasons.getSeasonInstance().createConfig());
 
 		ModRegistries.registerModStuff();
-		if (!ISOLATED_ENVIROMENT) {
+		if (!ISOLATED_ENVIRONMENT) {
 			UpdateChecker.checkForMajorUpdates();
 		}
 

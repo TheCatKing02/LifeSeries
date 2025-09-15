@@ -266,9 +266,14 @@ public abstract class Season {
         return true;
     }
 
+    private long ticks = 0;
     public void tick(MinecraftServer server) {
+        ticks++;
         boogeymanManager.tick();
         secretSociety.tick();
+        if (ticks % 100 == 0) {
+            reloadAllPlayerTeams();
+        }
     }
     public void tickSessionOn(MinecraftServer server) {}
     public void addSessionActions() {
@@ -281,7 +286,7 @@ public abstract class Season {
      */
 
     public void onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
-         boolean soulmateKill = source.getType().msgId().equalsIgnoreCase("soulmate");
+        boolean soulmateKill = source.getType().msgId().equalsIgnoreCase("soulmate");
         SessionTranscript.onPlayerDeath(player, source);
         boolean killedByPlayer = false;
         if (source.getAttacker() instanceof ServerPlayerEntity serverAttacker) {

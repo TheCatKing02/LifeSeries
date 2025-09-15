@@ -22,6 +22,7 @@ public class ChooseSeasonScreen extends DefaultScreen {
     public static final int PADDING = 8;
 
     public static boolean hasSelectedBefore = false;
+    public static boolean hasAprilFoolsSeasons = false;
     private List<SeasonRegion> seasonRegions = new ArrayList<>();
 
     public ChooseSeasonScreen(boolean hasSelectedBefore) {
@@ -33,6 +34,7 @@ public class ChooseSeasonScreen extends DefaultScreen {
     public void init() {
         super.init();
         addSeasonRegions();
+        hasAprilFoolsSeasons = !Seasons.getAprilFoolsSeasons().isEmpty();
     }
 
     public void addSeasonRegions() {
@@ -88,13 +90,15 @@ public class ChooseSeasonScreen extends DefaultScreen {
             }
         }
 
-        Text aprilFools = Text.of("April Fools Seasons");
-        int textWidth = textRenderer.getWidth(aprilFools);
-        int textHeight = textRenderer.fontHeight;
-        Rectangle rect = new Rectangle(endX-9-textWidth, endY-9-textHeight, textWidth+1, textHeight+1);
+        if (hasAprilFoolsSeasons) {
+            Text aprilFools = Text.of("April Fools Seasons");
+            int textWidth = textRenderer.getWidth(aprilFools);
+            int textHeight = textRenderer.fontHeight;
+            Rectangle rect = new Rectangle(endX-9-textWidth, endY-9-textHeight, textWidth+1, textHeight+1);
 
-        if (x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height) {
-            return -1;
+            if (x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height) {
+                return -1;
+            }
         }
 
         return 0;
@@ -143,22 +147,24 @@ public class ChooseSeasonScreen extends DefaultScreen {
         String prompt = "Select the season you want to play.";
         RenderUtils.drawTextCenter(context, this.textRenderer, Text.of(prompt), centerX, startY + 20);
 
-        Text aprilFools = Text.of("April Fools Seasons");
-        int textWidth = textRenderer.getWidth(aprilFools);
-        int textHeight = textRenderer.fontHeight;
+        if (hasAprilFoolsSeasons) {
+            Text aprilFools = Text.of("April Fools Seasons");
+            int textWidth = textRenderer.getWidth(aprilFools);
+            int textHeight = textRenderer.fontHeight;
 
-        Rectangle rect = new Rectangle(endX-9-textWidth, endY-9-textHeight, textWidth+1, textHeight+1);
+            Rectangle rect = new Rectangle(endX-9-textWidth, endY-9-textHeight, textWidth+1, textHeight+1);
 
-        context.fill(rect.x - 1, rect.y - 1, rect.x + rect.width + 1, rect.y, DEFAULT_TEXT_COLOR); // top border
-        context.fill(rect.x - 1, rect.y + rect.height, rect.x + rect.width + 2, rect.y + rect.height + 2, DEFAULT_TEXT_COLOR); // bottom
-        context.fill(rect.x - 1, rect.y, rect.x, rect.y + rect.height, DEFAULT_TEXT_COLOR); // left
-        context.fill(rect.x + rect.width, rect.y-1, rect.x + rect.width + 2, rect.y + rect.height, DEFAULT_TEXT_COLOR); // right
+            context.fill(rect.x - 1, rect.y - 1, rect.x + rect.width + 1, rect.y, DEFAULT_TEXT_COLOR); // top border
+            context.fill(rect.x - 1, rect.y + rect.height, rect.x + rect.width + 2, rect.y + rect.height + 2, DEFAULT_TEXT_COLOR); // bottom
+            context.fill(rect.x - 1, rect.y, rect.x, rect.y + rect.height, DEFAULT_TEXT_COLOR); // left
+            context.fill(rect.x + rect.width, rect.y-1, rect.x + rect.width + 2, rect.y + rect.height, DEFAULT_TEXT_COLOR); // right
 
-        if (currentRegion == -1) {
-            RenderUtils.drawTextLeft(context, this.textRenderer, TextColors.PURE_WHITE, aprilFools, rect.x+1, rect.y+1);
-        }
-        else {
-            RenderUtils.drawTextLeft(context, this.textRenderer, DEFAULT_TEXT_COLOR, aprilFools, rect.x+1, rect.y+1);
+            if (currentRegion == -1) {
+                RenderUtils.drawTextLeft(context, this.textRenderer, TextColors.PURE_WHITE, aprilFools, rect.x+1, rect.y+1);
+            }
+            else {
+                RenderUtils.drawTextLeft(context, this.textRenderer, DEFAULT_TEXT_COLOR, aprilFools, rect.x+1, rect.y+1);
+            }
         }
     }
 

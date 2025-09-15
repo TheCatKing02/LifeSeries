@@ -96,9 +96,6 @@ public class NetworkHandlerClient {
                 MorphManager.setFromPacket(morphUUID, morphType);
             } catch (Exception e) {}
         }
-        if (name == PacketNames.UPDATE_HIDDEN_PLAYERS) {
-            MainClient.hiddenTabPlayers = new ArrayList<>(value);
-        }
     }
 
     public static void handleConfigPacket(ConfigPayload payload) {

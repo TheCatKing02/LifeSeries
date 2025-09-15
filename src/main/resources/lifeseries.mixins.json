@@ -18,6 +18,7 @@
     "MobEntityMixin",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
+    "PlayerListS2CPacketAccessor",
     "PlayerManagerMixin",
     "RecipeManagerMixin",
     "SavePropertiesMixin",

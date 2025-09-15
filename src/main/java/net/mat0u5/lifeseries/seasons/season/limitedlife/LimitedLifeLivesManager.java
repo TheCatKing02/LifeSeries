@@ -70,8 +70,8 @@ public class LimitedLifeLivesManager extends LivesManager {
                 Text livesText = TextUtils.format("{} name", colorNow.getName().replaceAll("_", " ").toLowerCase()).formatted(colorNow);
                 PlayerUtils.broadcastMessage(TextUtils.format("{}§7 is now a {}§7.", player, livesText));
             }
-            currentSeason.reloadPlayerTeam(player);
         }
+        currentSeason.reloadPlayerTeam(player);
     }
 
     @Override

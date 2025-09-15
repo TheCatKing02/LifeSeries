@@ -46,7 +46,6 @@ public enum PacketNames {
     HOLDING_JUMP,
     TRIVIA_ANSWER,
     SHOW_TOTEM,
-    UPDATE_HIDDEN_PLAYERS,
     PAST_LIFE_CHOOSE_TWIST;
 
     public static PacketNames fromName(String name) {

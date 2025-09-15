@@ -183,7 +183,7 @@ public class DefaultConfigValues {
     );
     public final ConfigFileEntry<Integer> BOOGEYMAN_INFINITE_AUTO_FAIL = new ConfigFileEntry<>(
             "boogeyman_infinite_auto_fail", 360000, ConfigTypes.SECONDS, "global.boogeyman.infinite[new]",
-            "Automatic Fail", "Controls how a Boogeyman has to kill someone before they automatically fail, in seconds."
+            "Automatic Fail", "Controls how long a Boogeyman has to kill someone before they automatically fail, in seconds."
     );
 
     public final ConfigFileEntry<Boolean> SECRET_SOCIETY = new ConfigFileEntry<>(

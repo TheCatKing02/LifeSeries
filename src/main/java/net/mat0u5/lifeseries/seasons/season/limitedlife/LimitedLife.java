@@ -7,6 +7,7 @@ import net.mat0u5.lifeseries.seasons.other.LivesManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.secretsociety.SecretSociety;
+import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.enums.SessionTimerStates;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
@@ -153,6 +154,7 @@ public class LimitedLife extends Season {
 
     @Override
     public void onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
+        SessionTranscript.onPlayerDeath(player, source);
         if (source != null) {
             if (source.getAttacker() instanceof ServerPlayerEntity serverAttacker) {
                 if (player != source.getAttacker()) {

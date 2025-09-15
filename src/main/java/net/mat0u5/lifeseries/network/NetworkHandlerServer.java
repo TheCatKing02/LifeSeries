@@ -203,7 +203,7 @@ public class NetworkHandlerServer {
         String serverVersionStr = Main.MOD_VERSION;
         String serverCompatibilityStr = VersionControl.serverCompatibilityMin();
 
-        if (!Main.ISOLATED_ENVIROMENT) {
+        if (!Main.ISOLATED_ENVIRONMENT) {
             int clientVersion = payload.modVersion();
             int clientCompatibility = payload.compatibility();
             int serverVersion = VersionControl.getModVersionInt(serverVersionStr);
