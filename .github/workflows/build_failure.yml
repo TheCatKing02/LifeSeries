@@ -36,11 +36,11 @@ jobs:
       - name: Discord Failure Notification
         uses: satak/webrequest-action@master
         with:
-          url: ${{ secrets.DISCORD_WEBHOOK_STAFF }}
+          url: ${{ secrets.DISCORD_WEBHOOK }}
           method: POST
           payload: |
             {
-              "content": "<@&1312808018483613726> \n**BUILD FAILED**",
+              "content": "<@&1312808018483613726> \n## ❌ BUILD FAILED ❌",
               "embeds": [{
                 "title": "[${{ github.repository }}:${{ env.WORKFLOW_HEAD_BRANCH }}] - Build Failed",
                 "author": {
@@ -61,7 +61,6 @@ jobs:
                     "value": "build",
                     "inline": true
                   }
-                ],
-                "timestamp": "${{ github.event.workflow_run.updated_at }}"
+                ]
               }]
             }
