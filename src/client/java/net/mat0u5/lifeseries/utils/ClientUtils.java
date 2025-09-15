@@ -63,7 +63,11 @@ public class ClientUtils {
         if (client.world == null) return;
         ClientPlayNetworkHandler handler = client.getNetworkHandler();
         if (handler == null) return;
+        //?if < 1.21.6 {
         client.world.disconnect();
+        //?} else {
+        /*client.world.disconnect(reason);
+        *///?}
         handler.onDisconnected(new DisconnectionInfo(reason));
     }
 }

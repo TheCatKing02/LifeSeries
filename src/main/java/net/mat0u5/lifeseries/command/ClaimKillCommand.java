@@ -90,8 +90,8 @@ public class ClaimKillCommand {
             source.sendError(Text.of("You cannot claim credit for your own death :P"));
             return -1;
         }
-        Text textAll = TextUtils.format("{}§7 claims credit for {}§7's death. Only an admin can validate this claim.", player, victim);
-        PlayerUtils.broadcastMessage(textAll);
+        Text textAll = TextUtils.format("{}§7 claims credit for {}§7's death.", player, victim);
+        PlayerUtils.broadcastMessageToAdmins(textAll, 200);
         String validateCommand = TextUtils.formatString("/claimkill validate {} {}", player, victim);
         Text adminText = Text.literal("§7Click ").append(
                 Text.literal("here")
@@ -100,7 +100,7 @@ public class ClaimKillCommand {
                                 .withClickEvent(TextUtils.runCommandClickEvent(validateCommand))
                                 .withUnderline(true)
                         )).append(Text.of("§7 to accept the claim if you think it's valid."));
-        PlayerUtils.broadcastMessageToAdmins(adminText, 120);
+        PlayerUtils.broadcastMessageToAdmins(adminText, 200);
 
         return 1;
     }
