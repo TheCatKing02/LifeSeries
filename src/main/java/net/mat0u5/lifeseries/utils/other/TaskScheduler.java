@@ -27,7 +27,12 @@ public class TaskScheduler {
                     task.tickCount--;
 
                     if (task.tickCount <= 0) {
-                        task.goal.run();
+                        try {
+                            task.goal.run();
+                        }catch(Exception e) {
+                            Main.LOGGER.error("Fatal error while running task " + task);
+                            e.printStackTrace();
+                        }
                         iterator.remove();
                     }
                 }

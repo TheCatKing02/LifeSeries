@@ -23,6 +23,7 @@ public class UpdateChecker {
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     public static boolean majorUpdateAvailable = false;
     public static boolean updateAvailable = false;
+    public static String majorVersionName;
     public static String versionName;
     public static String versionDescription;
     public static String changelogLink = null;
@@ -34,6 +35,7 @@ public class UpdateChecker {
         if (TEST_UPDATE_FAKE) {
             updateAvailable = true;
             versionName = "versionName";
+            majorVersionName = "majorVersionName";
             versionDescription = "versionDescription";
             version = 2_000_000_000;
             return;
@@ -64,6 +66,7 @@ public class UpdateChecker {
                         updateAvailable = true;
                         majorUpdateAvailable = true;
                         versionName = name;
+                        majorVersionName = name;
                         version = updateVersionNumber;
                         versionDescription = formatDescription(json.get("body").getAsString());
                     }
@@ -117,6 +120,7 @@ public class UpdateChecker {
                                 updateAvailable = true;
                                 versionName = name;
                                 version = updateVersionNumber;
+                                if (!majorUpdateAvailable) majorVersionName = versionName;
                                 if (!majorUpdateAvailable) versionDescription = formatDescription(json.get("body").getAsString());
                             }
                         }catch(Exception e) {
@@ -139,6 +143,9 @@ public class UpdateChecker {
 
     public static String getChangelogLink() {
         if (changelogLink != null) return changelogLink;
+        if (majorVersionName != null) {
+            return "https://github.com/Mat0u5/LifeSeries/blob/main/docs/changelogs/"+majorVersionName+".md";
+        }
         return "https://github.com/Mat0u5/LifeSeries/blob/main/docs/changelogs/"+versionName+".md";
     }
 
@@ -158,6 +165,9 @@ public class UpdateChecker {
                         }
                         if (line.startsWith("versionName=")) {
                             versionName = line.replace("versionName=","");
+                        }
+                        if (line.startsWith("majorVersionName=")) {
+                            majorVersionName = line.replace("majorVersionName=","");
                         }
                         if (line.startsWith("versionDescription=")) {
                             rawDesctiption = line.replace("versionDescription=","");
