@@ -1,7 +1,6 @@
 package net.mat0u5.lifeseries.mixin;
 
 import net.mat0u5.lifeseries.Main;
-import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
 import net.mat0u5.lifeseries.seasons.other.WatcherManager;
 import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
@@ -11,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.world.TeleportTarget;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +26,11 @@ import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.blacklist;
 import static net.mat0u5.lifeseries.Main.currentSeason;
+
+//? if <= 1.21.6 {
+import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
+import net.minecraft.text.Text;
+//?}
 
 @Mixin(value = ServerPlayerEntity.class, priority = 1)
 public class ServerPlayerEntityMixin {
@@ -53,6 +56,7 @@ public class ServerPlayerEntityMixin {
         });
     }
 
+    //? if <= 1.21.6 {
     @Inject(method = "sendMessageToClient", at = @At("HEAD"), cancellable = true)
     private void sendMessageToClient(Text message, boolean overlay, CallbackInfo ci) {
         ServerPlayerEntity player = ls$get();
@@ -76,6 +80,7 @@ public class ServerPlayerEntityMixin {
             cir.setReturnValue(false);
         }
     }
+    //?}
 
     @Inject(method = "attack", at = @At("HEAD"))
     private void onAttackEntity(Entity target, CallbackInfo ci) {

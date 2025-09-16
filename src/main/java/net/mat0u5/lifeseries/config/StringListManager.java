@@ -44,7 +44,7 @@ public class StringListManager {
                     setFileContent(DEFAULT_RED_TASKS);
                 }
             } catch (IOException ex) {
-                Main.LOGGER.error(ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }

@@ -17,7 +17,9 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.TypedEntityData;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -33,8 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
 
-import static net.mat0u5.lifeseries.Main.currentSession;
-import static net.mat0u5.lifeseries.Main.seasonConfig;
+import static net.mat0u5.lifeseries.Main.*;
 
 public class SecretLife extends Season {
     public static final String COMMANDS_ADMIN_TEXT = "/lifeseries, /session, /claimkill, /lives, /gift, /task, /health, /secretlife";
@@ -203,9 +204,15 @@ public class SecretLife extends Season {
         NbtComponent nbtZombie = NbtComponent.of(nbtCompZombie);
         NbtComponent nbtCamel= NbtComponent.of(nbtCompCamel);
 
+        //? if <= 1.21.6 {
         zombieHorse.set(DataComponentTypes.ENTITY_DATA, nbtZombie);
         skeletonHorse.set(DataComponentTypes.ENTITY_DATA, nbtSkeleton);
         camel.set(DataComponentTypes.ENTITY_DATA, nbtCamel);
+        //?} else {
+        /*zombieHorse.set(DataComponentTypes.ENTITY_DATA, TypedEntityData.create(EntityType.ZOMBIE, nbtZombie.copyNbt()));
+        skeletonHorse.set(DataComponentTypes.ENTITY_DATA, TypedEntityData.create(EntityType.SKELETON, nbtSkeleton.copyNbt()));
+        camel.set(DataComponentTypes.ENTITY_DATA, TypedEntityData.create(EntityType.CAMEL, nbtCamel.copyNbt()));
+        *///?}
         itemSpawner.addItem(zombieHorse, 10);
         itemSpawner.addItem(skeletonHorse, 10);
         itemSpawner.addItem(camel, 10);
@@ -337,7 +344,7 @@ public class SecretLife extends Season {
         if (entity instanceof ServerPlayerEntity player && seasonConfig instanceof SecretLifeConfig config) {
             boolean dropBook = config.PLAYERS_DROP_TASK_ON_DEATH.get(config);
             if (dropBook) return;
-            boolean keepInventory = player.getServer().getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
+            boolean keepInventory = server.getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
             if (keepInventory) return;
             giveBookOnRespawn.put(player.getUuid(), TaskManager.getPlayersTaskBook(player));
             TaskManager.removePlayersTaskBook(player);

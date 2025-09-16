@@ -59,7 +59,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.EntityEffectParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
@@ -96,6 +95,12 @@ import net.minecraft.storage.NbtWriteView;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 *///?}
+
+//? if <= 1.21.6
+import net.minecraft.particle.EntityEffectParticleEffect;
+
+//? if >= 1.21.9
+/*import net.minecraft.particle.TintedParticleEffect;*/
 
 public class TriviaBot extends AmbientEntity implements AnimatedEntity {
     public static final Identifier ID = Identifier.of(Main.MOD_ID, "triviabot");
@@ -341,7 +346,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
     }
 
     public void chunkLoading() {
-        if (getWorld() instanceof ServerWorld world) {
+        if (getEntityWorld() instanceof ServerWorld world) {
             addTicket(world);
         }
     }
@@ -361,19 +366,19 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
         //? if <= 1.21 {
         this.kill();
         //?} else {
-        /*this.kill((ServerWorld) getWorld());
+        /*this.kill((ServerWorld) getEntityWorld());
          *///?}
         this.discard();
     }
 
     public void transformIntoSnail() {
         if (getBoundPlayer() != null) {
-            Snail triviaSnail = MobRegistry.SNAIL.spawn((ServerWorld) getWorld(), this.getBlockPos(), SpawnReason.COMMAND);
+            Snail triviaSnail = MobRegistry.SNAIL.spawn((ServerWorld) getEntityWorld(), this.getBlockPos(), SpawnReason.COMMAND);
             if (triviaSnail != null) {
                 triviaSnail.setBoundPlayer(getBoundPlayer());
                 triviaSnail.setFromTrivia();
                 triviaSnail.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE.value(), 0.5f, 2);
-                ServerWorld world = (ServerWorld) triviaSnail.getWorld();
+                ServerWorld world = (ServerWorld) triviaSnail.getEntityWorld();
                 world.spawnParticles(
                         ParticleTypes.EXPLOSION,
                         this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(),
@@ -454,7 +459,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
         ServerPlayerEntity player = getBoundPlayer();
         if (player == null) return;
         ServerWorld playerWorld = PlayerUtils.getServerWorld(player);
-        if (getWorld() instanceof ServerWorld world) {
+        if (getEntityWorld() instanceof ServerWorld world) {
             BlockPos tpTo = getBlockPosNearTarget(player, player.getBlockPos(),5);
             world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PLAYER_TELEPORT, this.getSoundCategory(), this.getSoundVolume(), this.getSoundPitch());
             playerWorld.playSound(null, tpTo.getX(), tpTo.getY(), tpTo.getZ(), SoundEvents.ENTITY_PLAYER_TELEPORT, this.getSoundCategory(), this.getSoundVolume(), this.getSoundPitch());
@@ -483,7 +488,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
 
     public void updateNavigation() {
         moveControl = new MoveControl(this);
-        navigation = new MobNavigation(this, getWorld());
+        navigation = new MobNavigation(this, getEntityWorld());
         updateNavigationTarget();
     }
 
@@ -498,9 +503,9 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
     @Nullable
     public BlockPos getGroundBlock() {
         Vec3d startPos = getPos();
-        Vec3d endPos = startPos.add(0, getWorld().getBottomY(), 0);
+        Vec3d endPos = startPos.add(0, getEntityWorld().getBottomY(), 0);
 
-        BlockHitResult result = getWorld().raycast(
+        BlockHitResult result = getEntityWorld().raycast(
                 new RaycastContext(
                         startPos,
                         endPos,
@@ -622,14 +627,22 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
         ServerPlayerEntity player = getBoundPlayer();
         if (player == null) return;
         player.playSoundToPlayer(SoundEvents.ENTITY_ELDER_GUARDIAN_CURSE, SoundCategory.MASTER, 0.2f, 1f);
-        ServerWorld world = (ServerWorld) getWorld();
+        ServerWorld world = (ServerWorld) getEntityWorld();
         Vec3d pos = getPos();
 
+        //? if <= 1.21.6 {
         world.spawnParticles(
                 EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 0xFFa61111),
                 pos.getX(), pos.getY()+1, pos.getZ(),
                 40, 0.1, 0.25, 0.1, 0.035
         );
+        //?} else {
+        /*world.spawnParticles(
+                TintedParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 0xFFa61111),
+                pos.getX(), pos.getY()+1, pos.getZ(),
+                40, 0.1, 0.25, 0.1, 0.035
+        );
+        *///?}
         int numOfCurses = 9;
         if (DependencyManager.voicechatLoaded() && VoicechatMain.isConnectedToSVC(player.getUuid())) numOfCurses = 10;
 
@@ -737,15 +750,15 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
             vector = relativeTargetPos.normalize().multiply(0.3).add(0,0.1,0);
         }
 
-        List<ItemStack> lootTableItems = ItemSpawner.getRandomItemsFromLootTable(server, (ServerWorld) getWorld(), getBoundPlayer(), Identifier.of("lifeseriesdynamic", "trivia_reward_loottable"));
+        List<ItemStack> lootTableItems = ItemSpawner.getRandomItemsFromLootTable(server, (ServerWorld) getEntityWorld(), getBoundPlayer(), Identifier.of("lifeseriesdynamic", "trivia_reward_loottable"));
         if (!lootTableItems.isEmpty()) {
             for (ItemStack item : lootTableItems) {
-                ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getWorld(), pos, item, getBoundPlayer(), vector);
+                ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getEntityWorld(), pos, item, getBoundPlayer(), vector);
             }
         }
         else {
             ItemStack randomItem = itemSpawner.getRandomItem();
-            ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getWorld(), pos, randomItem, getBoundPlayer(), vector);
+            ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getEntityWorld(), pos, randomItem, getBoundPlayer(), vector);
         }
     }
 
@@ -857,11 +870,11 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
 
     public void curseBeeswarm(ServerPlayerEntity player) {
         BlockPos spawnPos = getBlockPosNearTarget(player, getBlockPos(), 1);
-        BeeEntity bee1 = EntityType.BEE.spawn((ServerWorld) getWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee2 = EntityType.BEE.spawn((ServerWorld) getWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee3 = EntityType.BEE.spawn((ServerWorld) getWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee4 = EntityType.BEE.spawn((ServerWorld) getWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee5 = EntityType.BEE.spawn((ServerWorld) getWorld(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee1 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee2 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee3 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee4 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee5 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
         if (bee1 != null) bee1.setAngryAt(player.getUuid());
         if (bee2 != null) bee2.setAngryAt(player.getUuid());
         if (bee3 != null) bee3.setAngryAt(player.getUuid());

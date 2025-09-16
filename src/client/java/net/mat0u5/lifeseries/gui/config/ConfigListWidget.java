@@ -180,6 +180,12 @@ public class ConfigListWidget extends AlwaysSelectedEntryListWidget<ConfigListWi
         *///?}
     }
 
+    //? if >= 1.21.9 {
+    /*public ConfigEntryWidget getEntry(int entry) {
+        return children().get(entry);
+    }
+    *///?}
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         ConfigEntryWidget entry = getFocused();

@@ -29,7 +29,6 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.EntityEffectParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -39,6 +38,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
 import java.util.*;
+
+//? if <= 1.21.6
+import net.minecraft.particle.EntityEffectParticleEffect;
+//? if >= 1.21.9
+/*import net.minecraft.particle.TintedParticleEffect;*/
 
 public class ClientEvents {
     public static long onGroundFor = 0;
@@ -116,7 +120,11 @@ public class ClientEvents {
                     double y = player.getY() + Math.random() * 1.8;
                     double z = player.getZ() + (Math.random() - 0.5) * 0.6;
 
+                    //? if <= 1.21.6 {
                     ParticleEffect invisibilityParticle = EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 0x208891b5);
+                    //?} else {
+                    /*ParticleEffect invisibilityParticle = TintedParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 0x208891b5);
+                    *///?}
                     particleManager.addParticle(invisibilityParticle, x, y, z, 0, 0, 0);
                 }
             }

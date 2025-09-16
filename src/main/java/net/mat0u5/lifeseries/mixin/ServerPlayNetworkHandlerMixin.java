@@ -1,7 +1,6 @@
 package net.mat0u5.lifeseries.mixin;
 
 import net.mat0u5.lifeseries.Main;
-import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
 import net.mat0u5.lifeseries.entity.triviabot.TriviaBot;
 import net.mat0u5.lifeseries.seasons.other.WatcherManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
@@ -16,10 +15,8 @@ import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.network.message.LastSeenMessageList;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.network.packet.c2s.play.*;
-import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -28,13 +25,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
-import java.util.Set;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.Main.livesManager;
 
-//? if >= 1.21.2
+//? if >= 1.21.2 && <= 1.21.6
 /*import net.minecraft.entity.player.PlayerPosition;*/
+//? if <= 1.21.6 {
+import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.server.world.ServerWorld;
+import java.util.Set;
+//?}
+//? if >= 1.21.9
+/*import net.minecraft.entity.EntityPosition;*/
 
 @Mixin(value = ServerPlayNetworkHandler.class, priority = 1)
 public class ServerPlayNetworkHandlerMixin {
@@ -74,13 +78,14 @@ public class ServerPlayNetworkHandlerMixin {
         }
     }
 
+    //? if <= 1.21.6 {
     //? if <= 1.21 {
     @Inject(method = "requestTeleport(DDDFFLjava/util/Set;)V", at = @At("TAIL"))
     public void requestTeleport(double x, double y, double z, float yaw, float pitch, Set<PositionFlag> flags, CallbackInfo ci) {
     //?} else {
     /*@Inject(method = "requestTeleport(Lnet/minecraft/entity/player/PlayerPosition;Ljava/util/Set;)V", at = @At("TAIL"))
     public void requestTeleport(PlayerPosition pos, Set<PositionFlag> flags, CallbackInfo ci) {
-    *///?}
+        *///?}
         ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
         ServerPlayerEntity player = handler.getPlayer();
         if (player instanceof FakePlayer) {
@@ -91,7 +96,7 @@ public class ServerPlayNetworkHandlerMixin {
             }
         }
     }
-
+    //?}
 
     @Unique
     private static final List<String> mutedCommands = List.of("msg", "tell", "whisper", "w", "me");

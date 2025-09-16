@@ -8,7 +8,6 @@ import net.mat0u5.lifeseries.utils.TextColors;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.DisplayEntity;
 import net.minecraft.text.MutableText;
@@ -32,6 +31,10 @@ import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.util.Identifier;
 *///?}
+//? if <= 1.21.6
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+//? if >= 1.21.6
+/*import net.minecraft.client.render.entity.EntityRenderManager;*/
 
 public class QuizScreen extends DefaultScreen {
     //? if >= 1.21.6 {
@@ -278,7 +281,11 @@ public class QuizScreen extends DefaultScreen {
     }
     //?} else {
     /*public static void drawEntity(DrawContext drawer, int x1, int y1, int x2, int y2, float scale, Vector3f translation, Quaternionf rotation, @Nullable Quaternionf overrideCameraAngle, Entity entity) {
+        //? if <= 1.21.6 {
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
+        //?} else {
+        /^EntityRenderManager entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
+        ^///?}
         EntityRenderer<? super Entity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
         EntityRenderState entityRenderState = entityRenderer.getAndUpdateRenderState(entity, 1.0F);
         entityRenderState.hitbox = null;

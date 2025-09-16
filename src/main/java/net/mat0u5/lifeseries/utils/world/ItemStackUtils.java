@@ -153,13 +153,21 @@ public class ItemStackUtils {
         if (itemStack == null) return false;
         NbtComponent nbt = itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA);
         if (nbt == null) return false;
+        //? if <= 1.21.6 {
         return nbt.contains(componentEntry);
+        //?} else {
+        /*return nbt.copyNbt().contains(componentEntry);
+        *///?}
     }
 
     public static void removeCustomComponentEntry(ItemStack itemStack, String componentEntry) {
         NbtComponent nbt = itemStack.getComponents().get(DataComponentTypes.CUSTOM_DATA);
         if (nbt == null) return;
+        //? if <= 1.21.6 {
         if (!nbt.contains(componentEntry)) return;
+        //?} else {
+        /*if (!nbt.copyNbt().contains(componentEntry)) return;
+        *///?}
         NbtCompound nbtComp = nbt.copyNbt();
         nbtComp.remove(componentEntry);
         if (nbtComp.isEmpty()) {

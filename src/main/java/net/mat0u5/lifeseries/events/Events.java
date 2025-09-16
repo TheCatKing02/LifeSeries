@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.mat0u5.lifeseries.Main;
-import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
 import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.resources.datapack.DatapackManager;
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
@@ -43,6 +42,7 @@ import net.minecraft.world.World;
 import java.util.*;
 
 import static net.mat0u5.lifeseries.Main.*;
+import static net.mat0u5.lifeseries.utils.player.PlayerUtils.isFakePlayer;
 //? if <= 1.21.2
 import net.fabricmc.fabric.api.event.player.*;
 //? if >= 1.21.2
@@ -84,14 +84,14 @@ public class Events {
         try {
             if (!Main.isLogicalSide()) return;
             Main.reloadStart();
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onReloadEnd(MinecraftServer server, LifecycledResourceManager resourceManager, boolean success) {
         try {
             if (!Main.isLogicalSide()) return;
             Main.reloadEnd();
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onPlayerJoin(ServerPlayerEntity player) {
@@ -103,7 +103,7 @@ public class Events {
             currentSeason.onUpdatedInventory(player);
             SessionTranscript.playerJoin(player);
             MorphManager.onPlayerJoin(player);
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onPlayerFinishJoining(ServerPlayerEntity player) {
@@ -118,7 +118,7 @@ public class Events {
             });
             MorphManager.onPlayerDisconnect(player);
             MorphManager.syncToPlayer(player);
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onPlayerDisconnect(ServerPlayerEntity player) {
@@ -127,14 +127,14 @@ public class Events {
         try {
             currentSeason.onPlayerDisconnect(player);
             SessionTranscript.playerLeave(player);
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onServerStopping(MinecraftServer server) {
         try {
             UpdateChecker.shutdownExecutor();
             currentSession.sessionEnd();
-        }catch (Exception e) {Main.LOGGER.error(e.getMessage());}
+        }catch (Exception e) {e.printStackTrace();}
     }
 
     private static void onServerStarting(MinecraftServer server) {
@@ -150,7 +150,7 @@ public class Events {
                 ((DoubleLife) currentSeason).loadSoulmates();
             }
             DatapackManager.onServerStarted(server);
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onServerTickEnd(MinecraftServer server) {
@@ -173,7 +173,7 @@ public class Events {
             }
             AdvancedDeathsManager.tick();
         }catch(Exception e) {
-            Main.LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -186,14 +186,14 @@ public class Events {
                 return;
             }
             currentSeason.onMobDeath(entity, source);
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
     public static void onEntityDropItems(LivingEntity entity, DamageSource source) {
         if (isFakePlayer(entity)) return;
         try {
             if (!Main.isLogicalSide()) return;
             currentSeason.onEntityDropItems(entity, source);
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     public static void onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
@@ -203,7 +203,7 @@ public class Events {
             if (!Main.isLogicalSide()) return;
             currentSeason.onPlayerDeath(player, source);
             AdvancedDeathsManager.onPlayerDeath(player);
-        } catch(Exception e) {Main.LOGGER.error(e.getMessage());}
+        } catch(Exception e) {e.printStackTrace();}
     }
 
     public static ActionResult onBlockUse(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
@@ -221,7 +221,7 @@ public class Events {
                 if (blacklist == null) return ActionResult.PASS;
                 return blacklist.onBlockUse(serverPlayer,serverWorld,hand,hitResult);
             } catch(Exception e) {
-                Main.LOGGER.error(e.getMessage());
+                e.printStackTrace();
                 return ActionResult.PASS;
             }
         }
@@ -240,7 +240,7 @@ public class Events {
                     return ActionResult.FAIL;
                 }
             } catch(Exception e) {
-                Main.LOGGER.error(e.getMessage());
+                e.printStackTrace();
                 return ActionResult.PASS;
             }
         }
@@ -256,7 +256,7 @@ public class Events {
             if (world.isClient()) return ActionResult.PASS;
             return blacklist.onBlockAttack(player,world,pos);
         } catch(Exception e) {
-            Main.LOGGER.error(e.getMessage());
+            e.printStackTrace();
             return ActionResult.PASS;
         }
     }
@@ -270,7 +270,7 @@ public class Events {
                 currentSeason.onRightClickEntity(serverPlayer, world, hand, entity, hitResult);
             }
         } catch(Exception e) {
-            Main.LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
         return ActionResult.PASS;
     }
@@ -283,7 +283,7 @@ public class Events {
                 currentSeason.onAttackEntity(serverPlayer, world, hand, entity, hitResult);
             }
         } catch(Exception e) {
-            Main.LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
         return ActionResult.PASS;
     }
@@ -351,8 +351,5 @@ public class Events {
             }
         }
         return isFakePlayer(entity);
-    }
-    public static boolean isFakePlayer(Entity entity) {
-        return entity instanceof FakePlayer;
     }
 }

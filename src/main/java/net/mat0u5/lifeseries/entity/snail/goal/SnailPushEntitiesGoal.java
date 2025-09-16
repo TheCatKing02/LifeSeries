@@ -26,7 +26,7 @@ public final class SnailPushEntitiesGoal extends Goal {
 
     @Override
     public boolean canStart() {
-        World world = mob.getWorld();
+        World world = mob.getEntityWorld();
         if (world == null) {
             return false;
         }

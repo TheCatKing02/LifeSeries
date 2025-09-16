@@ -72,12 +72,12 @@ public class PathFinder extends AmbientEntity implements AnimatedEntity {
         setPathfindingPenalty(PathNodeType.UNPASSABLE_RAIL, 0);
         if (flying) {
             moveControl = new FlightMoveControl(this, 20, true);
-            navigation = new BirdNavigation(this, getWorld());
+            navigation = new BirdNavigation(this, getEntityWorld());
             navigation.setCanSwim(true);
         }
         else {
             moveControl = new MoveControl(this);
-            navigation = new MobNavigation(this, getWorld());
+            navigation = new MobNavigation(this, getEntityWorld());
             navigation.setCanSwim(true);
         }
     }

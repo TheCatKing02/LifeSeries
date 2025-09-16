@@ -253,7 +253,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
                     properties.store(output, null);
                 }
             } catch (IOException ex) {
-                Main.LOGGER.error(ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }
@@ -265,7 +265,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
         try (InputStream input = new FileInputStream(filePath)) {
             properties.load(input);
         } catch (IOException ex) {
-            Main.LOGGER.error(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -275,7 +275,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
         try (OutputStream output = new FileOutputStream(filePath)) {
             properties.store(output, null);
         } catch (IOException ex) {
-            Main.LOGGER.error(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -286,7 +286,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
         try (OutputStream output = new FileOutputStream(filePath)) {
             properties.store(output, null);
         } catch (IOException ex) {
-            Main.LOGGER.error(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -296,7 +296,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
         try (OutputStream output = new FileOutputStream(filePath)) {
             properties.store(output, comment);
         } catch (IOException ex) {
-            Main.LOGGER.error(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -305,7 +305,7 @@ public abstract class ConfigManager extends DefaultConfigValues {
         try (OutputStream output = new FileOutputStream(filePath)) {
             properties.store(output, comment);
         } catch (IOException ex) {
-            Main.LOGGER.error(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

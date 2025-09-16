@@ -76,6 +76,7 @@ public class UpdateChecker {
                     Main.LOGGER.error("Failed to fetch update info: " + connection.getResponseCode());
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 Main.LOGGER.error("Error while checking for updates: " + e.getMessage());
             } finally {
                 if (connection != null) {
@@ -124,6 +125,7 @@ public class UpdateChecker {
                                 if (!majorUpdateAvailable) versionDescription = formatDescription(json.get("body").getAsString());
                             }
                         }catch(Exception e) {
+                            e.printStackTrace();
                             Main.LOGGER.error(TextUtils.formatString("Error while parsing version number for update: {} - {}", name, e.getMessage()));
                         }
                     }
@@ -132,6 +134,7 @@ public class UpdateChecker {
                     Main.LOGGER.error("Failed to fetch update info: " + connection.getResponseCode());
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 Main.LOGGER.error("Error while checking for updates: " + e.getMessage());
             } finally {
                 if (connection != null) {

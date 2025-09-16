@@ -29,7 +29,7 @@ public class ClientTaskScheduler {
                         //Inner try-catch to prevent errors from preventing the task from being removed
                         task.goal.run();
                     }catch (Exception e) {
-                        Main.LOGGER.error(e.getMessage());
+                        e.printStackTrace();
                     }
                     iterator.remove();
                 }

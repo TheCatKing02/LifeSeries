@@ -31,11 +31,11 @@ public final class SnailPushProjectilesGoal extends Goal {
 
     @Override
     public boolean canStart() {
-        if (mob.getWorld() == null) {
+        if (mob.getEntityWorld() == null) {
             return false;
         }
 
-        World world = mob.getWorld();
+        World world = mob.getEntityWorld();
         this.projectiles = world.getEntitiesByClass(
                 ProjectileEntity.class,
                 mob.getBoundingBox().expand(5.0, 5.0, 5.0),

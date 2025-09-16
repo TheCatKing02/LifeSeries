@@ -38,13 +38,13 @@ public class MorphComponent {
                     //? if <= 1.21 {
                     Entity entity = morph.create(serverPlayer.getWorld());
                     //?} else {
-                    /*Entity entity = morph.create(serverPlayer.getWorld(), SpawnReason.COMMAND);
+                    /*Entity entity = morph.create(PlayerUtils.getServerWorld(serverPlayer), SpawnReason.COMMAND);
                      *///?}
                     if (entity != null) {
                         ((IMorph) entity).setFromMorph(true);
                         EntityDimensions dimensions = entity.getDimensions(EntityPose.STANDING);
-                        double scaleY = dimensions.height() / PlayerEntity.STANDING_DIMENSIONS.height();
-                        double scaleX = dimensions.width() / PlayerEntity.STANDING_DIMENSIONS.width();
+                        double scaleY = dimensions.height() / serverPlayer.getDimensions(EntityPose.STANDING).height();
+                        double scaleX = dimensions.width() / serverPlayer.getDimensions(EntityPose.STANDING).width();
                         double scale = Math.clamp(Math.min(scaleX, scaleY), 0.1, 1.0);
                         if (scale != serverPlayer.getScale()) SizeShifting.setPlayerSizeUnchecked(serverPlayer, 0.1);
                     }

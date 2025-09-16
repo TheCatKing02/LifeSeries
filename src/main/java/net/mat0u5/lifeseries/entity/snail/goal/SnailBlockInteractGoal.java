@@ -22,7 +22,7 @@ public final class SnailBlockInteractGoal extends Goal {
     @Override
     public boolean canStart() {
         if (mob.isPaused()) return false;
-        if (mob.getWorld() == null) {
+        if (mob.getEntityWorld() == null) {
             return false;
         }
 
@@ -52,19 +52,19 @@ public final class SnailBlockInteractGoal extends Goal {
     }
 
     private boolean isTrapdoorOpen(BlockPos blockPos) {
-        return this.mob.getWorld().getBlockState(blockPos).get(TrapdoorBlock.OPEN);
+        return this.mob.getEntityWorld().getBlockState(blockPos).get(TrapdoorBlock.OPEN);
     }
 
     private void openTrapdoor(BlockPos blockPos) {
         if (!isTrapdoor(blockPos)) return;
-        World world = mob.getWorld();
+        World world = mob.getEntityWorld();
         if (world == null) return;
         if (!isTrapdoorOpen(blockPos)) return;
-        this.mob.getWorld().setBlockState(blockPos, this.mob.getWorld().getBlockState(blockPos).with(TrapdoorBlock.OPEN, false));
+        this.mob.getEntityWorld().setBlockState(blockPos, this.mob.getEntityWorld().getBlockState(blockPos).with(TrapdoorBlock.OPEN, false));
     }
 
     private BlockState getBlockState(BlockPos blockPos) {
-        World world = mob.getWorld();
+        World world = mob.getEntityWorld();
         if (world != null) {
             return world.getBlockState(blockPos);
         }

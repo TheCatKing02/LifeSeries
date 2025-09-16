@@ -69,7 +69,11 @@ public class SuperPunch extends ToggleableSuperpower {
             syncEntityPassengers(vehicle, riderWorld);
         }
 
+        //? if <= 1.21.6 {
         boolean rideResult = rider.startRiding(entity, true);
+        //?} else {
+        /*boolean rideResult = rider.startRiding(entity, true, true);
+        *///?}
 
         if (rideResult) {
             riding = entity;

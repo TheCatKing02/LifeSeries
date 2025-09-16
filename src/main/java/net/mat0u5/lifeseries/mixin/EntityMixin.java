@@ -112,10 +112,17 @@ public abstract class EntityMixin implements IEntityDataSaver, IMorph {
 
 
     //? if >= 1.21.2 {
-    /*@WrapOperation(
+    /*//? if <= 1.21.6 {
+    @WrapOperation(
             method = "startRiding(Lnet/minecraft/entity/Entity;Z)Z",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;isSaveable()Z")
     )
+    //?} else {
+    /^@WrapOperation(
+            method = "startRiding(Lnet/minecraft/entity/Entity;ZZ)Z",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;isSaveable()Z")
+    )
+    ^///?}
     private boolean allowRidingPlayers(EntityType instance, Operation<Boolean> original) {
         if( instance == EntityType.PLAYER) {
             return true;

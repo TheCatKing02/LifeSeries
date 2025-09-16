@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
+import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.other.WeightedRandomizer;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
@@ -14,6 +15,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+
+import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -53,20 +56,10 @@ public class TestingCommands {
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
 
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("v.1.3.6.25"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("1.3.6.25"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.3.6.25"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("1.3.6.25-personname"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.3.6.25-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-1.3.6.25-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1.3.-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1..3.-personname-two"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-test-...1......3.-personname-two"))));
-
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("1.4.0"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.3.7.30"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.4.0-pre1"))));
-        OtherUtils.sendCommandFeedbackQuiet(source, Text.of(String.valueOf(VersionControl.getModVersionInt("dev-1.4.0-pre2"))));
+        TaskScheduler.scheduleTask(1, () -> {
+            List<ServerPlayerEntity> test = List.of(player);
+            test.removeFirst();//Will cause an error
+        });
 
         return 1;
     }

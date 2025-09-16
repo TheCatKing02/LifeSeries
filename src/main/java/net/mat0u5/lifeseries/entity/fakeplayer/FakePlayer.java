@@ -1,6 +1,11 @@
 package net.mat0u5.lifeseries.entity.fakeplayer;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+//? if <= 1.21.6 {
 import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.Superpowers;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.SuperpowersWildcard;
@@ -11,14 +16,10 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.DisconnectionInfo;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ConnectedClientData;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.Uuids;
@@ -28,6 +29,7 @@ import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+//?}
 /*
  * This file includes code from the Fabric Carpet project: https://github.com/gnembon/fabric-carpet
  *
@@ -35,13 +37,17 @@ import java.util.concurrent.CompletableFuture;
  */
 @SuppressWarnings("EntityConstructor")
 public class FakePlayer extends ServerPlayerEntity {
+    private FakePlayer(MinecraftServer server, ServerWorld worldIn, GameProfile profile, SyncedClientOptions cli) {
+        super(server, worldIn, profile, cli);
+    }
+    //? if <= 1.21.6 {
     private static final Set<String> spawning = new HashSet<>();
     public Runnable fixStartingPosition = () -> {};
     public UUID shadow;
 
     public static CompletableFuture<FakePlayer> createFake(
             String username, MinecraftServer server, Vec3d pos, double yaw, double pitch,
-             RegistryKey<World> dimensionId, GameMode gamemode, boolean flying, PlayerInventory inv,
+            RegistryKey<World> dimensionId, GameMode gamemode, boolean flying, PlayerInventory inv,
             UUID shadow) {
         ServerWorld worldIn = server.getWorld(dimensionId);
         UserCache.setUseRemote(false);
@@ -110,10 +116,6 @@ public class FakePlayer extends ServerPlayerEntity {
         return SkullBlockEntity.fetchProfileByName(name);
     }
 
-    private FakePlayer(MinecraftServer server, ServerWorld worldIn, GameProfile profile, SyncedClientOptions cli) {
-        super(server, worldIn, profile, cli);
-    }
-
     @Override
     public String getIp() {
         return "127.0.0.1";
@@ -127,8 +129,8 @@ public class FakePlayer extends ServerPlayerEntity {
     public void tick() {
         if (age % 20 == 0) {
             boolean triggered = false;
-            if (shadow != null && getServer() != null) {
-                ServerPlayerEntity player = getServer().getPlayerManager().getPlayer(shadow);
+            if (shadow != null) {
+                ServerPlayerEntity player = PlayerUtils.getPlayer(shadow);
                 if (player != null) {
                     if (SuperpowersWildcard.hasActivatedPower(player, Superpowers.ASTRAL_PROJECTION)) {
                         if (SuperpowersWildcard.getSuperpowerInstance(player) instanceof AstralProjection projection) {
@@ -153,18 +155,18 @@ public class FakePlayer extends ServerPlayerEntity {
             playerTick();
         }
         catch (NullPointerException e) {
-            Main.LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Override
-    //? if <= 1.21 {
+            //? if <= 1.21 {
     public boolean damage(DamageSource source, float amount) {
      //?} else {
     /*public boolean damage(ServerWorld world, DamageSource source, float amount) {
-    *///?}
-        if (shadow != null && getServer() != null) {
-            ServerPlayerEntity player = getServer().getPlayerManager().getPlayer(shadow);
+        *///?}
+        if (shadow != null) {
+            ServerPlayerEntity player = PlayerUtils.getPlayer(shadow);
             if (player != null) {
                 if (SuperpowersWildcard.hasActivatedPower(player, Superpowers.ASTRAL_PROJECTION)) {
                     if (SuperpowersWildcard.getSuperpowerInstance(player) instanceof AstralProjection projection) {
@@ -184,4 +186,5 @@ public class FakePlayer extends ServerPlayerEntity {
         *///?}
 
     }
+    //?}
 }

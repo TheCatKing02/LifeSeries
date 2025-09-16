@@ -57,6 +57,7 @@ public class DynamicDatapackManager {
             Files.copy(configTrivia.toPath(), datapackFolder.resolve(DATAPACK_TABLE_TRIVIA), StandardCopyOption.REPLACE_EXISTING);
             Files.copy(configTask.toPath(), datapackFolder.resolve(DATAPACK_TABLE_TASK), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
+            e.printStackTrace();
             Main.LOGGER.error("Error copying loot tables: {}", e.getMessage());
         }
     }

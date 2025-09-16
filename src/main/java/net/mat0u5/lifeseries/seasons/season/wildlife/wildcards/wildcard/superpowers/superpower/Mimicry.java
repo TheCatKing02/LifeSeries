@@ -13,6 +13,9 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
+//? if >= 1.21.9
+/*import net.minecraft.entity.decoration.MannequinEntity;*/
+
 public class Mimicry extends Superpower {
 
     private Superpower mimic = null;
@@ -39,6 +42,9 @@ public class Mimicry extends Superpower {
         boolean isLookingAtPlayer = false;
         boolean successfullyMimicked = false;
         if (lookingAt != null)  {
+            if (lookingAt instanceof MannequinEntity mannequin) {
+                //TODO
+            }
             if (lookingAt instanceof ServerPlayerEntity lookingAtPlayer) {
                 lookingAtPlayer = PlayerUtils.getPlayerOrProjection(lookingAtPlayer);
                 isLookingAtPlayer = true;

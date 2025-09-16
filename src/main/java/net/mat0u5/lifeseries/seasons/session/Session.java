@@ -253,7 +253,7 @@ public class Session {
 
     private Map<UUID, Vec3d> lastNonBorderPositions = new HashMap<>();
     public void checkPlayerPosition(ServerPlayerEntity player) {
-        WorldBorder border = player.getWorld().getWorldBorder();
+        WorldBorder border = PlayerUtils.getServerWorld(player).getWorldBorder();
         double playerSize = player.getBoundingBox().getLengthX()/2;
         double minX = Math.floor(border.getBoundWest()) + playerSize;
         double maxX = Math.ceil(border.getBoundEast()) - playerSize;

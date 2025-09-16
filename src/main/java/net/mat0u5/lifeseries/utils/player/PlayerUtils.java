@@ -124,9 +124,8 @@ public class PlayerUtils {
         if (server == null) return result;
 
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            if (!(player instanceof FakePlayer)) {
-                result.add(player);
-            }
+            if (isFakePlayer(player)) continue;
+            result.add(player);
         }
         return result;
     }
@@ -239,7 +238,7 @@ public class PlayerUtils {
         return null;
     }
 
-    public static boolean isFakePlayer(PlayerEntity player) {
+    public static boolean isFakePlayer(Entity player) {
         return player instanceof FakePlayer;
     }
     public static void displayMessageToPlayer(ServerPlayerEntity player, Text text, int timeFor) {
@@ -255,8 +254,8 @@ public class PlayerUtils {
 
     public static void resendCommandTree(ServerPlayerEntity player) {
         if (player == null) return;
-        if (player.getServer() == null) return;
-        player.getServer().getCommandManager().sendCommandTree(player);
+        if (server == null) return;
+        server.getCommandManager().sendCommandTree(player);
     }
 
     public static void resendCommandTrees() {
@@ -319,8 +318,10 @@ public class PlayerUtils {
         return new PlayerListS2CPacket.Entry(player.getUuid(), player.getGameProfile(), listed, player.networkHandler.getLatency(), player.interactionManager.getGameMode(), player.getPlayerListName(), (PublicPlayerSession.Serialized) Nullables.map(player.getSession(), PublicPlayerSession::toSerialized));
         //?} else if <= 1.21.2 {
         /*return new PlayerListS2CPacket.Entry(player.getUuid(), player.getGameProfile(), listed, player.networkHandler.getLatency(), player.interactionManager.getGameMode(), player.getPlayerListName(), player.getPlayerListOrder(), (PublicPlayerSession.Serialized)Nullables.map(player.getSession(), PublicPlayerSession::toSerialized));
-        *///?} else {
+        *///?} else if <= 1.21.6 {
         /*return new PlayerListS2CPacket.Entry(player.getUuid(), player.getGameProfile(), listed, player.networkHandler.getLatency(), player.interactionManager.getGameMode(), player.getPlayerListName(), player.isPartVisible(PlayerModelPart.HAT), player.getPlayerListOrder(), (PublicPlayerSession.Serialized)Nullables.map(player.getSession(), PublicPlayerSession::toSerialized));
+        *///?} else {
+        /*return new PlayerListS2CPacket.Entry(player.getUuid(), player.getGameProfile(), listed, player.networkHandler.getLatency(), player.getGameMode(), player.getPlayerListName(), player.isModelPartVisible(PlayerModelPart.HAT), player.getPlayerListOrder(), (PublicPlayerSession.Serialized)Nullables.map(player.getSession(), PublicPlayerSession::toSerialized));
         *///?}
     }
 
@@ -356,8 +357,10 @@ public class PlayerUtils {
     public static ServerWorld getServerWorld(ServerPlayerEntity player) {
         //? if <= 1.21.5 {
         return player.getServerWorld();
-        //?} else {
+        //?} else if <= 1.21.6 {
         /*return player.getWorld();
+        *///?} else {
+        /*return player.getEntityWorld();
         *///?}
     }
 
@@ -477,9 +480,11 @@ public class PlayerUtils {
         if (player == null) return null;
         if (!PlayerUtils.isFakePlayer(player)) return player;
 
+        //? if <= 1.21.6 {
         if (player instanceof FakePlayer fakePlayer) {
             return PlayerUtils.getPlayer(fakePlayer.shadow);
         }
+        //?}
         return player;
     }
 

@@ -1,31 +1,45 @@
 package net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.superpower;
 
-import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
-import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.Superpowers;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.superpowers.ToggleableSuperpower;
-import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.DisconnectionInfo;
-import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
 
 import static net.mat0u5.lifeseries.Main.livesManager;
+//? if <= 1.21.6 {
+import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
+import net.mat0u5.lifeseries.network.NetworkHandlerServer;
+import net.mat0u5.lifeseries.utils.other.TextUtils;
+import net.minecraft.network.DisconnectionInfo;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.text.Text;
+import java.util.EnumSet;
+import static net.mat0u5.lifeseries.Main.server;
+//?}
+//? if >= 1.21.9 {
+/*import net.minecraft.entity.decoration.MannequinEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.SpawnReason;
+*///?}
 
 public class AstralProjection extends ToggleableSuperpower {
+    //? if <= 1.21.6 {
     @Nullable
     public FakePlayer clone;
+    //?} else {
+    /*@Nullable
+    public MannequinEntity clone;
+    *///?}
     @Nullable
     private Vec3d startedPos;
     @Nullable
@@ -84,12 +98,25 @@ public class AstralProjection extends ToggleableSuperpower {
         player.changeGameMode(GameMode.SPECTATOR);
         PlayerInventory inv = player.getInventory();
 
-        FakePlayer.createFake(fakePlayerName, player.getServer(), startedPos, startedLooking[0], startedLooking[1], player.getServer().getOverworld().getRegistryKey(),
+        //? if <= 1.21.6 {
+        FakePlayer.createFake(fakePlayerName, server, startedPos, startedLooking[0], startedLooking[1], server.getOverworld().getRegistryKey(),
                 startedGameMode, false, inv, player.getUuid()).thenAccept((fakePlayer) -> {
             clone = fakePlayer;
             String name = TextUtils.textToLegacyString(player.getStyledDisplayName());
             NetworkHandlerServer.sendPlayerDisguise(clone.getUuid().toString(), clone.getName().getString(), player.getUuid().toString(), name);
         });
+        //?} else {
+        /*clone = EntityType.MANNEQUIN.create(startedWorld, SpawnReason.COMMAND);
+        clone.setBodyYaw(player.getBodyYaw());
+        clone.setHeadYaw(player.getHeadYaw());
+        clone.setPitch(player.getPitch());
+        clone.setPos(player.getX(), player.getY(), player.getZ());
+        clone.setCustomName(player.getStyledDisplayName());
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            clone.equipStack(slot, player.getEquippedStack(slot));
+        }
+        startedWorld.spawnEntity(clone);
+        *///?}
     }
 
     public void cancelProjection() {
@@ -99,8 +126,12 @@ public class AstralProjection extends ToggleableSuperpower {
         Vec3d toBackPos = startedPos;
         if (clone != null) {
             toBackPos = clone.getPos();
+            //? if <= 1.21.6 {
             clone.networkHandler.onDisconnected(new DisconnectionInfo(Text.empty()));
             NetworkHandlerServer.sendPlayerDisguise(clone.getUuid().toString(), clone.getName().getString(), "", "");
+            //?} else {
+            /*clone.discard();
+            *///?}
         }
 
         if (!livesManager.isAlive(player)) return;

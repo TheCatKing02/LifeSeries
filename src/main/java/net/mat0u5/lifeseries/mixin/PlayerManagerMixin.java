@@ -1,6 +1,5 @@
 package net.mat0u5.lifeseries.mixin;
 
-import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.PlayerManager;
@@ -10,9 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 //? if <= 1.21.5
@@ -21,6 +18,11 @@ import net.minecraft.nbt.NbtCompound;
 /*import net.minecraft.util.ErrorReporter;
 import net.minecraft.storage.ReadView;
 *///?}
+//? if <= 1.21.6 {
+import net.mat0u5.lifeseries.entity.fakeplayer.FakePlayer;
+import java.util.Optional;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+//?}
 
 @Mixin(value = PlayerManager.class, priority = 1)
 public class PlayerManagerMixin {
@@ -34,14 +36,16 @@ public class PlayerManagerMixin {
         if (message.getContent().getString().contains("`")) ci.cancel();
     }
 
+    //? if <= 1.21.6 {
     @Inject(method = "loadPlayerData", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-    //? if <= 1.21.5 {
+            //? if <= 1.21.5 {
     public void loadPlayerData(ServerPlayerEntity player, CallbackInfoReturnable<Optional<NbtCompound>> cir) {
-    //?} else {
+     //?} else {
     /*public void loadPlayerData(ServerPlayerEntity player, ErrorReporter errorReporter, CallbackInfoReturnable<Optional<ReadView>> cir) {
-    *///?}
+        *///?}
         if (player instanceof FakePlayer fakePlayer) {
             fakePlayer.fixStartingPosition.run();
         }
     }
+    //?}
 }

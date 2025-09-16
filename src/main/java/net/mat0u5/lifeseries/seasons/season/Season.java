@@ -225,7 +225,7 @@ public abstract class Season {
 
     public void dropItemsOnLastDeath(ServerPlayerEntity player) {
         boolean doDrop = seasonConfig.PLAYERS_DROP_ITEMS_ON_FINAL_DEATH.get(seasonConfig);
-        boolean keepInventory = player.getServer().getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
+        boolean keepInventory = server.getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
         if (doDrop && keepInventory) {
             for (ItemStack item : PlayerUtils.getPlayerInventory(player)) {
                 //? if <= 1.21 {
@@ -371,7 +371,7 @@ public abstract class Season {
     }
 
     public void modifyEntityDrops(LivingEntity entity, DamageSource damageSource) {
-        if (!entity.getWorld().isClient() && (damageSource.getAttacker() instanceof ServerPlayerEntity)) {
+        if (!entity.getEntityWorld().isClient() && (damageSource.getAttacker() instanceof ServerPlayerEntity)) {
             spawnEggChance(entity);
         }
     }
@@ -401,7 +401,7 @@ public abstract class Season {
             //? if <=1.21 {
             entity.dropStack(spawnEggItem);
             //?} else
-            /*entity.dropStack((ServerWorld) entity.getWorld(), spawnEggItem);*/
+            /*entity.dropStack((ServerWorld) entity.getEntityWorld(), spawnEggItem);*/
         }
     }
 

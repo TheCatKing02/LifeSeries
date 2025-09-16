@@ -78,7 +78,7 @@ public class ItemSpawner {
 
             return generatedLoot;
         }catch(Exception e) {
-            Main.LOGGER.error(e.getMessage());
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }

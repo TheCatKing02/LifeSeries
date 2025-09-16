@@ -391,7 +391,7 @@ public class DoubleLife extends Season {
                     .get(RegistryKeys.DAMAGE_TYPE).entryOf(SOULMATE_DAMAGE));
             soulmate.damage(damageSource, 0.0000001F);
             //?} else {
-            /*DamageSource damageSource = new DamageSource( soulmate.getWorld().getRegistryManager()
+            /*DamageSource damageSource = new DamageSource( PlayerUtils.getServerWorld(soulmate).getRegistryManager()
                     .getOrThrow(RegistryKeys.DAMAGE_TYPE).getOrThrow(SOULMATE_DAMAGE));
             soulmate.damage(PlayerUtils.getServerWorld(soulmate), damageSource, 0.0000001F);
             *///?}
@@ -427,7 +427,7 @@ public class DoubleLife extends Season {
         soulmate.setAttacking(player);
         soulmate.damage(damageSource, 1000);
          //?} else {
-        /*DamageSource damageSource = new DamageSource( soulmate.getWorld().getRegistryManager()
+        /*DamageSource damageSource = new DamageSource( PlayerUtils.getServerWorld(soulmate).getRegistryManager()
                 .getOrThrow(RegistryKeys.DAMAGE_TYPE).getOrThrow(SOULMATE_DAMAGE));
         soulmate.setAttacker(player);
         //? if <= 1.21.4 {

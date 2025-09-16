@@ -5,6 +5,7 @@ import net.mat0u5.lifeseries.network.NetworkHandlerClient;
 import net.mat0u5.lifeseries.utils.versions.VersionControl;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class ClientKeybinds {
@@ -33,18 +34,36 @@ public class ClientKeybinds {
                 //?} else {
                 /*GLFW.GLFW_KEY_R,
                  *///?}
-                "key.categories.lifeseries"));
+
+                //? if <= 1.21.6 {
+                "key.categories.lifeseries"
+                //?} else {
+                /*new KeyBinding.Category(Identifier.of("lifeseries","key.categories.lifeseries"))
+                *///?}
+        ));
         openConfig = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.lifeseries.openconfig",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_UNKNOWN,
-                "key.categories.lifeseries"));
+
+                //? if <= 1.21.6 {
+                "key.categories.lifeseries"
+                 //?} else {
+                /*new KeyBinding.Category(Identifier.of("lifeseries","key.categories.lifeseries"))
+                *///?}
+        ));
         if (VersionControl.isDevVersion()) {
             runCommand = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                     "key.lifeseries.runcommand",
                     InputUtil.Type.KEYSYM,
                     GLFW.GLFW_KEY_RIGHT_ALT,
-                    "key.categories.lifeseries"));
+
+                    //? if <= 1.21.6 {
+                    "key.categories.lifeseries"
+                     //?} else {
+                    /*new KeyBinding.Category(Identifier.of("lifeseries","key.categories.lifeseries"))
+                    *///?}
+            ));
         }
     }
 }

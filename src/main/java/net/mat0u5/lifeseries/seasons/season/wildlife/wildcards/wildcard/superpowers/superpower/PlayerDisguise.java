@@ -14,6 +14,9 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
+//? if >= 1.21.9
+/*import net.minecraft.entity.decoration.MannequinEntity;*/
+
 public class PlayerDisguise extends ToggleableSuperpower {
 
     private String copiedPlayerName = "";
@@ -39,6 +42,9 @@ public class PlayerDisguise extends ToggleableSuperpower {
         if (player == null) return;
         Entity lookingAt = PlayerUtils.getEntityLookingAt(player, 50);
         if (lookingAt != null)  {
+            if (lookingAt instanceof MannequinEntity mannequin) {
+                //TODO
+            }
             if (lookingAt instanceof ServerPlayerEntity lookingAtPlayer) {
                 lookingAtPlayer = PlayerUtils.getPlayerOrProjection(lookingAtPlayer);
                 if (!PlayerUtils.isFakePlayer(lookingAtPlayer)) {

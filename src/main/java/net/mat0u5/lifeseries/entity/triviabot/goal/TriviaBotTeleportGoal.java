@@ -51,7 +51,7 @@ public final class TriviaBotTeleportGoal extends Goal {
         if (this.ticksSinceLastPositionChange > this.maxTicksSinceLastPositionChange) return true;
 
 
-        boolean dimensionsAreSame = mob.getWorld().getRegistryKey().equals(boundPlayer.getWorld().getRegistryKey());
+        boolean dimensionsAreSame = mob.getEntityWorld().getRegistryKey().equals(boundPlayer.getEntityWorld().getRegistryKey());
         return !dimensionsAreSame;
     }
 
