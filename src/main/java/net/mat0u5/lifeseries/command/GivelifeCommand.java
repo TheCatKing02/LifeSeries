@@ -1,6 +1,7 @@
 package net.mat0u5.lifeseries.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
@@ -8,9 +9,7 @@ import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.world.AnimationUtils;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -21,27 +20,24 @@ import java.util.Map;
 import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.*;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class GivelifeCommand {
+public class GivelifeCommand extends Command {
 
-    private static Map<UUID, Map<UUID, Long>> soulmateGivelifeRequests = new HashMap<>();
+    private Map<UUID, Map<UUID, Long>> soulmateGivelifeRequests = new HashMap<>();
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         if (currentSeason.getSeason() == Seasons.LIMITED_LIFE) return false;
         return seasonConfig.GIVELIFE_COMMAND_ENABLED.get(seasonConfig);
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when the givelife command has been enabled in the Life Series config."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when the givelife command has been enabled in the Life Series config.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("givelife")
                 .then(argument("player", EntityArgumentType.player())
@@ -50,7 +46,7 @@ public class GivelifeCommand {
         );
     }
 
-    public static int giftLife(ServerCommandSource source, ServerPlayerEntity target) {
+    public int giftLife(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
 
         final ServerPlayerEntity self = source.getPlayer();
@@ -106,7 +102,7 @@ public class GivelifeCommand {
         return 1;
     }
 
-    public static boolean doubleLifeGiveLife(ServerCommandSource source, ServerPlayerEntity self, ServerPlayerEntity soulmate, ServerPlayerEntity target) {
+    public boolean doubleLifeGiveLife(ServerCommandSource source, ServerPlayerEntity self, ServerPlayerEntity soulmate, ServerPlayerEntity target) {
         // Check if there already is a request from the soulmate for this target.
         Map<UUID, Long> soulmateRequest = soulmateGivelifeRequests.get(soulmate.getUuid());
         if (soulmateRequest != null) {

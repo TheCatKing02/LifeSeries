@@ -1,12 +1,11 @@
 package net.mat0u5.lifeseries.seasons.boogeyman;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -15,24 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class BoogeymanCommand {
+public class BoogeymanCommand extends Command {
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return getBM().BOOGEYMAN_ENABLED;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when the boogeyman has been enabled in the Life Series config."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when the boogeyman has been enabled in the Life Series config.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("boogeyman")
                 .requires(PermissionManager::isAdmin)
@@ -80,11 +76,11 @@ public class BoogeymanCommand {
         );
     }
 
-    public static BoogeymanManager getBM() {
+    public BoogeymanManager getBM() {
         return currentSeason.boogeymanManager;
     }
 
-    public static int failBoogey(ServerCommandSource source, ServerPlayerEntity target) {
+    public int failBoogey(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
         if (target == null) return -1;
 
@@ -103,7 +99,7 @@ public class BoogeymanCommand {
         return 1;
     }
 
-    public static int cureBoogey(ServerCommandSource source, ServerPlayerEntity target) {
+    public int cureBoogey(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
         if (target == null) return -1;
 
@@ -123,7 +119,7 @@ public class BoogeymanCommand {
         return 1;
     }
 
-    public static int addBoogey(ServerCommandSource source, ServerPlayerEntity target) {
+    public int addBoogey(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
 
         if (target == null) return -1;
@@ -141,7 +137,7 @@ public class BoogeymanCommand {
         return 1;
     }
 
-    public static int removeBoogey(ServerCommandSource source, ServerPlayerEntity target) {
+    public int removeBoogey(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
 
         if (target == null) return -1;
@@ -159,7 +155,7 @@ public class BoogeymanCommand {
         return 1;
     }
 
-    public static int boogeyList(ServerCommandSource source) {
+    public int boogeyList(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         BoogeymanManager bm = getBM();
         if (bm == null) return -1;
@@ -189,7 +185,7 @@ public class BoogeymanCommand {
         return 1;
     }
 
-    public static int boogeyCount(ServerCommandSource source) {
+    public int boogeyCount(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         BoogeymanManager bm = getBM();
         if (bm == null) return -1;
@@ -215,7 +211,7 @@ public class BoogeymanCommand {
         return 1;
     }
 
-    public static int boogeyClear(ServerCommandSource source) {
+    public int boogeyClear(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         BoogeymanManager bm = getBM();
         if (bm == null) return -1;
@@ -225,7 +221,7 @@ public class BoogeymanCommand {
         return 1;
     }
 
-    public static int boogeyChooseRandom(ServerCommandSource source) {
+    public int boogeyChooseRandom(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         BoogeymanManager bm = getBM();
         if (bm == null) return -1;

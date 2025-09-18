@@ -1,15 +1,9 @@
 package net.mat0u5.lifeseries.registries;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.mat0u5.lifeseries.command.*;
+import net.mat0u5.lifeseries.command.manager.CommandManager;
 import net.mat0u5.lifeseries.dependencies.DependencyManager;
 import net.mat0u5.lifeseries.events.Events;
-import net.mat0u5.lifeseries.seasons.boogeyman.BoogeymanCommand;
-import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLifeCommands;
-import net.mat0u5.lifeseries.seasons.season.pastlife.PastLifeCommands;
-import net.mat0u5.lifeseries.seasons.season.secretlife.SecretLifeCommands;
-import net.mat0u5.lifeseries.seasons.season.wildlife.WildLifeCommands;
-import net.mat0u5.lifeseries.seasons.secretsociety.SocietyCommands;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 
@@ -23,21 +17,7 @@ public class ModRegistries {
     }
 
     private static void registerCommands() {
-        CommandRegistrationCallback.EVENT.register(DoubleLifeCommands::register);
-        CommandRegistrationCallback.EVENT.register(SecretLifeCommands::register);
-        CommandRegistrationCallback.EVENT.register(WildLifeCommands::register);
-        CommandRegistrationCallback.EVENT.register(PastLifeCommands::register);
-
-        CommandRegistrationCallback.EVENT.register(LivesCommand::register);
-        CommandRegistrationCallback.EVENT.register(SessionCommand::register);
-        CommandRegistrationCallback.EVENT.register(BoogeymanCommand::register);
-        CommandRegistrationCallback.EVENT.register(ClaimKillCommand::register);
-        CommandRegistrationCallback.EVENT.register(LifeSeriesCommand::register);
-        CommandRegistrationCallback.EVENT.register(GivelifeCommand::register);
-        CommandRegistrationCallback.EVENT.register(SelfMessageCommand::register);
-        CommandRegistrationCallback.EVENT.register(WatcherCommand::register);
-        CommandRegistrationCallback.EVENT.register(SocietyCommands::register);
-        CommandRegistrationCallback.EVENT.register(TestingCommands::register);
+        CommandRegistrationCallback.EVENT.register(CommandManager::registerAllCommands);
     }
 
     private static void registerEvents() {

@@ -38,13 +38,14 @@ import java.util.List;
 import java.util.UUID;
 
 public class Main implements ModInitializer {
-	public static final String MOD_VERSION = "dev-1.4.0.8";
+	public static final String MOD_VERSION = "dev-1.4.0.9";
 	public static final String MOD_ID = "lifeseries";
 	public static final String LATEST_UPDATE_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases/latest";
 	public static final String ALL_UPDATES_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases";
 	public static final boolean DEBUG = false;
 	public static final boolean ISOLATED_ENVIRONMENT = false;
 	public static final Seasons DEFAULT_SEASON = Seasons.UNASSIGNED;
+	public static boolean MOD_DISABLED = false;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static ConfigManager config;
@@ -62,6 +63,7 @@ public class Main implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initializing Life Series...");
+
 		FabricLoader.getInstance().getModContainer(Main.MOD_ID).ifPresent(container -> {
 			ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(Main.MOD_ID, "lifeseries_datapack"), container, ResourcePackActivationType.ALWAYS_ENABLED);
 		});
@@ -74,6 +76,7 @@ public class Main implements ModInitializer {
 		}
 
 		config = new MainConfig();
+		MOD_DISABLED = config.getOrCreateProperty("modDisabled", "false").equalsIgnoreCase("true");
 		String season = config.getOrCreateProperty("currentSeries", DEFAULT_SEASON.getId());
 
 		parseSeason(season);
@@ -88,6 +91,10 @@ public class Main implements ModInitializer {
 		NetworkHandlerServer.registerServerReceiver();
 	}
 
+	public static void setDisabled(boolean disabled) {
+		MOD_DISABLED = disabled;
+		config.setProperty("modDisabled", String.valueOf(MOD_DISABLED));
+	}
 
 	public static boolean isClient() {
 		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;

@@ -3,6 +3,7 @@ package net.mat0u5.lifeseries.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.other.LivesManager;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
@@ -12,11 +13,9 @@ import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.player.ScoreboardUtils;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.scoreboard.ScoreboardEntry;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -29,45 +28,39 @@ import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.Main.livesManager;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
+public class LivesCommand extends Command {
 
-public class LivesCommand {
-
-    public static boolean isAllowed() {
-        return currentSeason.getSeason() != Seasons.UNASSIGNED;
-    }
-
-    public static boolean isAllowedNormal() {
+    public boolean isAllowedNormal() {
         return isAllowed() && isNormalLife();
     }
 
-    public static boolean isAllowedLimited() {
+    public boolean isAllowedLimited() {
         return isAllowed() && !isNormalLife();
     }
 
-    public static boolean isNormalLife() {
+    public boolean isNormalLife() {
         return currentSeason.getSeason() != Seasons.LIMITED_LIFE;
     }
 
-    public static boolean isLastLife() {
+    public boolean isLastLife() {
         return currentSeason.getSeason() == Seasons.LAST_LIFE;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is not available when you have not selected a season."));
-        return true;
+    @Override
+    public boolean isAllowed() {
+        return currentSeason.getSeason() != Seasons.UNASSIGNED;
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when you have selected a Season.");
+    }
 
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("lives")
-            .requires(source -> isAllowed())
             .executes(context -> showLives(context.getSource()))
             .then(literal("reload")
                 .requires(PermissionManager::isAdmin)
@@ -179,7 +172,7 @@ public class LivesCommand {
         );
     }
 
-    public static int showLives(ServerCommandSource source) {
+    public int showLives(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         boolean normalLife = isNormalLife();
 
@@ -208,7 +201,7 @@ public class LivesCommand {
         return 1;
     }
 
-    public static int getAllLives(ServerCommandSource source) {
+    public int getAllLives(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         boolean normalLife = isNormalLife();
         String timeOrLives = normalLife ? "lives" : "time";
@@ -243,7 +236,7 @@ public class LivesCommand {
         return 1;
     }
 
-    public static int getLivesFor(ServerCommandSource source, ServerPlayerEntity target) {
+    public int getLivesFor(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
         if (target == null) return -1;
         boolean normalLife = isNormalLife();
@@ -263,7 +256,7 @@ public class LivesCommand {
         return 1;
     }
 
-    public static int reloadLives(ServerCommandSource source) {
+    public int reloadLives(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         boolean normalLife = isNormalLife();
         String timeOrLives = normalLife ? "lives" : "times";
@@ -273,7 +266,7 @@ public class LivesCommand {
         return 1;
     }
 
-    public static int lifeManager(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String timeArgument, boolean setNotGive, boolean reverse) {
+    public int lifeManager(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String timeArgument, boolean setNotGive, boolean reverse) {
 
         Integer amount = OtherUtils.parseTimeSecondsFromArgument(timeArgument);
         if (amount == null) {
@@ -285,7 +278,7 @@ public class LivesCommand {
         return lifeManager(source, targets, amount, setNotGive);
     }
 
-    public static int lifeManager(ServerCommandSource source, Collection<ServerPlayerEntity> targets, int amount, boolean setNotGive) {
+    public int lifeManager(ServerCommandSource source, Collection<ServerPlayerEntity> targets, int amount, boolean setNotGive) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
         boolean normalLife = isNormalLife();
@@ -340,7 +333,7 @@ public class LivesCommand {
         return 1;
     }
 
-    public static int resetLives(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int resetLives(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
         boolean normalLife = isNormalLife();
@@ -358,7 +351,7 @@ public class LivesCommand {
         return 1;
     }
 
-    public static int resetAllLives(ServerCommandSource source) {
+    public int resetAllLives(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         boolean normalLife = isNormalLife();
         String timeOrLives = normalLife ? "lives" : "times";
@@ -368,7 +361,7 @@ public class LivesCommand {
         return 1;
     }
 
-    public static int assignRandomLives(ServerCommandSource source, Collection<ServerPlayerEntity> players) {
+    public int assignRandomLives(ServerCommandSource source, Collection<ServerPlayerEntity> players) {
         if (checkBanned(source)) return -1;
         if (players == null || players.isEmpty()) return -1;
 

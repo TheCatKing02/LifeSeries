@@ -1,13 +1,11 @@
 package net.mat0u5.lifeseries.seasons.season.pastlife;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.mat0u5.lifeseries.seasons.boogeyman.BoogeymanManager;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.session.SessionAction;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -15,27 +13,25 @@ import java.util.Random;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.Main.currentSession;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class PastLifeCommands {
-    public static Random rnd = new Random();
+public class PastLifeCommands extends Command {
+    public Random rnd = new Random();
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return currentSeason.getSeason() == Seasons.PAST_LIFE;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when playing Past Life."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when playing Past Life.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("pastlife")
-                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
+                    .requires(PermissionManager::isAdmin)
                     .then(literal("boogeyman")
                         .executes(context -> pickBoogeyman(context.getSource()))
                     )
@@ -48,7 +44,7 @@ public class PastLifeCommands {
         );
     }
 
-    public static int pickRandom(ServerCommandSource source) {
+    public int pickRandom(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (!currentSession.statusStarted()) {
@@ -96,7 +92,7 @@ public class PastLifeCommands {
         return 1;
     }
 
-    public static int pickSociety(ServerCommandSource source) {
+    public int pickSociety(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (!currentSession.statusStarted()) {
@@ -131,7 +127,7 @@ public class PastLifeCommands {
         return 1;
     }
 
-    public static int pickBoogeyman(ServerCommandSource source) {
+    public int pickBoogeyman(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (!currentSession.statusStarted()) {

@@ -2,15 +2,14 @@ package net.mat0u5.lifeseries.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -19,42 +18,39 @@ import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
 import static net.mat0u5.lifeseries.Main.currentSession;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class SessionCommand {
+public class SessionCommand extends Command {
     public static final String INVALID_TIME_FORMAT_ERROR = "Invalid time format. Use h, m, s for hours, minutes, and seconds.";
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return currentSeason.getSeason() != Seasons.UNASSIGNED;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when you have selected a Season."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when you have selected a Season.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("session")
                 .then(literal("start")
                     .requires(PermissionManager::isAdmin)
-                    .executes(context -> SessionCommand.startSession(
+                    .executes(context -> startSession(
                         context.getSource()
                     ))
                 )
                 .then(literal("stop")
                     .requires(PermissionManager::isAdmin)
-                    .executes(context -> SessionCommand.stopSession(
+                    .executes(context -> stopSession(
                         context.getSource()
                     ))
                 )
                 .then(literal("pause")
                     .requires(PermissionManager::isAdmin)
-                    .executes(context -> SessionCommand.pauseSession(
+                    .executes(context -> pauseSession(
                         context.getSource()
                     ))
                 )
@@ -63,7 +59,7 @@ public class SessionCommand {
                         .requires(PermissionManager::isAdmin)
                         .then(argument("time", StringArgumentType.greedyString())
                             .suggests((context, builder) -> CommandSource.suggestMatching(List.of("1h","1h30m","2h"), builder))
-                            .executes(context -> SessionCommand.setTime(
+                            .executes(context -> setTime(
                                 context.getSource(), StringArgumentType.getString(context, "time")
                             ))
                         )
@@ -72,7 +68,7 @@ public class SessionCommand {
                         .requires(PermissionManager::isAdmin)
                         .then(argument("time", StringArgumentType.greedyString())
                             .suggests((context, builder) -> CommandSource.suggestMatching(List.of("30m", "1h"), builder))
-                            .executes(context -> SessionCommand.addTime(
+                            .executes(context -> addTime(
                                 context.getSource(), StringArgumentType.getString(context, "time")
                             ))
                         )
@@ -81,7 +77,7 @@ public class SessionCommand {
                         .requires(PermissionManager::isAdmin)
                         .then(argument("time", StringArgumentType.greedyString())
                             .suggests((context, builder) -> CommandSource.suggestMatching(List.of("5m"), builder))
-                            .executes(context -> SessionCommand.skipTime(
+                            .executes(context -> skipTime(
                                 context.getSource(), StringArgumentType.getString(context, "time")
                             ))
                         )
@@ -90,18 +86,18 @@ public class SessionCommand {
                         .requires(PermissionManager::isAdmin)
                             .then(argument("time", StringArgumentType.greedyString())
                                     .suggests((context, builder) -> CommandSource.suggestMatching(List.of("5m"), builder))
-                                    .executes(context -> SessionCommand.removeTime(
+                                    .executes(context -> removeTime(
                                             context.getSource(), StringArgumentType.getString(context, "time")
                                     ))
                             )
                     )
                     .then(literal("remaining")
-                        .executes(context -> SessionCommand.getTime(
+                        .executes(context -> getTime(
                             context.getSource()
                         ))
                     )
                     .then(literal("showDisplay")
-                        .executes(context -> SessionCommand.displayTimer(
+                        .executes(context -> displayTimer(
                             context.getSource()
                         ))
                     )
@@ -110,7 +106,7 @@ public class SessionCommand {
         );
     }
 
-    public static int getTime(ServerCommandSource source) {
+    public int getTime(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (!currentSession.validTime()) {
@@ -121,7 +117,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int displayTimer(ServerCommandSource source) {
+    public int displayTimer(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         final ServerPlayerEntity self = source.getPlayer();
 
@@ -136,7 +132,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int startSession(ServerCommandSource source) {
+    public int startSession(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (!currentSession.validTime()) {
@@ -162,7 +158,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int stopSession(ServerCommandSource source) {
+    public int stopSession(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (currentSession.statusNotStarted() || currentSession.statusFinished()) {
@@ -175,7 +171,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int pauseSession(ServerCommandSource source) {
+    public int pauseSession(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (currentSession.statusNotStarted() || currentSession.statusFinished()) {
@@ -194,7 +190,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int skipTime(ServerCommandSource source, String timeArgument) {
+    public int skipTime(ServerCommandSource source, String timeArgument) {
         if (checkBanned(source)) return -1;
 
         Integer totalTicks = OtherUtils.parseTimeFromArgument(timeArgument);
@@ -207,7 +203,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int setTime(ServerCommandSource source, String timeArgument) {
+    public int setTime(ServerCommandSource source, String timeArgument) {
         if (checkBanned(source)) return -1;
 
         Integer totalTicks = OtherUtils.parseTimeFromArgument(timeArgument);
@@ -221,7 +217,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int addTime(ServerCommandSource source, String timeArgument) {
+    public int addTime(ServerCommandSource source, String timeArgument) {
         if (checkBanned(source)) return -1;
 
         Integer totalTicks = OtherUtils.parseTimeFromArgument(timeArgument);
@@ -235,7 +231,7 @@ public class SessionCommand {
         return 1;
     }
 
-    public static int removeTime(ServerCommandSource source, String timeArgument) {
+    public int removeTime(ServerCommandSource source, String timeArgument) {
         if (checkBanned(source)) return -1;
 
         Integer totalTicks = OtherUtils.parseTimeFromArgument(timeArgument);

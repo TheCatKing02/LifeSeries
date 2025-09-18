@@ -3,6 +3,7 @@ package net.mat0u5.lifeseries.seasons.season.secretlife;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
@@ -10,10 +11,8 @@ import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.world.AnimationUtils;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
@@ -26,28 +25,24 @@ import java.util.List;
 import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.*;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class SecretLifeCommands {
+public class SecretLifeCommands extends Command {
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return currentSeason.getSeason() == Seasons.SECRET_LIFE;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when playing Secret Life."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when playing Secret Life.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 
         dispatcher.register(
             literal("health")
-                .requires(source -> isAllowed())
                 .executes(context -> showHealth(context.getSource()))
                 .then(literal("sync")
                     .requires(PermissionManager::isAdmin)
@@ -110,7 +105,7 @@ public class SecretLifeCommands {
         );
         dispatcher.register(
             literal("task")
-                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
+                    .requires(PermissionManager::isAdmin)
                     .then(literal("succeed")
                             .then(argument("player", EntityArgumentType.players())
                                     .executes(context -> succeedTask(
@@ -165,7 +160,6 @@ public class SecretLifeCommands {
         );
         dispatcher.register(
             literal("gift")
-                .requires(source -> isAllowed())
                 .then(argument("player", EntityArgumentType.player())
                     .executes(context -> gift(
                         context.getSource(), EntityArgumentType.getPlayer(context, "player"))
@@ -174,7 +168,7 @@ public class SecretLifeCommands {
         );
         dispatcher.register(
             literal("secretlife")
-                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
+                .requires(PermissionManager::isAdmin)
                 .then(literal("changeLocations")
                     .executes(context -> changeLocations(
                         context.getSource())
@@ -183,7 +177,7 @@ public class SecretLifeCommands {
         );
     }
 
-    public static int setTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String type, String task) {
+    public int setTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String type, String task) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -218,7 +212,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int changeLocations(ServerCommandSource source) {
+    public int changeLocations(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         OtherUtils.sendCommandFeedback(source, Text.of("Changing Secret Life locations..."));
         TaskManager.deleteLocations();
@@ -226,7 +220,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int clearTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int clearTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         List<ServerPlayerEntity> affected = new ArrayList<>();
         for (ServerPlayerEntity player : targets) {
@@ -248,7 +242,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int assignTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int assignTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
 
         if (targets.size() == 1) {
@@ -263,7 +257,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int succeedTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int succeedTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -281,7 +275,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int failTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int failTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -299,7 +293,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int rerollTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int rerollTask(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -318,7 +312,7 @@ public class SecretLifeCommands {
     }
 
     public static final List<UUID> playersGiven = new ArrayList<>();
-    public static int gift(ServerCommandSource source, ServerPlayerEntity target) {
+    public int gift(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
         final ServerPlayerEntity self = source.getPlayer();
         if (self == null) return -1;
@@ -357,7 +351,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int showHealth(ServerCommandSource source) {
+    public int showHealth(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         final ServerPlayerEntity self = source.getPlayer();
@@ -377,7 +371,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int getHealthFor(ServerCommandSource source, ServerPlayerEntity target) {
+    public int getHealthFor(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
         if (target == null) return -1;
 
@@ -392,14 +386,14 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int syncHealth(ServerCommandSource source) {
+    public int syncHealth(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretLife secretLife = (SecretLife) currentSeason;
         secretLife.syncAllPlayerHealth();
         return 1;
     }
 
-    public static int healthManager(ServerCommandSource source, Collection<ServerPlayerEntity> targets, double amount, boolean setNotGive) {
+    public int healthManager(ServerCommandSource source, Collection<ServerPlayerEntity> targets, double amount, boolean setNotGive) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -432,7 +426,7 @@ public class SecretLifeCommands {
         return 1;
     }
 
-    public static int resetHealth(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int resetHealth(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 

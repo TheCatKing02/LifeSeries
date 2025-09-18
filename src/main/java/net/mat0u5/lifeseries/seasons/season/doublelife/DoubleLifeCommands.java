@@ -1,14 +1,13 @@
 package net.mat0u5.lifeseries.seasons.season.doublelife;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -16,27 +15,24 @@ import net.minecraft.text.Text;
 import java.util.*;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class DoubleLifeCommands {
+public class DoubleLifeCommands extends Command {
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return currentSeason.getSeason() == Seasons.DOUBLE_LIFE;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when playing Double Life."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when playing Double Life.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("soulmate")
-                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
+                .requires(PermissionManager::isAdmin)
                 .then(literal("get")
                     .then(argument("player", EntityArgumentType.player())
                         .executes(context -> getSoulmate(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
@@ -70,7 +66,7 @@ public class DoubleLifeCommands {
         );
     }
 
-    public static int setSoulmate(ServerCommandSource source, ServerPlayerEntity player, ServerPlayerEntity soulmate) {
+    public int setSoulmate(ServerCommandSource source, ServerPlayerEntity player, ServerPlayerEntity soulmate) {
         if (checkBanned(source)) return -1;
         if (player == null) return -1;
 
@@ -93,7 +89,7 @@ public class DoubleLifeCommands {
         return 1;
     }
 
-    public static int getSoulmate(ServerCommandSource source, ServerPlayerEntity player) {
+    public int getSoulmate(ServerCommandSource source, ServerPlayerEntity player) {
         if (checkBanned(source)) return -1;
         if (player == null) return -1;
 
@@ -115,7 +111,7 @@ public class DoubleLifeCommands {
         return 1;
     }
 
-    public static int resetSoulmate(ServerCommandSource source, Collection<ServerPlayerEntity> players) {
+    public int resetSoulmate(ServerCommandSource source, Collection<ServerPlayerEntity> players) {
         if (checkBanned(source)) return -1;
         if (players == null) return -1;
         if (players.isEmpty()) return -1;
@@ -143,7 +139,7 @@ public class DoubleLifeCommands {
         return 1;
     }
 
-    public static int resetAllSoulmates(ServerCommandSource source) {
+    public int resetAllSoulmates(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         DoubleLife season = ((DoubleLife) currentSeason);
@@ -154,7 +150,7 @@ public class DoubleLifeCommands {
         return 1;
     }
 
-    public static int listSoulmates(ServerCommandSource source) {
+    public int listSoulmates(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         DoubleLife season = ((DoubleLife) currentSeason);
@@ -178,7 +174,7 @@ public class DoubleLifeCommands {
         return 1;
     }
 
-    public static int rollSoulmates(ServerCommandSource source) {
+    public int rollSoulmates(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         DoubleLife season = ((DoubleLife) currentSeason);
         OtherUtils.sendCommandFeedback(source, Text.of("§7Rolling soulmates..."));

@@ -19,6 +19,7 @@ public class TaskScheduler {
 
     public static void registerTickHandler() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
+            if (Main.MOD_DISABLED) return;
             try {
                 Iterator<Task> iterator = tasks.iterator();
 

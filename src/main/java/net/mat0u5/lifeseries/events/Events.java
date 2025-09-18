@@ -61,7 +61,7 @@ public class Events {
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register(Events::onReloadEnd);
 
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            if (!(player instanceof ServerPlayerEntity)) {
+            if (!(player instanceof ServerPlayerEntity) || MOD_DISABLED) {
                 return ActionResult.PASS; // Only handle server-side events
             }
 
@@ -82,6 +82,7 @@ public class Events {
 
     private static void onReloadStart(MinecraftServer server, LifecycledResourceManager resourceManager) {
         try {
+            if (Main.MOD_DISABLED) return;
             if (!Main.isLogicalSide()) return;
             Main.reloadStart();
         } catch(Exception e) {e.printStackTrace();}
@@ -89,12 +90,14 @@ public class Events {
 
     private static void onReloadEnd(MinecraftServer server, LifecycledResourceManager resourceManager, boolean success) {
         try {
+            if (Main.MOD_DISABLED) return;
             if (!Main.isLogicalSide()) return;
             Main.reloadEnd();
         } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onPlayerJoin(ServerPlayerEntity player) {
+        if (Main.MOD_DISABLED) return;
         if (isFakePlayer(player)) return;
 
         try {
@@ -122,6 +125,7 @@ public class Events {
     }
 
     private static void onPlayerDisconnect(ServerPlayerEntity player) {
+        if (Main.MOD_DISABLED) return;
         if (isFakePlayer(player)) return;
 
         try {
@@ -133,6 +137,7 @@ public class Events {
     private static void onServerStopping(MinecraftServer server) {
         try {
             UpdateChecker.shutdownExecutor();
+            if (Main.MOD_DISABLED) return;
             currentSession.sessionEnd();
         }catch (Exception e) {e.printStackTrace();}
     }
@@ -144,6 +149,7 @@ public class Events {
     private static void onServerStart(MinecraftServer server) {
         try {
             Main.server = server;
+            if (Main.MOD_DISABLED) return;
             currentSeason.initialize();
             blacklist.reloadBlacklist();
             if (currentSeason.getSeason() == Seasons.DOUBLE_LIFE) {
@@ -178,6 +184,7 @@ public class Events {
     }
 
     public static void onEntityDeath(LivingEntity entity, DamageSource source) {
+        if (Main.MOD_DISABLED) return;
         if (isFakePlayer(entity)) return;
         try {
             if (!Main.isLogicalSide()) return;
@@ -207,6 +214,7 @@ public class Events {
     }
 
     public static ActionResult onBlockUse(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+        if (Main.MOD_DISABLED) return ActionResult.PASS;
         if (isFakePlayer(player)) return ActionResult.PASS;
 
         if (player instanceof ServerPlayerEntity serverPlayer &&
@@ -229,7 +237,7 @@ public class Events {
     }
 
     public static ActionResult onItemUse(PlayerEntity player, World world, Hand hand) {
-        if (isFakePlayer(player)) return ActionResult.PASS;
+        if (isFakePlayer(player) || MOD_DISABLED) return ActionResult.PASS;
 
         if (player instanceof ServerPlayerEntity serverPlayer &&
                 world instanceof ServerWorld serverWorld && Main.isLogicalSide()) {
@@ -262,7 +270,7 @@ public class Events {
     }
 
     private static ActionResult onRightClickEntity(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (isFakePlayer(player)) return ActionResult.PASS;
+        if (isFakePlayer(player) || MOD_DISABLED) return ActionResult.PASS;
 
         try {
             if (!Main.isLogicalSide()) return ActionResult.PASS;
@@ -275,7 +283,7 @@ public class Events {
         return ActionResult.PASS;
     }
     private static ActionResult onAttackEntity(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (isFakePlayer(player)) return ActionResult.PASS;
+        if (isFakePlayer(player) || MOD_DISABLED) return ActionResult.PASS;
 
         try {
             if (!Main.isLogicalSide()) return ActionResult.PASS;

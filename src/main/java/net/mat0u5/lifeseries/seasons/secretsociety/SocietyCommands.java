@@ -2,13 +2,12 @@ package net.mat0u5.lifeseries.seasons.secretsociety;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -17,36 +16,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class SocietyCommands {
+public class SocietyCommands extends Command {
 
-    public static SecretSociety get() {
+    public SecretSociety get() {
         return currentSeason.secretSociety;
     }
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return get().SOCIETY_ENABLED;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when the Secret Society has been enabled in the Life Series config."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when the Secret Society is enabled in the config.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("initiate")
-                .requires(source -> isAllowed())
                 .executes(context -> initiate(context.getSource()))
         );
         dispatcher.register(
             literal("society")
-                .requires(source -> isAllowed())
                 .then(literal("success")
                     .executes(context -> societySuccess(context.getSource()))
                     .then(literal("confirm")
@@ -90,7 +84,7 @@ public class SocietyCommands {
                 )
         );
     }
-    public static int membersRemove(ServerCommandSource source, ServerPlayerEntity target) {
+    public int membersRemove(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -106,7 +100,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int membersAdd(ServerCommandSource source, ServerPlayerEntity target) {
+    public int membersAdd(ServerCommandSource source, ServerPlayerEntity target) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -122,7 +116,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int membersList(ServerCommandSource source) {
+    public int membersList(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -143,7 +137,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static boolean checkSocietyRunning(ServerCommandSource source) {
+    public boolean checkSocietyRunning(ServerCommandSource source) {
         SecretSociety society = get();
         if (society == null) return false;
         if (society.societyEnded) {
@@ -163,7 +157,7 @@ public class SocietyCommands {
         return false;
     }
 
-    public static int societyBegin(ServerCommandSource source, String word) {
+    public int societyBegin(ServerCommandSource source, String word) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -173,7 +167,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int societyEnd(ServerCommandSource source) {
+    public int societyEnd(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -183,7 +177,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int societyFail(ServerCommandSource source) {
+    public int societyFail(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -209,7 +203,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int societyFailConfirm(ServerCommandSource source) {
+    public int societyFailConfirm(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -222,7 +216,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int societySuccess(ServerCommandSource source) {
+    public int societySuccess(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -248,7 +242,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int societySuccessConfirm(ServerCommandSource source) {
+    public int societySuccessConfirm(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;
@@ -261,7 +255,7 @@ public class SocietyCommands {
         return 1;
     }
 
-    public static int initiate(ServerCommandSource source) {
+    public int initiate(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SecretSociety society = get();
         if (society == null) return -1;

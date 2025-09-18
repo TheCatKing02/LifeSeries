@@ -1,15 +1,14 @@
 package net.mat0u5.lifeseries.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -21,24 +20,21 @@ import java.util.Set;
 import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.*;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class ClaimKillCommand {
+public class ClaimKillCommand extends Command {
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return currentSeason.getSeason() != Seasons.UNASSIGNED;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when you have selected a Season."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when you have selected a Season.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("claimkill")
                 .then(argument("player", EntityArgumentType.player())
@@ -62,7 +58,7 @@ public class ClaimKillCommand {
         );
     }
 
-    public static List<String> getSuggestions() {
+    public List<String> getSuggestions() {
         if (server == null) return new ArrayList<>();
         List<String> suggestions = new ArrayList<>();
         Set<UUID> recentDeaths = currentSession.playerNaturalDeathLog.keySet();
@@ -74,7 +70,7 @@ public class ClaimKillCommand {
         return suggestions;
     }
 
-    public static int claimCredit(ServerCommandSource source, ServerPlayerEntity victim) {
+    public int claimCredit(ServerCommandSource source, ServerPlayerEntity victim) {
         if (checkBanned(source)) return -1;
         if (victim == null) return -1;
         PlayerEntity player = source.getPlayer();
@@ -105,7 +101,7 @@ public class ClaimKillCommand {
         return 1;
     }
 
-    public static int claimCreditAccept(ServerCommandSource source, ServerPlayerEntity killer, ServerPlayerEntity victim) {
+    public int claimCreditAccept(ServerCommandSource source, ServerPlayerEntity killer, ServerPlayerEntity victim) {
         if (checkBanned(source)) return -1;
         if (killer == null) return -1;
         if (victim == null) return -1;

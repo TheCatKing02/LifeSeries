@@ -2,6 +2,7 @@ package net.mat0u5.lifeseries.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.boogeyman.advanceddeaths.AdvancedDeathsManager;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
@@ -10,22 +11,26 @@ import net.mat0u5.lifeseries.utils.other.WeightedRandomizer;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.versions.VersionControl;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+public class TestingCommands extends Command {
 
-public class TestingCommands {
+    @Override
+    public boolean isAllowed() {
+        return VersionControl.isDevVersion();
+    }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when playing a dev version.");
+    }
+
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         if (VersionControl.isDevVersion()) {
             dispatcher.register(
                 literal("ls")
@@ -52,7 +57,8 @@ public class TestingCommands {
 
     }
 
-    public static int test(ServerCommandSource source) {
+    public int test(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
 
@@ -64,7 +70,8 @@ public class TestingCommands {
         return 1;
     }
 
-    public static int test1(ServerCommandSource source) {
+    public int test1(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
 
@@ -82,7 +89,8 @@ public class TestingCommands {
         return 1;
     }
 
-    public static int test2(ServerCommandSource source) {
+    public int test2(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
 
@@ -92,7 +100,8 @@ public class TestingCommands {
         return 1;
     }
 
-    public static int test3(ServerCommandSource source) {
+    public int test3(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
 
@@ -114,7 +123,8 @@ public class TestingCommands {
         return 1;
     }
 
-    public static int spawnPlayers(ServerCommandSource source, int amount) {
+    public int spawnPlayers(ServerCommandSource source, int amount) {
+        if (checkBanned(source)) return -1;
         for (int i = 1; i <= amount; i++) {
             OtherUtils.executeCommand(TextUtils.formatString("player Test{} spawn in survival", i));
         }

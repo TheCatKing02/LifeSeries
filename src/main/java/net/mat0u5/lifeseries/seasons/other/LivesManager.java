@@ -187,6 +187,7 @@ public class LivesManager {
     }
 
     public void addToPlayerLives(ServerPlayerEntity player, int amount) {
+        if (amount == 0) return;
         Integer currentLives = getPlayerLives(player);
         if (currentLives == null) currentLives = 0;
         int lives = currentLives + amount;
@@ -222,7 +223,7 @@ public class LivesManager {
     }
 
     public void setPlayerLives(ServerPlayerEntity player, int lives) {
-        if (isWatcher(player)) return;
+        if (player == null || isWatcher(player)) return;
         Integer livesBefore = getPlayerLives(player);
         ScoreboardUtils.setScore(player, SCOREBOARD_NAME, lives);
         if (lives <= 0) {

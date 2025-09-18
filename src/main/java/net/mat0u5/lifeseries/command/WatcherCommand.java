@@ -1,28 +1,35 @@
 package net.mat0u5.lifeseries.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.seasons.other.WatcherManager;
+import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
-import net.mat0u5.lifeseries.utils.player.ScoreboardUtils;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.world.GameMode;
 
 import java.util.Collection;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.mat0u5.lifeseries.Main.currentSeason;
 
-public class WatcherCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+public class WatcherCommand extends Command {
+
+    @Override
+    public boolean isAllowed() {
+        return currentSeason.getSeason() != Seasons.UNASSIGNED;
+    }
+
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when you have selected a series.");
+    }
+
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("watcher")
                 .requires(PermissionManager::isAdmin)
@@ -50,14 +57,16 @@ public class WatcherCommand {
         );
     }
 
-    private static int info(ServerCommandSource source) {
+    public int info(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7Watchers are players that are online, but are not affected by most season mechanics. They can only observe."));
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7This is very useful for spectators and for admins."));
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§8§oNOTE: This is an experimental feature, report any bugs you find!"));
         return 1;
     }
 
-    private static int listWatchers(ServerCommandSource source) {
+    public int listWatchers(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         if (WatcherManager.getWatchers().isEmpty()) {
             source.sendError(Text.of("There are no Watchers right now"));
             return -1;
@@ -66,7 +75,8 @@ public class WatcherCommand {
         return 1;
     }
 
-    private static int addWatchers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int addWatchers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+        if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
         targets.forEach(WatcherManager::addWatcher);
@@ -82,7 +92,8 @@ public class WatcherCommand {
         return 1;
     }
 
-    private static int removeWatchers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int removeWatchers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+        if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
         targets.forEach(WatcherManager::removeWatcher);

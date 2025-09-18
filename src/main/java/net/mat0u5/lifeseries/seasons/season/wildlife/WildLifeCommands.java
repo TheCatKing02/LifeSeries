@@ -2,6 +2,7 @@ package net.mat0u5.lifeseries.seasons.season.wildlife;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.mat0u5.lifeseries.command.manager.Command;
 import net.mat0u5.lifeseries.network.NetworkHandlerServer;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.Wildcard;
@@ -19,10 +20,8 @@ import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -32,27 +31,24 @@ import java.util.Collection;
 import java.util.List;
 
 import static net.mat0u5.lifeseries.Main.currentSeason;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class WildLifeCommands {
+public class WildLifeCommands extends Command {
 
-    public static boolean isAllowed() {
+    @Override
+    public boolean isAllowed() {
         return currentSeason.getSeason() == Seasons.WILD_LIFE;
     }
 
-    public static boolean checkBanned(ServerCommandSource source) {
-        if (isAllowed()) return false;
-        source.sendError(Text.of("This command is only available when playing Wild Life."));
-        return true;
+    @Override
+    public Text getBannedText() {
+        return Text.of("This command is only available when playing Wild Life.");
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,
-                                CommandRegistryAccess commandRegistryAccess,
-                                CommandManager.RegistrationEnvironment registrationEnvironment) {
+    @Override
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("wildcard")
-                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
+                .requires(PermissionManager::isAdmin)
                 .then(literal("list")
                     .executes(context -> listWildcards(
                         context.getSource())
@@ -88,7 +84,6 @@ public class WildLifeCommands {
         );
         dispatcher.register(
             literal("snail")
-                .requires(source -> isAllowed())
                 .then(literal("names")
                     .then(literal("set")
                         .requires(PermissionManager::isAdmin)
@@ -128,7 +123,7 @@ public class WildLifeCommands {
         );
         dispatcher.register(
             literal("superpower")
-                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
+                .requires(PermissionManager::isAdmin)
                 .then(literal("set")
                     .then(argument("player", EntityArgumentType.players())
                         .then(argument("superpower", StringArgumentType.string())
@@ -164,14 +159,14 @@ public class WildLifeCommands {
         );
         dispatcher.register(
             literal("hunger")
-                .requires(source -> isAllowed() && PermissionManager.isAdmin(source))
+                .requires(PermissionManager::isAdmin)
                 .then(literal("randomizeFood")
                         .executes(context -> randomizeFood(context.getSource()))
                 )
         );
     }
 
-    public static int randomizeFood(ServerCommandSource source) {
+    public int randomizeFood(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
 
         if (!WildcardManager.isActiveWildcard(Wildcards.HUNGER)) {
@@ -188,7 +183,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int requestSnailName(ServerCommandSource source, String name) {
+    public int requestSnailName(ServerCommandSource source, String name) {
         if (checkBanned(source)) return -1;
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
@@ -205,7 +200,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int getSnailTexturesInfo(ServerCommandSource source) {
+    public int getSnailTexturesInfo(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
@@ -215,7 +210,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int getSnailTextures(ServerCommandSource source) {
+    public int getSnailTextures(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         List<String> textures = SnailSkinsServer.getAllSkins();
         if (textures.isEmpty()) {
@@ -226,7 +221,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int chooseWildcard(ServerCommandSource source) {
+    public int chooseWildcard(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         if (source.getPlayer() == null) return -1;
         if (!NetworkHandlerServer.wasHandshakeSuccessful(source.getPlayer())) {
@@ -239,19 +234,19 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static List<String> suggestionsDeactivateWildcard() {
+    public List<String> suggestionsDeactivateWildcard() {
         List<String> allWildcards = Wildcards.getActiveWildcardsStr();
         allWildcards.add("*");
         return allWildcards;
     }
 
-    public static List<String> suggestionsActivateWildcard() {
+    public List<String> suggestionsActivateWildcard() {
         List<String> allWildcards = Wildcards.getInactiveWildcardsStr();
         allWildcards.add("*");
         return allWildcards;
     }
 
-    public static int assignSuperpower(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String name) {
+    public int assignSuperpower(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String name) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
         if (!Superpowers.getImplementedStr().contains(name)) {
@@ -277,7 +272,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int skipSuperpowerCooldown(ServerCommandSource source) {
+    public int skipSuperpowerCooldown(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) return -1;
@@ -293,14 +288,14 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int setRandomSuperpowers(ServerCommandSource source) {
+    public int setRandomSuperpowers(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         SuperpowersWildcard.rollRandomSuperpowers();
         OtherUtils.sendCommandFeedback(source, Text.of("Randomized everyone's superpowers"));
         return 1;
     }
 
-    public static int resetSuperpowers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int resetSuperpowers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -317,14 +312,14 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int getSuperpower(ServerCommandSource source, ServerPlayerEntity player) {
+    public int getSuperpower(ServerCommandSource source, ServerPlayerEntity player) {
         if (checkBanned(source)) return -1;
         Superpowers superpower = SuperpowersWildcard.getSuperpower(player);
         OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("{}'s superpower is: {}", player,  superpower.getString()));
         return 1;
     }
 
-    public static int setSuperpower(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String name) {
+    public int setSuperpower(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String name) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -351,14 +346,14 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int setSnailName(ServerCommandSource source, ServerPlayerEntity player, String name) {
+    public int setSnailName(ServerCommandSource source, ServerPlayerEntity player, String name) {
         if (checkBanned(source)) return -1;
         Snails.setSnailName(player, name);
         OtherUtils.sendCommandFeedback(source, TextUtils.format("Set {}'s snail name to {}", player, name));
         return 1;
     }
 
-    public static int resetSnailName(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int resetSnailName(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -377,7 +372,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int getSnailNames(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
+    public int getSnailNames(ServerCommandSource source, Collection<ServerPlayerEntity> targets) {
         if (checkBanned(source)) return -1;
         if (targets == null || targets.isEmpty()) return -1;
 
@@ -393,7 +388,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int deactivateWildcard(ServerCommandSource source, String wildcardName) {
+    public int deactivateWildcard(ServerCommandSource source, String wildcardName) {
         if (checkBanned(source)) return -1;
         if (wildcardName.equalsIgnoreCase("*")) {
             WildcardManager.onSessionEnd();
@@ -419,7 +414,7 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int activateWildcard(ServerCommandSource source, String wildcardName) {
+    public int activateWildcard(ServerCommandSource source, String wildcardName) {
         if (checkBanned(source)) return -1;
         if (wildcardName.equalsIgnoreCase("*")) {
             List<Wildcards> inactiveWildcards = Wildcards.getInactiveWildcards();
@@ -464,13 +459,13 @@ public class WildLifeCommands {
         return 1;
     }
 
-    public static int listWildcards(ServerCommandSource source) {
+    public int listWildcards(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Available Wildcards: {}", Wildcards.getWildcardsStr()));
         return 1;
     }
 
-    public static int listActiveWildcards(ServerCommandSource source) {
+    public int listActiveWildcards(ServerCommandSource source) {
         if (checkBanned(source)) return -1;
         if (Wildcards.getActiveWildcardsStr().isEmpty()) {
             OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7There are no active Wildcards right now. \nYou will be able to select a Wildcard when you start a session, or you can use '§f/wildcard activate <wildcard>§7' to activate a specific Wildcard right now."));
