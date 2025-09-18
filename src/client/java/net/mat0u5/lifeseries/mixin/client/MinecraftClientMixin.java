@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.MainClient;
 import net.mat0u5.lifeseries.render.ClientRenderer;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.TimeDilation;
@@ -15,6 +16,7 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "getTargetMillisPerTick", at = @At("HEAD"), cancellable = true)
     private void getTargetMillisPerTick(float millis, CallbackInfoReturnable<Float> cir) {
+        if (Main.modFullyDisabled()) return;
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.world != null) {
             TickManager tickManager = client.world.getTickManager();

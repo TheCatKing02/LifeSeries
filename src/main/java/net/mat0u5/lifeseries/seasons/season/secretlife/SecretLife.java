@@ -3,7 +3,6 @@ package net.mat0u5.lifeseries.seasons.season.secretlife;
 import net.mat0u5.lifeseries.config.ConfigManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
-import net.mat0u5.lifeseries.seasons.session.Session;
 import net.mat0u5.lifeseries.seasons.session.SessionAction;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
@@ -17,7 +16,6 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
@@ -104,8 +102,8 @@ public class SecretLife extends Season {
     }
 
     @Override
-    public void postPlayerRespawn(ServerPlayerEntity player) {
-        super.postPlayerRespawn(player);
+    public void onPlayerRespawn(ServerPlayerEntity player) {
+        super.onPlayerRespawn(player);
         if (giveBookOnRespawn.containsKey(player.getUuid())) {
             ItemStack book = giveBookOnRespawn.get(player.getUuid());
             giveBookOnRespawn.remove(player.getUuid());
@@ -342,9 +340,9 @@ public class SecretLife extends Season {
     @Override
     public void modifyEntityDrops(LivingEntity entity, DamageSource damageSource) {
         super.modifyEntityDrops(entity, damageSource);
-        if (entity instanceof ServerPlayerEntity player && seasonConfig instanceof SecretLifeConfig config) {
-            boolean dropBook = config.PLAYERS_DROP_TASK_ON_DEATH.get(config);
-            if (dropBook) return;
+        if (entity instanceof ServerPlayerEntity player) {
+            boolean dropBook = SecretLifeConfig.PLAYERS_DROP_TASK_ON_DEATH.get(seasonConfig);
+            if (dropBook || server == null) return;
             boolean keepInventory = server.getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
             if (keepInventory) return;
             giveBookOnRespawn.put(player.getUuid(), TaskManager.getPlayersTaskBook(player));

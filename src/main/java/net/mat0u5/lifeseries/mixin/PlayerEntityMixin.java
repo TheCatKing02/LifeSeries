@@ -85,6 +85,7 @@ public abstract class PlayerEntityMixin {
 
     @Inject(method = "getBaseDimensions", at = @At("HEAD"), cancellable = true)
     public void getBaseDimensions(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+        if (Main.modFullyDisabled()) return;
         PlayerEntity player = (PlayerEntity) (Object) this;
         MorphComponent morphComponent = MorphManager.getOrCreateComponent(player);
         if (!morphComponent.isMorphed()) return;
@@ -98,6 +99,7 @@ public abstract class PlayerEntityMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void updateHitbox(CallbackInfo ci) {
+        if (Main.modFullyDisabled()) return;
         ((PlayerEntity) (Object) this).calculateDimensions();
     }
 
@@ -106,6 +108,7 @@ public abstract class PlayerEntityMixin {
 
     @Inject(method = "travel", at = @At("HEAD"))
     private void travel(Vec3d movementInput, CallbackInfo ci) {
+        if (Main.modFullyDisabled()) return;
         LivingEntity entity = (LivingEntity) (Object) this;
         if (!(entity instanceof ServerPlayerEntity player) || Main.modDisabled()) return;
         if (!player.isOnGround()) return;

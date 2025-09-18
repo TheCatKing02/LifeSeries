@@ -23,6 +23,7 @@ import net.mat0u5.lifeseries.seasons.session.SessionStatus;
 import net.mat0u5.lifeseries.utils.ClientResourcePacks;
 import net.mat0u5.lifeseries.utils.ClientTaskScheduler;
 import net.mat0u5.lifeseries.utils.ClientUtils;
+import net.mat0u5.lifeseries.utils.enums.HandshakeStatus;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
@@ -328,6 +329,8 @@ public class NetworkHandlerClient {
         }
     }
     public static void handleHandshake(HandshakePayload payload) {
+        MainClient.serverHandshake = HandshakeStatus.RECEIVED;
+
         String serverVersionStr = payload.modVersionStr();
         String serverCompatibilityStr = payload.compatibilityStr();
         String clientVersionStr = Main.MOD_VERSION;

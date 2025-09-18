@@ -37,6 +37,7 @@ public class ClientCommonNetworkHandlerMixin {
             cancellable = true
     )
     public void onResourcePackSend(ResourcePackSendS2CPacket packet, CallbackInfo ci) {
+        if (Main.modFullyDisabled()) return;
         String url = packet.url();
         UUID uuid = packet.id();
         boolean banned = false;

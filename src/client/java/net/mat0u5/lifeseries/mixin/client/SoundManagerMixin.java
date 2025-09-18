@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.utils.ClientSounds;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
@@ -23,6 +24,7 @@ public class SoundManagerMixin {
     //?} else {
     /*@Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;", at = @At("HEAD"))
     private void play(SoundInstance sound, CallbackInfoReturnable<SoundSystem.PlayResult> cir) {
+        if (Main.modFullyDisabled()) return;
         ClientSounds.onSoundPlay(sound);
     }
     *///?}

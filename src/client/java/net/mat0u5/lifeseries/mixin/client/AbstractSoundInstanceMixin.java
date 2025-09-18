@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.EntityTrackingSoundInstance;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +13,7 @@ public class AbstractSoundInstanceMixin {
 
     @Inject(method = "isRepeatable", at = @At("HEAD"), cancellable = true)
     private void isRepeatable(CallbackInfoReturnable<Boolean> cir) {
+        if (Main.modFullyDisabled()) return;
         AbstractSoundInstance soundInstance = (AbstractSoundInstance) (Object) this;
         if (soundInstance instanceof EntityTrackingSoundInstance entityTrackingSound) {
             if (entityTrackingSound.getId().getPath().equalsIgnoreCase("wildlife_trivia_suspense")) {

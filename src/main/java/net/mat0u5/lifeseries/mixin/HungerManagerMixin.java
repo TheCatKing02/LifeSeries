@@ -97,7 +97,7 @@ public class HungerManagerMixin implements IHungerManager {
 
     @Unique
     private void ls$emitUpdate() {
-        if (!Main.isLogicalSide() || ls$player == null) return;
+        if (!Main.isLogicalSide() || ls$player == null || Main.modDisabled()) return;
         if (currentSeason instanceof DoubleLife doubleLife) {
             doubleLife.updateFoodFrom(ls$player);
         }

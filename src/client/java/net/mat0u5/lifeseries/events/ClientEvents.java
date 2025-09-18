@@ -18,6 +18,7 @@ import net.mat0u5.lifeseries.seasons.session.SessionStatus;
 import net.mat0u5.lifeseries.utils.ClientResourcePacks;
 import net.mat0u5.lifeseries.utils.ClientSounds;
 import net.mat0u5.lifeseries.utils.ClientTaskScheduler;
+import net.mat0u5.lifeseries.utils.enums.HandshakeStatus;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.versions.UpdateChecker;
 import net.minecraft.client.MinecraftClient;
@@ -70,23 +71,32 @@ public class ClientEvents {
                 isReplay = true;
             }
         }
-        Main.IS_REPLAY = isReplay;
+        MainClient.isReplay = isReplay;
         if (Main.modDisabled()) return;
     }
 
     public static void onClientJoin(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
+        ClientTaskScheduler.schedulePriorityTask(20, () -> {
+            if (MainClient.serverHandshake == HandshakeStatus.WAITING) {
+                Main.LOGGER.info("Disabling the Life Series on the client.");
+                MainClient.serverHandshake = HandshakeStatus.NOT_RECEIVED;
+            }
+        });
         if (Main.modDisabled()) return;
     }
 
     public static void onClientDisconnect(ClientPlayNetworkHandler handler, MinecraftClient client) {
-        if (Main.modDisabled()) return;
         Main.LOGGER.info("Client disconnected from server, clearing some client data.");
         MainClient.resetClientData();
+        if (Main.modDisabled()) return;
     }
 
     public static void onScreenOpen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
         if (Main.modDisabled()) return;
         if (UpdateChecker.updateAvailable) {
+            int disableVersion = MainClient.clientConfig.getOrCreateInt("ignore_update", 0);
+            if (UpdateChecker.version == disableVersion && !UpdateChecker.TEST_UPDATE_FAKE && !UpdateChecker.TEST_UPDATE_LAST) return;
+
             if (screen instanceof TitleScreen && !hasShownUpdateScreen) {
                 client.execute(() -> {
                     client.setScreen(new UpdateInfoScreen(UpdateChecker.versionName, UpdateChecker.versionDescription));
@@ -102,6 +112,8 @@ public class ClientEvents {
 
     public static void onClientTickEnd() {
         try {
+            ClientTaskScheduler.onClientTick();
+            if (Main.modFullyDisabled()) return;
             MinecraftClient client = MinecraftClient.getInstance();
             ClientPlayerEntity player = client.player;
 
@@ -118,7 +130,6 @@ public class ClientEvents {
                 checkOnGroundFor(player);
             }
             ClientKeybinds.tick();
-            ClientTaskScheduler.onClientTick();
             ClientSounds.updateSingleSoundVolumes();
         }catch(Exception ignored) {}
     }

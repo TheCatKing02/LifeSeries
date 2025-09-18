@@ -10,8 +10,18 @@ public abstract class DefaultScreen extends Screen {
 
     protected int BG_WIDTH;
     protected int BG_HEIGHT;
+    protected int offsetX = 0;
+    protected int offsetY = 0;
     protected static final int DEFAULT_TEXT_COLOR = TextColors.DEFAULT;
 
+    protected DefaultScreen(Text name, int widthX, int widthY, int offsetX, int offsetY) {
+        super(name);
+        this.BG_WIDTH = widthX;
+        this.BG_HEIGHT = widthY;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        calculateCoordinates();
+    }
     protected DefaultScreen(Text name, int widthX, int widthY) {
         super(name);
         this.BG_WIDTH = widthX;
@@ -38,12 +48,12 @@ public abstract class DefaultScreen extends Screen {
     protected int backgroundHeight;
 
     public void calculateCoordinates() {
-        startX = (this.width - BG_WIDTH) / 2;
+        startX = (this.width - BG_WIDTH) / 2 + offsetX;
         endX = startX + BG_WIDTH;
         centerX = (startX + endX) / 2;
         backgroundWidth = endX - startX;
 
-        startY = (this.height - BG_HEIGHT) / 2;
+        startY = (this.height - BG_HEIGHT) / 2 + offsetY;
         endY = startY + BG_HEIGHT;
         centerY = (startY + endY) / 2;
         backgroundHeight = endY - startY;
@@ -57,11 +67,15 @@ public abstract class DefaultScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && allowCloseButton()) { // Left-click
             if (isInCloseRegion((int)mouseX, (int)mouseY)) {
-                this.close();
+                closeButtonClicked();
                 return true;
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public void closeButtonClicked() {
+        this.close();
     }
 
     public boolean isInCloseRegion(int x, int y) {
@@ -79,8 +93,7 @@ public abstract class DefaultScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-    }
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {}
 
     public void renderBackground(DrawContext context, int mouseX, int mouseY) {
         // Thick borders
@@ -112,8 +125,6 @@ public abstract class DefaultScreen extends Screen {
         // Bottom Right
         context.fill(endX+1, endY+1, endX+2, endY+2, TextColors.BLACK);
         context.fill(endX-1, endY-1, endX, endY, TextColors.GUI_GRAY);
-
-        if (allowCloseButton()) renderClose(context, mouseX, mouseY);
     }
 
     public void renderClose(DrawContext context, int mouseX, int mouseY) {
@@ -123,9 +134,9 @@ public abstract class DefaultScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context, mouseX, mouseY, delta);
         this.renderBackground(context, mouseX, mouseY);
         this.render(context, mouseX, mouseY);
+        if (allowCloseButton()) renderClose(context, mouseX, mouseY);
         super.render(context, mouseX, mouseY, delta);
     }
 

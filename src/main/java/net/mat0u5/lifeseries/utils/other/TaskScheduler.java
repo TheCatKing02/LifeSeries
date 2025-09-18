@@ -18,14 +18,14 @@ public class TaskScheduler {
         newTasks.add(task);
     }
 
+    public static void schedulePriorityTask(int tickNumber, Runnable goal) {
+        Task task = new Task(tickNumber, goal);
+        task.priority = true;
+        newTasks.add(task);
+    }
+
     public static void registerTickHandler() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            if (Main.modDisabled()) {
-                tasks.clear();
-                newTasks.clear();
-                return;
-            }
-
             try {
                 Iterator<Task> iterator = tasks.iterator();
 
@@ -35,7 +35,10 @@ public class TaskScheduler {
 
                     if (task.tickCount <= 0) {
                         try {
-                            task.goal.run();
+                            //Inner try-catch to prevent errors from preventing the task from being removed
+                            if (!Main.modDisabled() || task.priority) {
+                                task.goal.run();
+                            }
                         }catch(Exception e) {
                             Main.LOGGER.error("Fatal error while running task " + task);
                             e.printStackTrace();
@@ -55,6 +58,7 @@ public class TaskScheduler {
     public static class Task {
         private int tickCount;
         private final Runnable goal;
+        public boolean priority = false;
 
         public Task(int tickCount, Runnable goal) {
             this.tickCount = tickCount;

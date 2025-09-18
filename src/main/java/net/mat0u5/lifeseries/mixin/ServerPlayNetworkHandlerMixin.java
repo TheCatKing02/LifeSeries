@@ -86,6 +86,7 @@ public class ServerPlayNetworkHandlerMixin {
     /*@Inject(method = "requestTeleport(Lnet/minecraft/entity/player/PlayerPosition;Ljava/util/Set;)V", at = @At("TAIL"))
     public void requestTeleport(PlayerPosition pos, Set<PositionFlag> flags, CallbackInfo ci) {
         *///?}
+        if (Main.modFullyDisabled()) return;
         ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
         ServerPlayerEntity player = handler.getPlayer();
         if (player instanceof FakePlayer) {

@@ -23,8 +23,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.mob.WardenEntity;
 import net.minecraft.item.ItemStack;
@@ -32,10 +30,8 @@ import net.minecraft.item.SpawnEggItem;
 import net.minecraft.scoreboard.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -322,9 +318,6 @@ public abstract class Season {
 
     public final Map<UUID, HashMap<Vec3d,List<Float>>> respawnPositions = new HashMap<>();
     public void onPlayerRespawn(ServerPlayerEntity player) {
-
-    }
-    public void postPlayerRespawn(ServerPlayerEntity player) {
         if (!respawnPositions.containsKey(player.getUuid())) return;
         HashMap<Vec3d, List<Float>> info = respawnPositions.get(player.getUuid());
         respawnPositions.remove(player.getUuid());

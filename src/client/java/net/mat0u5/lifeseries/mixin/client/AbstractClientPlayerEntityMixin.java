@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.MainClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class AbstractClientPlayerEntityMixin {
     @Inject(method = "getSkinTextures", at = @At("HEAD"), cancellable = true)
     public void getSkinTextures(CallbackInfoReturnable<SkinTextures> cir) {
+        if (Main.modFullyDisabled()) return;
         AbstractClientPlayerEntity abstrPlayer = (AbstractClientPlayerEntity) (Object) this;
         UUID uuid = abstrPlayer.getUuid();
         if (uuid == null) return;

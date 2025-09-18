@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundSystem;
@@ -26,7 +27,7 @@ public class SoundSystemMixin {
     @Inject(method = "getAdjustedPitch", at = @At("HEAD"), cancellable = true)
     private void getAdjustedPitch(SoundInstance sound, CallbackInfoReturnable<Float> cir) {
         String name = sound.getId().getPath();
-        if (ls$nonAdjustedSounds.contains(name)) return;
+        if (ls$nonAdjustedSounds.contains(name) || Main.modFullyDisabled()) return;
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.world != null) {
             TickManager tickManager = client.world.getTickManager();

@@ -16,6 +16,7 @@ import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.season.wildlife.morph.MorphManager;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.Wildcards;
 import net.mat0u5.lifeseries.seasons.session.SessionStatus;
+import net.mat0u5.lifeseries.utils.enums.HandshakeStatus;
 import net.mat0u5.lifeseries.utils.interfaces.IClientHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -55,6 +56,7 @@ public class MainClient implements ClientModInitializer, IClientHelper {
     public static long limitedLifeTimeLastUpdated = 0;
     public static long limitedLifeLives = 0;
 
+
     public static ClientConfig clientConfig;
 
     //Config
@@ -65,6 +67,10 @@ public class MainClient implements ClientModInitializer, IClientHelper {
     public static boolean COLORED_HEARTS = false;
     public static boolean COLORED_HEARTS_HARDCORE_LAST_LIFE = true;
     public static boolean COLORED_HEARTS_HARDCORE_ALL_LIVES = false;
+
+
+    public static boolean isReplay = false;
+    public static HandshakeStatus serverHandshake = HandshakeStatus.WAITING;
 
     @Override
     public void onInitializeClient() {
@@ -94,6 +100,16 @@ public class MainClient implements ClientModInitializer, IClientHelper {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null) return false;
         return client.isIntegratedServerRunning();
+    }
+
+    @Override
+    public boolean isReplay() {
+        return isReplay;
+    }
+
+    @Override
+    public HandshakeStatus serverHandshake() {
+        return serverHandshake;
     }
 
     @Override
@@ -153,6 +169,7 @@ public class MainClient implements ClientModInitializer, IClientHelper {
         limitedLifeTimerColor = "";
         limitedLifeTimeLastUpdated = 0;
         limitedLifeLives = 0;
+        serverHandshake = HandshakeStatus.WAITING;
 
         MorphManager.resetMorphs();
     }

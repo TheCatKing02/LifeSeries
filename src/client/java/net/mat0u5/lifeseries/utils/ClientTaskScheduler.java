@@ -12,7 +12,14 @@ public class ClientTaskScheduler {
     private static final List<Task> newTasks = new ArrayList<>();
 
     public static void scheduleTask(int tickNumber, Runnable goal) {
+        if (Main.modDisabled()) return;
         Task task = new Task(tickNumber, goal);
+        newTasks.add(task);
+    }
+
+    public static void schedulePriorityTask(int tickNumber, Runnable goal) {
+        Task task = new Task(tickNumber, goal);
+        task.priority = true;
         newTasks.add(task);
     }
 
@@ -27,7 +34,9 @@ public class ClientTaskScheduler {
                 if (task.tickCount <= 0) {
                     try {
                         //Inner try-catch to prevent errors from preventing the task from being removed
-                        task.goal.run();
+                        if (!Main.modDisabled() || task.priority) {
+                            task.goal.run();
+                        }
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -45,6 +54,7 @@ public class ClientTaskScheduler {
     public static class Task {
         private int tickCount;
         private final Runnable goal;
+        public boolean priority = false;
 
         public Task(int tickCount, Runnable goal) {
             this.tickCount = tickCount;

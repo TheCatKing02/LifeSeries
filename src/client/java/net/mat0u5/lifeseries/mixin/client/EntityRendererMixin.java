@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.MainClient;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.minecraft.client.MinecraftClient;
@@ -31,7 +32,7 @@ public class EntityRendererMixin<T extends Entity> {
     )
     public Text render(Text text) {
     *///?}
-        if (text == null) return text;
+        if (text == null || Main.modFullyDisabled()) return text;
         if (MinecraftClient.getInstance().getNetworkHandler() == null) return text;
 
         if (MainClient.playerDisguiseNames.containsKey(text.getString())) {

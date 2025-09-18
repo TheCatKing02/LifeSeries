@@ -1,16 +1,13 @@
 package net.mat0u5.lifeseries.mixin;
 
 import net.mat0u5.lifeseries.Main;
-import net.mat0u5.lifeseries.seasons.other.WatcherManager;
 import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
-import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.TeleportTarget;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,9 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.OptionalInt;
-import java.util.UUID;
 
 import static net.mat0u5.lifeseries.Main.blacklist;
 import static net.mat0u5.lifeseries.Main.currentSeason;
@@ -34,15 +29,6 @@ import net.minecraft.text.Text;
 
 @Mixin(value = ServerPlayerEntity.class, priority = 1)
 public class ServerPlayerEntityMixin {
-    @Inject(method = "getRespawnTarget", at = @At("HEAD"))
-    private void getRespawnTarget(boolean alive, TeleportTarget.PostDimensionTransition postDimensionTransition, CallbackInfoReturnable<TeleportTarget> cir) {
-        if (!Main.isLogicalSide() || Main.modDisabled()) return;
-        ServerPlayerEntity player = ls$get();
-        if (WatcherManager.isWatcher(player)) return;
-        UUID uuid = player.getUuid();
-        currentSeason.onPlayerRespawn(Objects.requireNonNull(PlayerUtils.getPlayer(uuid)));
-        TaskScheduler.scheduleTask(1, () -> currentSeason.postPlayerRespawn(Objects.requireNonNull(PlayerUtils.getPlayer(uuid))));
-    }
 
     @Inject(method = "openHandledScreen", at = @At("HEAD"))
     private void onInventoryOpen(@Nullable NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> cir) {
@@ -59,6 +45,7 @@ public class ServerPlayerEntityMixin {
     //? if <= 1.21.6 {
     @Inject(method = "sendMessageToClient", at = @At("HEAD"), cancellable = true)
     private void sendMessageToClient(Text message, boolean overlay, CallbackInfo ci) {
+        if (Main.modFullyDisabled()) return;
         ServerPlayerEntity player = ls$get();
         if (player instanceof FakePlayer) {
             ci.cancel();
@@ -67,6 +54,7 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "acceptsMessage", at = @At("HEAD"), cancellable = true)
     private void acceptsMessage(boolean overlay, CallbackInfoReturnable<Boolean> cir) {
+        if (Main.modFullyDisabled()) return;
         ServerPlayerEntity player = ls$get();
         if (player instanceof FakePlayer) {
             cir.setReturnValue(false);
@@ -75,6 +63,7 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "acceptsChatMessage", at = @At("HEAD"), cancellable = true)
     private void acceptsChatMessage(CallbackInfoReturnable<Boolean> cir) {
+        if (Main.modFullyDisabled()) return;
         ServerPlayerEntity player = ls$get();
         if (player instanceof FakePlayer) {
             cir.setReturnValue(false);

@@ -29,7 +29,7 @@ public class PlayerListHudMixin {
     private MutableText modifyFormattedScore(ReadableScoreboardScore readableScoreboardScore, NumberFormat numberFormat) {
         ScoreboardObjective objective = ls$getDisplayedObjective();
         MutableText originalText = ReadableScoreboardScore.getFormattedScore(readableScoreboardScore, numberFormat);
-        if (readableScoreboardScore == null || originalText == null) return originalText;
+        if (readableScoreboardScore == null || originalText == null || Main.modFullyDisabled()) return originalText;
 
         if (objective != null && objective.getName().equals(LivesManager.SCOREBOARD_NAME)) {
             int score = readableScoreboardScore.getScore();
@@ -58,7 +58,7 @@ public class PlayerListHudMixin {
 
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     private void getName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
-        if (!MainClient.COLORBLIND_SUPPORT) return;
+        if (!MainClient.COLORBLIND_SUPPORT || Main.modFullyDisabled()) return;
         Text original = cir.getReturnValue();
         if (entry == null) return;
         Team team = entry.getScoreboardTeam();

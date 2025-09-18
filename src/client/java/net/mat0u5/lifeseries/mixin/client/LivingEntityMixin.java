@@ -33,7 +33,7 @@ public class LivingEntityMixin {
             index = 1
     )
     private float applyMovementInput(float slipperiness) {
-        if ((System.currentTimeMillis() - MainClient.CURSE_SLIDING) > 5000) return slipperiness;
+        if ((System.currentTimeMillis() - MainClient.CURSE_SLIDING) > 5000 || Main.modFullyDisabled()) return slipperiness;
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity instanceof PlayerEntity playerr && MainClient.isClientPlayer(playerr.getUuid()) && playerr.isOnGround() && ClientEvents.onGroundFor >= 5) {
             return 1.198f;
@@ -47,7 +47,7 @@ public class LivingEntityMixin {
             index = 0
     )
     private Vec3d applyMovementInput(Vec3d velocity) {
-        if ((System.currentTimeMillis() - MainClient.CURSE_SLIDING) > 5000) return velocity;
+        if ((System.currentTimeMillis() - MainClient.CURSE_SLIDING) > 5000 || Main.modFullyDisabled()) return velocity;
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity instanceof PlayerEntity playerr && MainClient.isClientPlayer(playerr.getUuid()) && playerr.isOnGround() && ClientEvents.onGroundFor >= 5) {
             BlockPos blockPos = playerr.getVelocityAffectingPos();

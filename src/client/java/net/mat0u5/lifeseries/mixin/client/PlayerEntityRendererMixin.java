@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.MainClient;
 import net.mat0u5.lifeseries.seasons.season.wildlife.morph.MorphComponent;
 import net.mat0u5.lifeseries.seasons.season.wildlife.morph.MorphManager;
@@ -20,6 +21,7 @@ public abstract class PlayerEntityRendererMixin {
     @Inject(method = "render(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At("HEAD"), cancellable = true)
     public void replaceRendering(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci){
+        if (Main.modFullyDisabled()) return;
         if (MainClient.invisiblePlayers.containsKey(abstractClientPlayerEntity.getUuid())) {
             long time = MainClient.invisiblePlayers.get(abstractClientPlayerEntity.getUuid());
             if (time > System.currentTimeMillis() || time == -1) {
@@ -57,6 +59,7 @@ public class PlayerEntityRendererMixin {
     @Inject(method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At("HEAD"), cancellable = true)
     public <E extends Entity> void render(Entity entity, double x, double y, double z, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        if (Main.modFullyDisabled()) return;
         if (entity instanceof PlayerEntity playerEntity) {
             if (MainClient.invisiblePlayers.containsKey(playerEntity.getUuid())) {
                 long time = MainClient.invisiblePlayers.get(playerEntity.getUuid());

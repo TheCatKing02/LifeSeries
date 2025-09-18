@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.MainClient;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.ClientUtils;
@@ -50,7 +51,7 @@ public class InGameHudMixin {
         Team playerTeam = ClientUtils.getPlayerTeam();
         if (!MainClient.COLORED_HEARTS || playerTeam == null || playerTeam.getColor() == null ||
                 !ls$allowedColors.contains(playerTeam.getColor().getName().toLowerCase()) ||
-                !ls$allowedHearts.contains(texturePath)) {
+                !ls$allowedHearts.contains(texturePath) || Main.modFullyDisabled()) {
             if (MainClient.clientCurrentSeason == Seasons.SECRET_LIFE && texturePath.startsWith("hud/heart/container")) {
                 return;
             }
@@ -97,7 +98,7 @@ public class InGameHudMixin {
     *///?} else {
     /*private void ls$afterHeartDraw(DrawContext instance, RenderPipeline renderPipeline, Identifier identifier, int x, int y, int u, int v) {
     *///?}
-        if (MainClient.clientCurrentSeason != Seasons.SECRET_LIFE) {
+        if (MainClient.clientCurrentSeason != Seasons.SECRET_LIFE || Main.modFullyDisabled()) {
             return;
         }
         String name = identifier.getPath();

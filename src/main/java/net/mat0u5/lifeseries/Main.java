@@ -22,6 +22,7 @@ import net.mat0u5.lifeseries.seasons.season.secretlife.TaskManager;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.snails.SnailSkinsServer;
 import net.mat0u5.lifeseries.seasons.session.Session;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
+import net.mat0u5.lifeseries.utils.enums.HandshakeStatus;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.enums.SessionTimerStates;
 import net.mat0u5.lifeseries.utils.interfaces.IClientHelper;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Main implements ModInitializer {
-	public static final String MOD_VERSION = "dev-1.4.0.11";
+	public static final String MOD_VERSION = "dev-1.4.0.12";
 	public static final String MOD_ID = "lifeseries";
 	public static final String LATEST_UPDATE_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases/latest";
 	public static final String ALL_UPDATES_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases";
@@ -46,7 +47,6 @@ public class Main implements ModInitializer {
 	public static final boolean ISOLATED_ENVIRONMENT = false;
 	public static final Seasons DEFAULT_SEASON = Seasons.UNASSIGNED;
 	public static boolean MOD_DISABLED = false;
-	public static boolean IS_REPLAY = false;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static ConfigManager config;
@@ -93,7 +93,16 @@ public class Main implements ModInitializer {
 	}
 
 	public static boolean modDisabled() {
-		return MOD_DISABLED || IS_REPLAY;
+		if (clientHelper != null) {
+			if (clientHelper.isReplay()) return true;
+			if (clientHelper.serverHandshake() == HandshakeStatus.NOT_RECEIVED) return true;
+		}
+		return MOD_DISABLED;
+	}
+
+	public static boolean modFullyDisabled() {
+		if (clientHelper == null) return false;
+		return clientHelper.serverHandshake() == HandshakeStatus.NOT_RECEIVED;
 	}
 
 	public static void setDisabled(boolean disabled) {

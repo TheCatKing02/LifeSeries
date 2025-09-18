@@ -132,20 +132,10 @@ public class DoubleLife extends Season {
         return super.isAllowedToAttack(attacker, victim, allowSelfDefense);
     }
 
-    private List<UUID> respawningPlayers = new ArrayList<>();
     @Override
     public void onPlayerRespawn(ServerPlayerEntity player) {
-        respawningPlayers.add(player.getUuid());
         super.onPlayerRespawn(player);
-        ServerPlayerEntity soulmate = getSoulmate(player);
-        if (soulmate != null) syncPlayerInventory(soulmate, player);
-    }
-
-    @Override
-    public void postPlayerRespawn(ServerPlayerEntity player) {
-        super.postPlayerRespawn(player);
         syncPlayer(player);
-        respawningPlayers.remove(player.getUuid());
     }
 
     @Override
@@ -592,7 +582,7 @@ public class DoubleLife extends Season {
     }
 
     public boolean isRecentlyDead(ServerPlayerEntity player) {
-        return !player.isAlive() || respawningPlayers.contains(player.getUuid());
+        return !player.isAlive() || player.age <= 1;
     }
 
     public void setPlayerInventory(ServerPlayerEntity player, PlayerInventory inventory) {
