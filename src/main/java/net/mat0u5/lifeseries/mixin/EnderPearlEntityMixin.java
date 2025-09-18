@@ -26,7 +26,7 @@ public class EnderPearlEntityMixin {
         )
     *///?}
         private float onTargetDamaged(float amount) {
-        if (!Main.isLogicalSide()) return amount;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return amount;
         EnderPearlEntity pearl = (EnderPearlEntity) (Object) this;
         if (!(pearl.getOwner() instanceof ServerPlayerEntity owner)) return amount;
         if (!SuperpowersWildcard.hasActivePower(owner, Superpowers.TELEPORTATION)) return amount;

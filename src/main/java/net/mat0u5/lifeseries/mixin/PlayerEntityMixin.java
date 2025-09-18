@@ -45,7 +45,7 @@ public abstract class PlayerEntityMixin {
     private void onApplyDamage(DamageSource source, float amount, CallbackInfo ci) {
      //?} else
     /*private void onApplyDamage(ServerWorld world, DamageSource source, float amount, CallbackInfo ci) {*/
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         PlayerEntity player = (PlayerEntity) (Object) this;
         if (WatcherManager.isWatcher(player)) return;
 
@@ -60,7 +60,7 @@ public abstract class PlayerEntityMixin {
     //?} else {
     /*private void onPreDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
     *///?}
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         PlayerEntity player = (PlayerEntity) (Object) this;
         if (WatcherManager.isWatcher(player)) return;
 
@@ -71,7 +71,7 @@ public abstract class PlayerEntityMixin {
 
     @Inject(method = "canFoodHeal", at = @At("HEAD"), cancellable = true)
     private void canFoodHeal(CallbackInfoReturnable<Boolean> cir) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (currentSeason instanceof DoubleLife doubleLife)  {
             PlayerEntity player = (PlayerEntity) (Object) this;
             if (WatcherManager.isWatcher(player)) return;
@@ -107,7 +107,7 @@ public abstract class PlayerEntityMixin {
     @Inject(method = "travel", at = @At("HEAD"))
     private void travel(Vec3d movementInput, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof ServerPlayerEntity player)) return;
+        if (!(entity instanceof ServerPlayerEntity player) || Main.MOD_DISABLED) return;
         if (!player.isOnGround()) return;
         if (!SuperpowersWildcard.hasActivatedPower(player, Superpowers.SUPERSPEED)) return;
 

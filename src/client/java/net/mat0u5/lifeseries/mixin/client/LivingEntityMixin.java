@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin.client;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.MainClient;
 import net.mat0u5.lifeseries.events.ClientEvents;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +18,7 @@ public class LivingEntityMixin {
 
     @Inject(method = "jump", at = @At("TAIL"))
     private void onJump(CallbackInfo ci) {
+        if (Main.MOD_DISABLED) return;
         LivingEntity entity = (LivingEntity) (Object) this;
         ClientEvents.onClientJump(entity);
     }

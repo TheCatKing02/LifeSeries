@@ -56,15 +56,17 @@ public class ClientEvents {
     }
 
     public static void onClientJoin(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
-
+        if (Main.MOD_DISABLED) return;
     }
 
     public static void onClientDisconnect(ClientPlayNetworkHandler handler, MinecraftClient client) {
+        if (Main.MOD_DISABLED) return;
         Main.LOGGER.info("Client disconnected from server, clearing some client data.");
         MainClient.resetClientData();
     }
 
     public static void onScreenOpen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
+        if (Main.MOD_DISABLED) return;
         if (UpdateChecker.updateAvailable) {
             if (screen instanceof TitleScreen && !hasShownUpdateScreen) {
                 client.execute(() -> {
@@ -76,6 +78,7 @@ public class ClientEvents {
     }
 
     public static void onClientStart(MinecraftClient client) {
+        if (Main.MOD_DISABLED) return;
     }
 
     public static void onClientTickEnd() {

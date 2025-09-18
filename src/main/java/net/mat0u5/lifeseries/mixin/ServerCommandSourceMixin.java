@@ -17,7 +17,7 @@ public class ServerCommandSourceMixin {
 
     @Inject(method = "sendFeedback", at = @At("HEAD"))
     public void sendFeedback(Supplier<Text> feedbackSupplier, boolean broadcastToOps, CallbackInfo ci) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (!broadcastToOps) return;
         Text text = feedbackSupplier.get();
         String sourceStr = "null";

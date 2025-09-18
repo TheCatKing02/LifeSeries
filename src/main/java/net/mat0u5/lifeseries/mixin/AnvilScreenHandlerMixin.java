@@ -25,7 +25,7 @@ public abstract class AnvilScreenHandlerMixin {
 
     @Inject(method = "updateResult", at = @At("TAIL"))
     private void modifyAnvilResultName(CallbackInfo ci) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (blacklist == null) return;
         ForgingScreenHandlerAccessor accessor = (ForgingScreenHandlerAccessor) (Object) this;
         Inventory outputInventory = accessor.getOutput();

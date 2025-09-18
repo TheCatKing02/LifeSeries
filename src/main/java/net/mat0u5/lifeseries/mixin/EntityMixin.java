@@ -74,7 +74,7 @@ public abstract class EntityMixin implements IEntityDataSaver, IMorph {
 
     @Inject(method = "getAir", at = @At("RETURN"), cancellable = true)
     public void getAir(CallbackInfoReturnable<Integer> cir) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (currentSeason instanceof WildLife) {
             if (!Snail.SHOULD_DROWN_PLAYER) return;
             if (!WildcardManager.isActiveWildcard(Wildcards.SNAILS)) return;
@@ -101,7 +101,7 @@ public abstract class EntityMixin implements IEntityDataSaver, IMorph {
                 at = @At("HEAD"), cancellable = true)
         public void dropStack(ServerWorld world, ItemStack stack, float yOffset, CallbackInfoReturnable<ItemEntity> cir) {
     *///?}
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (currentSeason instanceof WildLife) {
             Entity entity = (Entity) (Object) this;
             if (entity instanceof EvokerEntity && stack.isOf(Items.TOTEM_OF_UNDYING)) {
@@ -124,7 +124,7 @@ public abstract class EntityMixin implements IEntityDataSaver, IMorph {
     )
     ^///?}
     private boolean allowRidingPlayers(EntityType instance, Operation<Boolean> original) {
-        if( instance == EntityType.PLAYER) {
+        if(instance == EntityType.PLAYER) {
             return true;
         } else {
             return original.call(instance);

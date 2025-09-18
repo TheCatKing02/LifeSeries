@@ -29,7 +29,7 @@ public class CraftingScreenHandlerMixin {
     /*private static void blockPreviewIfNoCraftingItemPresent(ScreenHandler handler, ServerWorld world, PlayerEntity player,
             RecipeInputInventory craftingInventory, CraftingResultInventory resultInventory, RecipeEntry<CraftingRecipe> recipe, CallbackInfo ci) {
     *///?}
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
 
         for (int i = 0; i < craftingInventory.size(); i++) {
             ItemStack stack = craftingInventory.getStack(i);

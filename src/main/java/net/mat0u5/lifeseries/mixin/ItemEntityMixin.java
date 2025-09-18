@@ -18,7 +18,7 @@ public abstract class ItemEntityMixin {
 
     @Inject(method = "onPlayerCollision", at = @At("HEAD"), cancellable = true)
     private void onPlayerPickup(PlayerEntity player, CallbackInfo ci) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (player instanceof ServerPlayerEntity serverPlayer) {
             if (blacklist == null) return;
             ItemEntity itemEntity = (ItemEntity) (Object) this;

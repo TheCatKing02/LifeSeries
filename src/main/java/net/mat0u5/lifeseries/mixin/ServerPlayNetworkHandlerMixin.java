@@ -45,7 +45,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "handleDecoratedMessage", at = @At("HEAD"), cancellable = true)
     private void onHandleDecoratedMessage(SignedMessage message, CallbackInfo ci) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
         ServerPlayerEntity player = handler.player;
 
@@ -70,7 +70,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "onPlayerInteractItem", at = @At("HEAD"))
     private void onPlayerInteractItem(PlayerInteractItemC2SPacket packet, CallbackInfo ci) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
         ServerPlayerEntity player = handler.player;
         if (currentSeason instanceof WildLife) {
@@ -103,6 +103,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "executeCommand", at = @At("HEAD"), cancellable = true)
     private void executeCommand(String command, CallbackInfo ci) {
+        if (Main.MOD_DISABLED) return;
         ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
         for (String mutedCmd : mutedCommands) {
             if (command.startsWith(mutedCmd + " ")) {
@@ -114,6 +115,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "handleCommandExecution", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;execute(Lcom/mojang/brigadier/ParseResults;Ljava/lang/String;)V"), cancellable = true)
     private void handleCommandExecution(ChatCommandSignedC2SPacket packet, LastSeenMessageList lastSeenMessages, CallbackInfo ci) {
+        if (Main.MOD_DISABLED) return;
         ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
         for (String command : mutedCommands) {
             if (packet.command().startsWith(command + " ")) {
@@ -125,7 +127,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Unique
     private boolean ls$mute(ServerPlayerEntity player, CallbackInfo ci) {
-        if (player == null || PermissionManager.isAdmin(player)) {
+        if (player == null || PermissionManager.isAdmin(player) || Main.MOD_DISABLED) {
             return false;
         }
         if (TriviaWildcard.bots.containsKey(player.getUuid())) {
@@ -153,7 +155,7 @@ public class ServerPlayNetworkHandlerMixin {
     @Inject(method = "onPlayerAction", at = @At("RETURN"))
     public void onPlayerAction(PlayerActionC2SPacket packet, CallbackInfo ci) {
         ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (packet.getAction() == PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND) {
             currentSeason.onUpdatedInventory(handler.player);
         }

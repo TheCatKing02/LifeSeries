@@ -19,13 +19,13 @@ import static net.mat0u5.lifeseries.Main.currentSeason;
 public class ServerPlayerInteractionManagerMixin {
     @Inject(at = @At("RETURN"), method = "interactBlock")
     private void onInteractBlock(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         currentSeason.onUpdatedInventory(player);
     }
 
     @Inject(at = @At("RETURN"), method = "interactItem")
     private void onInteractItem(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         currentSeason.onUpdatedInventory(player);
     }
 }

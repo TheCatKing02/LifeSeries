@@ -26,6 +26,7 @@ public interface ServerWaypointMixin {
 
     @Inject(method = "cannotReceive", at = @At("HEAD"), cancellable = true)
     private static void cannotReceive(LivingEntity source, ServerPlayerEntity receiver, CallbackInfoReturnable<Boolean> cir) {
+        if (Main.MOD_DISABLED) return;
         if (source instanceof ServerPlayerEntity sender) {
             if (currentSeason instanceof DoubleLife doubleLife && DoubleLife.SOULMATE_LOCATOR_BAR) {
                 UUID receiverSoulmateUUID = doubleLife.getSoulmateUUID(receiver.getUuid());

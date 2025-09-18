@@ -93,6 +93,7 @@ public class LifeSeriesCommand extends Command {
     }
 
     public int chooseSeason(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         if (source.getPlayer() == null) return -1;
         if (!NetworkHandlerServer.wasHandshakeSuccessful(source.getPlayer())) {
             source.sendError(Text.of("You must have the Life Series mod installed §nclient-side§r to open the season selection GUI."));
@@ -105,6 +106,7 @@ public class LifeSeriesCommand extends Command {
     }
 
     public int setSeason(ServerCommandSource source, String setTo, boolean confirmed) {
+        if (checkBanned(source)) return -1;
         if (!ALLOWED_SEASON_NAMES.contains(setTo)) {
             source.sendError(Text.of("That is not a valid season!"));
             source.sendError(TextUtils.formatPlain("You must choose one of the following: {}", ALLOWED_SEASON_NAMES));
@@ -133,6 +135,7 @@ public class LifeSeriesCommand extends Command {
     }
 
     public int config(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         if (source.getPlayer() == null) {
             return -1;
         }
@@ -148,6 +151,7 @@ public class LifeSeriesCommand extends Command {
     }
 
     public int getWorlds(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         Text worldSavesText = Text.literal("§7If you want to play on the exact same world seeds as Grian did, click ").append(
                 Text.literal("here")
                         .styled(style -> style
@@ -160,11 +164,13 @@ public class LifeSeriesCommand extends Command {
     }
 
     public int defaultCommand(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         getDiscord(source);
         return 1;
     }
 
     public int getDiscord(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         Text text = Text.literal("§7Click ").append(
                 Text.literal("here")
                         .styled(style -> style
@@ -177,6 +183,7 @@ public class LifeSeriesCommand extends Command {
     }
 
     public int getSeason(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Current season: {}", currentSeason.getSeason().getId()));
         if (source.getPlayer() != null) {
             NetworkHandlerServer.sendStringPacket(source.getPlayer(), PacketNames.SEASON_INFO, currentSeason.getSeason().getId());
@@ -185,17 +192,20 @@ public class LifeSeriesCommand extends Command {
     }
 
     public int getVersion(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         OtherUtils.sendCommandFeedbackQuiet(source, TextUtils.format("Mod version: {}",Main.MOD_VERSION));
         return 1;
     }
 
     public int reload(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         OtherUtils.sendCommandFeedback(source, Text.of("§7Reloading the Life Series..."));
         OtherUtils.reloadServer();
         return 1;
     }
 
     public int getCredits(ServerCommandSource source) {
+        if (checkBanned(source)) return -1;
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7The Life Series was originally created by §fGrian§7" +
                 ", and this mod, created by §fMat0u5§7, aims to recreate every single season one-to-one."));
         OtherUtils.sendCommandFeedbackQuiet(source, Text.of("§7This mod uses sounds created by §fOli (TheOrionSound)§7, and uses recreated snail model (first created by §fDanny§7), and a recreated trivia bot model (first created by §fHoffen§7)."));

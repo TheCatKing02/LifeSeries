@@ -36,7 +36,7 @@ import net.minecraft.text.Text;
 public class ServerPlayerEntityMixin {
     @Inject(method = "getRespawnTarget", at = @At("HEAD"))
     private void getRespawnTarget(boolean alive, TeleportTarget.PostDimensionTransition postDimensionTransition, CallbackInfoReturnable<TeleportTarget> cir) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         ServerPlayerEntity player = ls$get();
         if (WatcherManager.isWatcher(player)) return;
         UUID uuid = player.getUuid();
@@ -46,7 +46,7 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "openHandledScreen", at = @At("HEAD"))
     private void onInventoryOpen(@Nullable NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> cir) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         ServerPlayerEntity player = ls$get();
         if (blacklist == null) return;
         
@@ -84,6 +84,7 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "attack", at = @At("HEAD"))
     private void onAttackEntity(Entity target, CallbackInfo ci) {
+        if (Main.MOD_DISABLED) return;
         ServerPlayerEntity player = ls$get();
         currentSeason.onUpdatedInventory(player);
     }
@@ -118,7 +119,7 @@ public class ServerPlayerEntityMixin {
 
     @Unique
     private void ls$onUpdatedEffects(StatusEffectInstance effect, boolean add) {
-        if (ls$processing) {
+        if (ls$processing || Main.MOD_DISABLED) {
             return;
         }
         ServerPlayerEntity player = ls$get();

@@ -61,7 +61,7 @@ public abstract class PlayerInventoryMixin {
 
     @Unique
     private void ls$onUpdatedInventory() {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (ls$processing) {
             ls$skippedCalls++;
             return;

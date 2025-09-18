@@ -13,13 +13,19 @@ public class TaskScheduler {
     private static final List<Task> newTasks = new ArrayList<>();
 
     public static void scheduleTask(int tickNumber, Runnable goal) {
+        if (Main.MOD_DISABLED) return;
         Task task = new Task(tickNumber, goal);
         newTasks.add(task);
     }
 
     public static void registerTickHandler() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            if (Main.MOD_DISABLED) return;
+            if (Main.MOD_DISABLED) {
+                tasks.clear();
+                newTasks.clear();
+                return;
+            }
+
             try {
                 Iterator<Task> iterator = tasks.iterator();
 

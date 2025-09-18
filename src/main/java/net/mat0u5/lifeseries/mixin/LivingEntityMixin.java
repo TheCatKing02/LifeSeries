@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 public abstract class LivingEntityMixin {
     @Inject(method = "heal", at = @At("HEAD"), cancellable = true)
     private void onHealHead(float amount, CallbackInfo info) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (!currentSeason.NO_HEALING) return;
 
         LivingEntity entity = (LivingEntity) (Object) this;
@@ -49,7 +49,7 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "heal", at = @At("TAIL"))
     private void onHeal(float amount, CallbackInfo info) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity instanceof ServerPlayerEntity player) {
             if (WatcherManager.isWatcher(player)) return;
@@ -62,7 +62,7 @@ public abstract class LivingEntityMixin {
     public void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
      //?} else
     /*public void damage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {*/
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
 
         LivingEntity entity = (LivingEntity) (Object) this;
         //? if >= 1.21.2 {
@@ -96,7 +96,7 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z", at = @At("HEAD"), cancellable = true)
     public void addStatusEffect(StatusEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity instanceof ServerPlayerEntity) {
             if (!effect.isAmbient() && !effect.shouldShowIcon() && !effect.shouldShowParticles()) return;
@@ -132,7 +132,7 @@ public abstract class LivingEntityMixin {
             index = 0
     )
     private double modifyKnockback(double strength) {
-        if (!Main.isLogicalSide()) return strength;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return strength;
         if (ls$lastDamageSource == null) return strength;
 
         DamageSource source = ls$lastDamageSource;
@@ -146,7 +146,7 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "drop", at = @At("HEAD"))
     private void onDrop(ServerWorld world, DamageSource damageSource, CallbackInfo ci) {
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         Events.onEntityDropItems((LivingEntity) (Object) this, damageSource);
     }
 
@@ -156,6 +156,7 @@ public abstract class LivingEntityMixin {
     /*@Inject(method = "tryUseDeathProtector", at = @At("HEAD"))
     *///?}
     private void stopFakeTotem(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+        if (Main.MOD_DISABLED) return;
         LivingEntity entity = (LivingEntity) (Object) this;
         if (ItemStackUtils.hasCustomComponentEntry(entity.getMainHandStack(), "FakeTotem")) {
             entity.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);

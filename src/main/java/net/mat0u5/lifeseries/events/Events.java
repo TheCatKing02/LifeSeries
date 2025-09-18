@@ -149,18 +149,19 @@ public class Events {
     private static void onServerStart(MinecraftServer server) {
         try {
             Main.server = server;
+            DatapackManager.onServerStarted(server);
             if (Main.MOD_DISABLED) return;
             currentSeason.initialize();
             blacklist.reloadBlacklist();
             if (currentSeason.getSeason() == Seasons.DOUBLE_LIFE) {
                 ((DoubleLife) currentSeason).loadSoulmates();
             }
-            DatapackManager.onServerStarted(server);
         } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onServerTickEnd(MinecraftServer server) {
         try {
+            if (Main.MOD_DISABLED) return;
             skipNextTickReload = false;
             if (!Main.isLogicalSide()) return;
             if (updatePlayerListsNextTick) {

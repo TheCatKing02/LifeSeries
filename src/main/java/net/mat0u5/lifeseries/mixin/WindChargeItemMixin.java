@@ -32,7 +32,7 @@ public class WindChargeItemMixin {
     public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
     //?} else
     /*public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {*/
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (user instanceof ServerPlayerEntity player) {
             if (currentSeason.getSeason() != Seasons.WILD_LIFE) return;
             if (!SuperpowersWildcard.hasActivatedPower(player, Superpowers.WIND_CHARGE)) return;

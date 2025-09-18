@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin;
 
+import net.mat0u5.lifeseries.Main;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,7 @@ import net.minecraft.component.ComponentMapImpl;
 public class ItemStackMixin {
     @Inject(method = "areItemsAndComponentsEqual", at = @At("HEAD"), cancellable = true)
     private static void areItemsAndComponentsEqual(ItemStack stack, ItemStack otherStack, CallbackInfoReturnable<Boolean> cir) {
-        if (!stack.isOf(otherStack.getItem())) return;
+        if (!stack.isOf(otherStack.getItem()) || Main.MOD_DISABLED) return;
 
         if (stack.isEmpty() && otherStack.isEmpty()) {
             cir.setReturnValue(true);

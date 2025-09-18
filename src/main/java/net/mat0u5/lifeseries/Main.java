@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Main implements ModInitializer {
-	public static final String MOD_VERSION = "dev-1.4.0.9";
+	public static final String MOD_VERSION = "dev-1.4.0.10";
 	public static final String MOD_ID = "lifeseries";
 	public static final String LATEST_UPDATE_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases/latest";
 	public static final String ALL_UPDATES_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases";
@@ -94,6 +94,14 @@ public class Main implements ModInitializer {
 	public static void setDisabled(boolean disabled) {
 		MOD_DISABLED = disabled;
 		config.setProperty("modDisabled", String.valueOf(MOD_DISABLED));
+		if (!MOD_DISABLED) {
+			fullReload();
+		}
+	}
+
+	public static void fullReload() {
+		String season = config.getOrCreateProperty("currentSeries", DEFAULT_SEASON.getId());
+		changeSeasonTo(season);
 	}
 
 	public static boolean isClient() {

@@ -60,7 +60,7 @@ public class HungerManagerMixin implements IHungerManager {
     //?} else {
     /*private void updateHead(ServerPlayerEntity player, CallbackInfo ci) {
     *///?}
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (player instanceof ServerPlayerEntity serverPlayer) {
             this.ls$player = serverPlayer;
         }
@@ -74,7 +74,7 @@ public class HungerManagerMixin implements IHungerManager {
     //?} else {
     /*private void updateTail(ServerPlayerEntity player, CallbackInfo ci) {
     *///?}
-        if (!Main.isLogicalSide()) return;
+        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
         if (ls$prevFoodLevel != foodLevel || ls$prevSaturationLevel != saturationLevel) {
             ls$emitUpdate();
         }

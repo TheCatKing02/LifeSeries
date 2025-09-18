@@ -1,5 +1,6 @@
 package net.mat0u5.lifeseries.mixin;
 
+import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.entity.Entity;
@@ -18,7 +19,7 @@ public class ServerWorldMixin {
 
     @Inject(method = "sendEntityStatus", at = @At("HEAD"))
     public void broadcast(Entity entity, byte status, CallbackInfo ci) {
-        if (status != (byte) 35 || currentSeason.getSeason() != Seasons.SECRET_LIFE) {
+        if (status != (byte) 35 || currentSeason.getSeason() != Seasons.SECRET_LIFE || Main.MOD_DISABLED) {
             return;
         }
         // This sound doesnt exist client-side, so it won't double
