@@ -42,9 +42,11 @@ public class PlayerDisguise extends ToggleableSuperpower {
         if (player == null) return;
         Entity lookingAt = PlayerUtils.getEntityLookingAt(player, 50);
         if (lookingAt != null)  {
-            if (lookingAt instanceof MannequinEntity mannequin) {
+            //? if >= 1.21.9 {
+            /*if (lookingAt instanceof MannequinEntity mannequin) {
                 //TODO
             }
+            *///?}
             if (lookingAt instanceof ServerPlayerEntity lookingAtPlayer) {
                 lookingAtPlayer = PlayerUtils.getPlayerOrProjection(lookingAtPlayer);
                 if (!PlayerUtils.isFakePlayer(lookingAtPlayer)) {

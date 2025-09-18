@@ -19,7 +19,6 @@ import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.TypedEntityData;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -36,6 +35,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 
 import static net.mat0u5.lifeseries.Main.*;
+//? if >= 1.21.9
+/*import net.minecraft.entity.TypedEntityData;*/
 
 public class SecretLife extends Season {
     public static final String COMMANDS_ADMIN_TEXT = "/lifeseries, /session, /claimkill, /lives, /gift, /task, /health, /secretlife";

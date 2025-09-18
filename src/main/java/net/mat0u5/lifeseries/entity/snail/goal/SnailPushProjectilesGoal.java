@@ -1,6 +1,7 @@
 package net.mat0u5.lifeseries.entity.snail.goal;
 
 import net.mat0u5.lifeseries.entity.snail.Snail;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -31,11 +32,11 @@ public final class SnailPushProjectilesGoal extends Goal {
 
     @Override
     public boolean canStart() {
-        if (mob.getEntityWorld() == null) {
+        if (WorldUtils.getEntityWorld(mob) == null) {
             return false;
         }
 
-        World world = mob.getEntityWorld();
+        World world = WorldUtils.getEntityWorld(mob);
         this.projectiles = world.getEntitiesByClass(
                 ProjectileEntity.class,
                 mob.getBoundingBox().expand(5.0, 5.0, 5.0),

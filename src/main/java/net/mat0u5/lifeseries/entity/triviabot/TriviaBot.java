@@ -346,7 +346,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
     }
 
     public void chunkLoading() {
-        if (getEntityWorld() instanceof ServerWorld world) {
+        if (getWorldEntity() instanceof ServerWorld world) {
             addTicket(world);
         }
     }
@@ -366,19 +366,19 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
         //? if <= 1.21 {
         this.kill();
         //?} else {
-        /*this.kill((ServerWorld) getEntityWorld());
+        /*this.kill((ServerWorld) getWorldEntity());
          *///?}
         this.discard();
     }
 
     public void transformIntoSnail() {
         if (getBoundPlayer() != null) {
-            Snail triviaSnail = MobRegistry.SNAIL.spawn((ServerWorld) getEntityWorld(), this.getBlockPos(), SpawnReason.COMMAND);
+            Snail triviaSnail = MobRegistry.SNAIL.spawn((ServerWorld) getWorldEntity(), this.getBlockPos(), SpawnReason.COMMAND);
             if (triviaSnail != null) {
                 triviaSnail.setBoundPlayer(getBoundPlayer());
                 triviaSnail.setFromTrivia();
                 triviaSnail.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE.value(), 0.5f, 2);
-                ServerWorld world = (ServerWorld) triviaSnail.getEntityWorld();
+                ServerWorld world = (ServerWorld) triviaSnail.getWorldEntity();
                 world.spawnParticles(
                         ParticleTypes.EXPLOSION,
                         this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(),
@@ -388,6 +388,14 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
             }
         }
         despawn();
+    }
+    
+    public World getWorldEntity() {
+        //? if = 1.21.6 {
+        /*return getWorld();
+        *///?} else {
+        return getWorldEntity();
+         //?}
     }
 
     private int analyzing = -1;
@@ -459,7 +467,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
         ServerPlayerEntity player = getBoundPlayer();
         if (player == null) return;
         ServerWorld playerWorld = PlayerUtils.getServerWorld(player);
-        if (getEntityWorld() instanceof ServerWorld world) {
+        if (getWorldEntity() instanceof ServerWorld world) {
             BlockPos tpTo = getBlockPosNearTarget(player, player.getBlockPos(),5);
             world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PLAYER_TELEPORT, this.getSoundCategory(), this.getSoundVolume(), this.getSoundPitch());
             playerWorld.playSound(null, tpTo.getX(), tpTo.getY(), tpTo.getZ(), SoundEvents.ENTITY_PLAYER_TELEPORT, this.getSoundCategory(), this.getSoundVolume(), this.getSoundPitch());
@@ -488,7 +496,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
 
     public void updateNavigation() {
         moveControl = new MoveControl(this);
-        navigation = new MobNavigation(this, getEntityWorld());
+        navigation = new MobNavigation(this, getWorldEntity());
         updateNavigationTarget();
     }
 
@@ -503,9 +511,9 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
     @Nullable
     public BlockPos getGroundBlock() {
         Vec3d startPos = getPos();
-        Vec3d endPos = startPos.add(0, getEntityWorld().getBottomY(), 0);
+        Vec3d endPos = startPos.add(0, getWorldEntity().getBottomY(), 0);
 
-        BlockHitResult result = getEntityWorld().raycast(
+        BlockHitResult result = getWorldEntity().raycast(
                 new RaycastContext(
                         startPos,
                         endPos,
@@ -627,7 +635,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
         ServerPlayerEntity player = getBoundPlayer();
         if (player == null) return;
         player.playSoundToPlayer(SoundEvents.ENTITY_ELDER_GUARDIAN_CURSE, SoundCategory.MASTER, 0.2f, 1f);
-        ServerWorld world = (ServerWorld) getEntityWorld();
+        ServerWorld world = (ServerWorld) getWorldEntity();
         Vec3d pos = getPos();
 
         //? if <= 1.21.6 {
@@ -750,15 +758,15 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
             vector = relativeTargetPos.normalize().multiply(0.3).add(0,0.1,0);
         }
 
-        List<ItemStack> lootTableItems = ItemSpawner.getRandomItemsFromLootTable(server, (ServerWorld) getEntityWorld(), getBoundPlayer(), Identifier.of("lifeseriesdynamic", "trivia_reward_loottable"));
+        List<ItemStack> lootTableItems = ItemSpawner.getRandomItemsFromLootTable(server, (ServerWorld) getWorldEntity(), getBoundPlayer(), Identifier.of("lifeseriesdynamic", "trivia_reward_loottable"));
         if (!lootTableItems.isEmpty()) {
             for (ItemStack item : lootTableItems) {
-                ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getEntityWorld(), pos, item, getBoundPlayer(), vector);
+                ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getWorldEntity(), pos, item, getBoundPlayer(), vector);
             }
         }
         else {
             ItemStack randomItem = itemSpawner.getRandomItem();
-            ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getEntityWorld(), pos, randomItem, getBoundPlayer(), vector);
+            ItemStackUtils.spawnItemForPlayerWithVelocity((ServerWorld) getWorldEntity(), pos, randomItem, getBoundPlayer(), vector);
         }
     }
 
@@ -870,11 +878,11 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
 
     public void curseBeeswarm(ServerPlayerEntity player) {
         BlockPos spawnPos = getBlockPosNearTarget(player, getBlockPos(), 1);
-        BeeEntity bee1 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee2 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee3 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee4 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
-        BeeEntity bee5 = EntityType.BEE.spawn((ServerWorld) getEntityWorld(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee1 = EntityType.BEE.spawn((ServerWorld) getWorldEntity(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee2 = EntityType.BEE.spawn((ServerWorld) getWorldEntity(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee3 = EntityType.BEE.spawn((ServerWorld) getWorldEntity(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee4 = EntityType.BEE.spawn((ServerWorld) getWorldEntity(), spawnPos, SpawnReason.COMMAND);
+        BeeEntity bee5 = EntityType.BEE.spawn((ServerWorld) getWorldEntity(), spawnPos, SpawnReason.COMMAND);
         if (bee1 != null) bee1.setAngryAt(player.getUuid());
         if (bee2 != null) bee2.setAngryAt(player.getUuid());
         if (bee3 != null) bee3.setAngryAt(player.getUuid());

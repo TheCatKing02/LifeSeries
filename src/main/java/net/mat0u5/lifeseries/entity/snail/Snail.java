@@ -327,7 +327,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
 
         if (age % 10 == 0 && getActualBoundPlayer() != null) {
             BlockPos pos = getBlockPos();
-            boolean sameDimensions = getEntityWorld().getRegistryKey().equals(getActualBoundPlayer().getEntityWorld().getRegistryKey());
+            boolean sameDimensions = getWorldEntity().getRegistryKey().equals(WorldUtils.getEntityWorld(getActualBoundPlayer()).getRegistryKey());
             if (sameDimensions) {
                 if (!fromTrivia) NetworkHandlerServer.sendStringPacket(getActualBoundPlayer(), PacketNames.SNAIL_POS, TextUtils.formatString("{}_{}_{}", pos.getX(), pos.getY(), pos.getZ()));
                 else NetworkHandlerServer.sendStringPacket(getActualBoundPlayer(), PacketNames.TRIVIA_SNAIL_POS, TextUtils.formatString("{}_{}_{}", pos.getX(), pos.getY(), pos.getZ()));
@@ -425,7 +425,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
     }
 
     public void chunkLoading() {
-        if (getEntityWorld() instanceof ServerWorld world) {
+        if (getWorldEntity() instanceof ServerWorld world) {
             addTicket(world);
         }
     }
@@ -447,7 +447,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
         //? if <= 1.21 {
         this.kill();
         //?} else {
-        /*this.kill((ServerWorld) getEntityWorld());
+        /*this.kill((ServerWorld) getWorldEntity());
         *///?}
         this.discard();
     }
@@ -465,8 +465,8 @@ public class Snail extends HostileEntity implements AnimatedEntity {
         if (groundPathFinder != null) groundPathFinder.kill();
         if (pathFinder != null) pathFinder.kill();
         //?} else {
-        /*if (groundPathFinder != null) groundPathFinder.kill((ServerWorld) groundPathFinder.getEntityWorld());
-        if (pathFinder != null) pathFinder.kill((ServerWorld) pathFinder.getEntityWorld());
+        /*if (groundPathFinder != null) groundPathFinder.kill((ServerWorld) WorldUtils.getEntityWorld(groundPathFinder));
+        if (pathFinder != null) pathFinder.kill((ServerWorld) WorldUtils.getEntityWorld(pathFinder));
         *///?}
         if (groundPathFinder != null) groundPathFinder.discard();
         if (pathFinder != null) pathFinder.discard();
@@ -583,7 +583,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
             pathFinder = null;
         }
         else if (pathFinder == null || pathFinder.isRemoved()) {
-            pathFinder = MobRegistry.PATH_FINDER.spawn((ServerWorld) this.getEntityWorld(), this.getBlockPos(), SpawnReason.COMMAND);
+            pathFinder = MobRegistry.PATH_FINDER.spawn((ServerWorld) this.getWorldEntity(), this.getBlockPos(), SpawnReason.COMMAND);
         }
         else {
             pathFinder.resetDespawnTimer();
@@ -594,13 +594,13 @@ public class Snail extends HostileEntity implements AnimatedEntity {
             groundPathFinder = null;
         }
         else if (groundPathFinder == null || groundPathFinder.isRemoved()) {
-            groundPathFinder = MobRegistry.PATH_FINDER.spawn((ServerWorld) this.getEntityWorld(), this.getBlockPos(), SpawnReason.COMMAND);
+            groundPathFinder = MobRegistry.PATH_FINDER.spawn((ServerWorld) this.getWorldEntity(), this.getBlockPos(), SpawnReason.COMMAND);
         }
         else {
             groundPathFinder.resetDespawnTimer();
         }
 
-        ServerWorld world = (ServerWorld) this.getEntityWorld();
+        ServerWorld world = (ServerWorld) this.getWorldEntity();
         //? if <= 1.21 {
         if (pathFinder != null) this.pathFinder.teleport(world, this.getX(), this.getY(), this.getZ(), EnumSet.noneOf(PositionFlag.class), getYaw(), getPitch());
         BlockPos pos = getGroundBlock();
@@ -617,9 +617,9 @@ public class Snail extends HostileEntity implements AnimatedEntity {
     @Nullable
     public BlockPos getGroundBlock() {
         Vec3d startPos = getPos();
-        Vec3d endPos = new Vec3d(startPos.getX(), getEntityWorld().getBottomY(), startPos.getZ());
+        Vec3d endPos = new Vec3d(startPos.getX(), getWorldEntity().getBottomY(), startPos.getZ());
 
-        BlockHitResult result = getEntityWorld().raycast(
+        BlockHitResult result = getWorldEntity().raycast(
                 new RaycastContext(
                         startPos,
                         endPos,
@@ -642,7 +642,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
         ServerPlayerEntity player = getBoundPlayer();
         if (player == null) return;
         ServerWorld playerWorld = PlayerUtils.getServerWorld(player);
-        if (getEntityWorld() instanceof ServerWorld world) {
+        if (getWorldEntity() instanceof ServerWorld world) {
             BlockPos tpTo = getBlockPosNearTarget(player, minDistanceFromPlayer);
             world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_PLAYER_TELEPORT, this.getSoundCategory(), this.getSoundVolume(), this.getSoundPitch());
             playerWorld.playSound(null, tpTo.getX(), tpTo.getY(), tpTo.getZ(), SoundEvents.ENTITY_PLAYER_TELEPORT, this.getSoundCategory(), this.getSoundVolume(), this.getSoundPitch());
@@ -672,7 +672,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
 
     public boolean isValidBlockOnGround() {
         if (groundPathFinder == null) return false;
-        BlockState block = groundPathFinder.getEntityWorld().getBlockState(groundPathFinder.getBlockPos());
+        BlockState block = WorldUtils.getEntityWorld(groundPathFinder).getBlockState(groundPathFinder.getBlockPos());
         if (block.isOf(Blocks.LAVA)) return false;
         if (block.isOf(Blocks.WATER)) return false;
         if (block.isOf(Blocks.POWDER_SNOW)) return false;
@@ -707,7 +707,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
         setPathfindingPenalty(PathNodeType.WALKABLE_DOOR, -1);
         setPathfindingPenalty(PathNodeType.DOOR_OPEN, -1);
         setPathfindingPenalty(PathNodeType.UNPASSABLE_RAIL, 0);
-        navigation = new BirdNavigation(this, getEntityWorld());
+        navigation = new BirdNavigation(this, getWorldEntity());
         updateNavigationTarget();
     }
 
@@ -718,7 +718,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
         setPathfindingPenalty(PathNodeType.WALKABLE_DOOR, -1);
         setPathfindingPenalty(PathNodeType.DOOR_OPEN, -1);
         setPathfindingPenalty(PathNodeType.UNPASSABLE_RAIL, 0);
-        navigation = new MobNavigation(this, getEntityWorld());
+        navigation = new MobNavigation(this, getWorldEntity());
         updateNavigationTarget();
     }
 
@@ -729,7 +729,7 @@ public class Snail extends HostileEntity implements AnimatedEntity {
         setPathfindingPenalty(PathNodeType.WALKABLE_DOOR, 0);
         setPathfindingPenalty(PathNodeType.DOOR_OPEN, 0);
         setPathfindingPenalty(PathNodeType.UNPASSABLE_RAIL, 0);
-        navigation = new MiningNavigation(this, getEntityWorld());
+        navigation = new MiningNavigation(this, getWorldEntity());
         updateNavigationTarget();
     }
 
@@ -873,9 +873,9 @@ public class Snail extends HostileEntity implements AnimatedEntity {
             for(int q = k; q < l; ++q) {
                 for(int r = m; r < n; ++r) {
                     mutable.set(p, q, r);
-                    FluidState fluidState = this.getEntityWorld().getFluidState(mutable);
+                    FluidState fluidState = getWorldEntity().getFluidState(mutable);
                     if (fluidState.isIn(tag)) {
-                        double e = q + fluidState.getHeight(this.getEntityWorld(), mutable);
+                        double e = q + fluidState.getHeight(this.getWorldEntity(), mutable);
                         if (e >= box.minY) {
                             d = Math.max(e - box.minY, d);
                         }
@@ -886,6 +886,14 @@ public class Snail extends HostileEntity implements AnimatedEntity {
 
         isInLavaLocal = d > 0.0;
         return false;
+    }
+
+    public World getWorldEntity() {
+        //? if = 1.21.6 {
+        /*return getWorld();
+        *///?} else {
+        return getEntityWorld();
+        //?}
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.mat0u5.lifeseries.utils.world;
 
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.mob.ZombieEntity;
@@ -89,5 +90,13 @@ public class WorldUtils {
 
         }
         return null;
+    }
+
+    public static World getEntityWorld(Entity entity) {
+        //? if = 1.21.6 {
+        /*return entity.getWorld();
+        *///?} else {
+        return entity.getEntityWorld();
+        //?}
     }
 }

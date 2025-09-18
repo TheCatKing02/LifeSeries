@@ -19,6 +19,7 @@ import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.AttributeUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.player.ScoreboardUtils;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
@@ -235,7 +236,7 @@ public class WildLife extends Season {
                 //? if <= 1.21 {
                 entity.dropStack(Items.TOTEM_OF_UNDYING.getDefaultStack());
                  //?} else {
-                /*entity.dropStack((ServerWorld) entity.getEntityWorld(), Items.TOTEM_OF_UNDYING.getDefaultStack());
+                /*entity.dropStack((ServerWorld) WorldUtils.getEntityWorld(entity), Items.TOTEM_OF_UNDYING.getDefaultStack());
                 *///?}
             }
         }

@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
 *///?}
 //? if <= 1.21.6
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-//? if >= 1.21.6
+//? if >= 1.21.9
 /*import net.minecraft.client.render.entity.EntityRenderManager;*/
 
 public class QuizScreen extends DefaultScreen {

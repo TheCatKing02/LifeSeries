@@ -42,9 +42,11 @@ public class Mimicry extends Superpower {
         boolean isLookingAtPlayer = false;
         boolean successfullyMimicked = false;
         if (lookingAt != null)  {
-            if (lookingAt instanceof MannequinEntity mannequin) {
+            //? if >= 1.21.9 {
+            /*if (lookingAt instanceof MannequinEntity mannequin) {
                 //TODO
             }
+            *///?}
             if (lookingAt instanceof ServerPlayerEntity lookingAtPlayer) {
                 lookingAtPlayer = PlayerUtils.getPlayerOrProjection(lookingAtPlayer);
                 isLookingAtPlayer = true;

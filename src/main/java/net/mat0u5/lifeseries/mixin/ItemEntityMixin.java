@@ -1,6 +1,7 @@
 package net.mat0u5.lifeseries.mixin;
 
 import net.mat0u5.lifeseries.Main;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -22,7 +23,7 @@ public abstract class ItemEntityMixin {
             if (blacklist == null) return;
             ItemEntity itemEntity = (ItemEntity) (Object) this;
             if (itemEntity.cannotPickup()) return;
-            if (itemEntity.getEntityWorld().isClient()) return;
+            if (WorldUtils.getEntityWorld(itemEntity).isClient()) return;
             ItemStack stack = itemEntity.getStack();
             blacklist.onCollision(serverPlayer,stack,ci);
         }

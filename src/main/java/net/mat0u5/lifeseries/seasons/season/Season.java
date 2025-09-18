@@ -16,6 +16,7 @@ import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
 import net.mat0u5.lifeseries.utils.player.*;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -371,7 +372,7 @@ public abstract class Season {
     }
 
     public void modifyEntityDrops(LivingEntity entity, DamageSource damageSource) {
-        if (!entity.getEntityWorld().isClient() && (damageSource.getAttacker() instanceof ServerPlayerEntity)) {
+        if (!WorldUtils.getEntityWorld(entity).isClient() && (damageSource.getAttacker() instanceof ServerPlayerEntity)) {
             spawnEggChance(entity);
         }
     }
@@ -401,7 +402,7 @@ public abstract class Season {
             //? if <=1.21 {
             entity.dropStack(spawnEggItem);
             //?} else
-            /*entity.dropStack((ServerWorld) entity.getEntityWorld(), spawnEggItem);*/
+            /*entity.dropStack((ServerWorld) WorldUtils.getEntityWorld(entity), spawnEggItem);*/
         }
     }
 

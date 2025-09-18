@@ -1,6 +1,7 @@
 package net.mat0u5.lifeseries.entity.triviabot.goal;
 
 import net.mat0u5.lifeseries.entity.triviabot.TriviaBot;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +52,7 @@ public final class TriviaBotTeleportGoal extends Goal {
         if (this.ticksSinceLastPositionChange > this.maxTicksSinceLastPositionChange) return true;
 
 
-        boolean dimensionsAreSame = mob.getEntityWorld().getRegistryKey().equals(boundPlayer.getEntityWorld().getRegistryKey());
+        boolean dimensionsAreSame = WorldUtils.getEntityWorld(mob).getRegistryKey().equals(WorldUtils.getEntityWorld(boundPlayer).getRegistryKey());
         return !dimensionsAreSame;
     }
 

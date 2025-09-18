@@ -2,6 +2,7 @@ package net.mat0u5.lifeseries.entity.snail.goal;
 
 
 import net.mat0u5.lifeseries.entity.snail.Snail;
+import net.mat0u5.lifeseries.utils.world.WorldUtils;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +45,7 @@ public final class SnailTeleportGoal extends Goal {
 
         ServerPlayerEntity boundPlayer = mob.getBoundPlayer();
         float distFromPlayer = mob.distanceTo(boundPlayer);
-        boolean dimensionsAreSame = mob.getEntityWorld().getRegistryKey().equals(boundPlayer.getEntityWorld().getRegistryKey());
+        boolean dimensionsAreSame = WorldUtils.getEntityWorld(mob).getRegistryKey().equals(WorldUtils.getEntityWorld(boundPlayer).getRegistryKey());
         return !dimensionsAreSame || distFromPlayer > Snail.MAX_DISTANCE || this.ticksSinceLastPositionChange > this.maxTicksSinceLastPositionChange;
     }
 
