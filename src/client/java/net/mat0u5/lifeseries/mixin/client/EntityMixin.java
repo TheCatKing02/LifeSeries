@@ -15,7 +15,7 @@ public class EntityMixin {
 
     @Inject(method = "getAir", at = @At("RETURN"), cancellable = true)
     public void getAir(CallbackInfoReturnable<Integer> cir) {
-        if (Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (Main.isLogicalSide() || Main.modDisabled()) return;
         if (System.currentTimeMillis() - MainClient.snailAirTimestamp > 5000) return;
         if (MainClient.snailAir >= 300) return;
 

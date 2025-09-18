@@ -9,6 +9,7 @@ public class ServerWaypointMixin {
 }
 //?} else {
 /*import net.mat0u5.lifeseries.seasons.season.doublelife.DoubleLife;
+import net.mat0u5.lifeseries.Main;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.waypoint.ServerWaypoint;
@@ -26,7 +27,7 @@ public interface ServerWaypointMixin {
 
     @Inject(method = "cannotReceive", at = @At("HEAD"), cancellable = true)
     private static void cannotReceive(LivingEntity source, ServerPlayerEntity receiver, CallbackInfoReturnable<Boolean> cir) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
         if (source instanceof ServerPlayerEntity sender) {
             if (currentSeason instanceof DoubleLife doubleLife && DoubleLife.SOULMATE_LOCATOR_BAR) {
                 UUID receiverSoulmateUUID = doubleLife.getSoulmateUUID(receiver.getUuid());

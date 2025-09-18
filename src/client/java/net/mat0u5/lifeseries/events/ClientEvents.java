@@ -3,9 +3,12 @@ package net.mat0u5.lifeseries.events;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.MainClient;
+import net.mat0u5.lifeseries.dependencies.DependencyManager;
+import net.mat0u5.lifeseries.dependencies.FlashbackCompatibility;
 import net.mat0u5.lifeseries.features.SnailSkinsClient;
 import net.mat0u5.lifeseries.gui.other.UpdateInfoScreen;
 import net.mat0u5.lifeseries.network.NetworkHandlerClient;
@@ -32,8 +35,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
@@ -53,20 +58,34 @@ public class ClientEvents {
         ClientPlayConnectionEvents.DISCONNECT.register(ClientEvents::onClientDisconnect);
         ClientLifecycleEvents.CLIENT_STARTED.register(ClientEvents::onClientStart);
         ScreenEvents.AFTER_INIT.register(ClientEvents::onScreenOpen);
+        ServerLifecycleEvents.SERVER_STARTING.register(ClientEvents::onServerStart);
+        ServerLifecycleEvents.SERVER_STARTED.register(ClientEvents::onServerStart);
+    }
+
+    private static void onServerStart(MinecraftServer server) {
+        boolean isReplay = false;
+        if (DependencyManager.flashbackLoaded()) {
+            if (FlashbackCompatibility.isReplayServer(server)) {
+                Main.LOGGER.info("Detected Flashback Replay");
+                isReplay = true;
+            }
+        }
+        Main.IS_REPLAY = isReplay;
+        if (Main.modDisabled()) return;
     }
 
     public static void onClientJoin(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
     }
 
     public static void onClientDisconnect(ClientPlayNetworkHandler handler, MinecraftClient client) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
         Main.LOGGER.info("Client disconnected from server, clearing some client data.");
         MainClient.resetClientData();
     }
 
     public static void onScreenOpen(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
         if (UpdateChecker.updateAvailable) {
             if (screen instanceof TitleScreen && !hasShownUpdateScreen) {
                 client.execute(() -> {
@@ -78,7 +97,7 @@ public class ClientEvents {
     }
 
     public static void onClientStart(MinecraftClient client) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
     }
 
     public static void onClientTickEnd() {
@@ -88,6 +107,9 @@ public class ClientEvents {
 
             checkResourcepackReload();
             spawnInvisibilityParticles(client);
+
+            if (Main.modDisabled()) return;
+
             if (player != null) {
                 sendPackets(player);
                 tryTripleJump(player);

@@ -10,3 +10,4 @@ Reworked how commands are registered.
 Added the '/lifeseries enable' and '/lifeseries disable' commands, which fully enable or disable the mod.
 
 ----------
+

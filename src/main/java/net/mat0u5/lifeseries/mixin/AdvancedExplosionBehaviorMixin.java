@@ -18,7 +18,7 @@ import static net.mat0u5.lifeseries.Main.currentSeason;
 public class AdvancedExplosionBehaviorMixin {
     @Inject(method = "getKnockbackModifier", at = @At("RETURN"), cancellable = true)
     public void getKnockbackModifier(Entity entity, CallbackInfoReturnable<Float> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (entity instanceof ServerPlayerEntity player) {
             if (currentSeason.getSeason() != Seasons.WILD_LIFE) return;
             if (player.getAbilities().flying) return;

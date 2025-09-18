@@ -25,7 +25,7 @@ public class StatusEffectMixin {
     //?} else {
     /*public void applyInstantEffect(ServerWorld world, Entity effectEntity, Entity attacker, LivingEntity target, int amplifier, double proximity, CallbackInfo ci) {
     *///?}
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         StatusEffect effect = (StatusEffect) (Object) this;
         if (target instanceof ServerPlayerEntity) {
             if (blacklist.getBannedEffects().contains(Registries.STATUS_EFFECT.getEntry(effect))) {
@@ -39,7 +39,7 @@ public class StatusEffectMixin {
     //?} else {
     /*public void applyInstantEffect(ServerWorld world, LivingEntity entity, int amplifier, CallbackInfoReturnable<Boolean> cir) {
     *///?}
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         StatusEffect effect = (StatusEffect) (Object) this;
         if (entity instanceof ServerPlayerEntity) {
             if (blacklist.getBannedEffects().contains(Registries.STATUS_EFFECT.getEntry(effect))) {

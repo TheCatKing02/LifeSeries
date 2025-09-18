@@ -394,7 +394,7 @@ public class TriviaBot extends AmbientEntity implements AnimatedEntity {
         //? if = 1.21.6 {
         /*return getWorld();
         *///?} else {
-        return getWorldEntity();
+        return getEntityWorld();
          //?}
     }
 

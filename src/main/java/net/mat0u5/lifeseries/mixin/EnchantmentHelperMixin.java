@@ -37,7 +37,7 @@ import static net.mat0u5.lifeseries.Main.seasonConfig;
 public class EnchantmentHelperMixin {
     @Inject(method = "getPossibleEntries", at = @At("HEAD"), cancellable = true)
     private static void getPossibleEntries(int level, ItemStack stack, Stream<RegistryEntry<Enchantment>> possibleEnchantments, CallbackInfoReturnable<List<EnchantmentLevelEntry>> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (Main.server == null) return;
 
         if (ItemStackUtils.hasCustomComponentEntry(stack, "NoEnchants") || ItemStackUtils.hasCustomComponentEntry(stack, "NoModifications")) {
@@ -116,7 +116,7 @@ public class EnchantmentHelperMixin {
             method = "onTargetDamaged(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;)V", at = @At("HEAD")
     )
     private static void onTargetDamaged(ServerWorld world, Entity victimEntity, DamageSource damageSource, CallbackInfo ci) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (!(victimEntity instanceof ServerPlayerEntity victim)) return;
         if (damageSource == null) return;
         if (damageSource.getAttacker() == null) return;

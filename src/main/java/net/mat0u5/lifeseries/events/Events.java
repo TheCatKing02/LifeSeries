@@ -16,7 +16,6 @@ import net.mat0u5.lifeseries.seasons.season.secretlife.TaskManager;
 import net.mat0u5.lifeseries.seasons.season.wildlife.morph.MorphManager;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.wildcard.snails.SnailSkinsServer;
 import net.mat0u5.lifeseries.seasons.session.SessionTranscript;
-import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.other.TaskScheduler;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.versions.UpdateChecker;
@@ -61,7 +60,7 @@ public class Events {
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register(Events::onReloadEnd);
 
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            if (!(player instanceof ServerPlayerEntity) || MOD_DISABLED) {
+            if (!(player instanceof ServerPlayerEntity) || modDisabled()) {
                 return ActionResult.PASS; // Only handle server-side events
             }
 
@@ -82,7 +81,7 @@ public class Events {
 
     private static void onReloadStart(MinecraftServer server, LifecycledResourceManager resourceManager) {
         try {
-            if (Main.MOD_DISABLED) return;
+            if (Main.modDisabled()) return;
             if (!Main.isLogicalSide()) return;
             Main.reloadStart();
         } catch(Exception e) {e.printStackTrace();}
@@ -90,18 +89,18 @@ public class Events {
 
     private static void onReloadEnd(MinecraftServer server, LifecycledResourceManager resourceManager, boolean success) {
         try {
-            if (Main.MOD_DISABLED) return;
+            if (Main.modDisabled()) return;
             if (!Main.isLogicalSide()) return;
             Main.reloadEnd();
         } catch(Exception e) {e.printStackTrace();}
     }
 
     private static void onPlayerJoin(ServerPlayerEntity player) {
-        if (Main.MOD_DISABLED) return;
         if (isFakePlayer(player)) return;
 
         try {
             playerStartJoining(player);
+            if (Main.modDisabled()) return;
             currentSeason.onPlayerJoin(player);
             currentSeason.onUpdatedInventory(player);
             SessionTranscript.playerJoin(player);
@@ -110,7 +109,7 @@ public class Events {
     }
 
     private static void onPlayerFinishJoining(ServerPlayerEntity player) {
-        if (isFakePlayer(player)) return;
+        if (isFakePlayer(player) || Main.modDisabled()) return;
 
         try {
             UpdateChecker.onPlayerJoin(player);
@@ -125,7 +124,7 @@ public class Events {
     }
 
     private static void onPlayerDisconnect(ServerPlayerEntity player) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
         if (isFakePlayer(player)) return;
 
         try {
@@ -137,7 +136,7 @@ public class Events {
     private static void onServerStopping(MinecraftServer server) {
         try {
             UpdateChecker.shutdownExecutor();
-            if (Main.MOD_DISABLED) return;
+            if (Main.modDisabled()) return;
             currentSession.sessionEnd();
         }catch (Exception e) {e.printStackTrace();}
     }
@@ -150,7 +149,7 @@ public class Events {
         try {
             Main.server = server;
             DatapackManager.onServerStarted(server);
-            if (Main.MOD_DISABLED) return;
+            if (Main.modDisabled()) return;
             currentSeason.initialize();
             blacklist.reloadBlacklist();
             if (currentSeason.getSeason() == Seasons.DOUBLE_LIFE) {
@@ -161,14 +160,14 @@ public class Events {
 
     private static void onServerTickEnd(MinecraftServer server) {
         try {
-            if (Main.MOD_DISABLED) return;
             skipNextTickReload = false;
             if (!Main.isLogicalSide()) return;
+            checkPlayerFinishJoiningTick();
+            if (Main.modDisabled()) return;
             if (updatePlayerListsNextTick) {
                 updatePlayerListsNextTick = false;
                 PlayerUtils.updatePlayerLists();
             }
-            checkPlayerFinishJoiningTick();
             if (server.getTickManager().isFrozen()) return;
             if (Main.currentSession != null) {
                 Main.currentSession.tick(server);
@@ -185,7 +184,7 @@ public class Events {
     }
 
     public static void onEntityDeath(LivingEntity entity, DamageSource source) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
         if (isFakePlayer(entity)) return;
         try {
             if (!Main.isLogicalSide()) return;
@@ -215,7 +214,7 @@ public class Events {
     }
 
     public static ActionResult onBlockUse(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
-        if (Main.MOD_DISABLED) return ActionResult.PASS;
+        if (Main.modDisabled()) return ActionResult.PASS;
         if (isFakePlayer(player)) return ActionResult.PASS;
 
         if (player instanceof ServerPlayerEntity serverPlayer &&
@@ -238,7 +237,7 @@ public class Events {
     }
 
     public static ActionResult onItemUse(PlayerEntity player, World world, Hand hand) {
-        if (isFakePlayer(player) || MOD_DISABLED) return ActionResult.PASS;
+        if (isFakePlayer(player) || modDisabled()) return ActionResult.PASS;
 
         if (player instanceof ServerPlayerEntity serverPlayer &&
                 world instanceof ServerWorld serverWorld && Main.isLogicalSide()) {
@@ -271,7 +270,7 @@ public class Events {
     }
 
     private static ActionResult onRightClickEntity(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (isFakePlayer(player) || MOD_DISABLED) return ActionResult.PASS;
+        if (isFakePlayer(player) || modDisabled()) return ActionResult.PASS;
 
         try {
             if (!Main.isLogicalSide()) return ActionResult.PASS;
@@ -284,7 +283,7 @@ public class Events {
         return ActionResult.PASS;
     }
     private static ActionResult onAttackEntity(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (isFakePlayer(player) || MOD_DISABLED) return ActionResult.PASS;
+        if (isFakePlayer(player) || modDisabled()) return ActionResult.PASS;
 
         try {
             if (!Main.isLogicalSide()) return ActionResult.PASS;

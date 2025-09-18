@@ -19,7 +19,7 @@ public abstract class SpawnEggItemMixin {
 
     @Inject(method = "useOnBlock", at = @At("HEAD"), cancellable = true)
     private void preventSpawnerModification(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (context.getPlayer() instanceof ServerPlayerEntity) {
             if (seasonConfig.SPAWN_EGG_ALLOW_ON_SPAWNER.get(seasonConfig)) return;
             Block block = context.getWorld().getBlockState(context.getBlockPos()).getBlock();

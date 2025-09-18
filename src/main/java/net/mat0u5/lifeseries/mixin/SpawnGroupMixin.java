@@ -18,7 +18,7 @@ public class SpawnGroupMixin {
 
     @Inject(method = "getCapacity", at = @At("HEAD"), cancellable = true)
     private void getCapacity(CallbackInfoReturnable<Integer> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         SpawnGroup group = (SpawnGroup)(Object)this;
         if (!group.getName().equalsIgnoreCase("monster") && !group.getName().equalsIgnoreCase("creature")) {
             return;
@@ -33,7 +33,7 @@ public class SpawnGroupMixin {
 
     @Inject(method = "isRare", at = @At("HEAD"), cancellable = true)
     private void isRare(CallbackInfoReturnable<Boolean> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         SpawnGroup group = (SpawnGroup)(Object)this;
         if (!group.getName().equalsIgnoreCase("creature")) return;
 

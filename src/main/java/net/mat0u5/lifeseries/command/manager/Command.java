@@ -15,7 +15,7 @@ public abstract class Command {
     public abstract void register(CommandDispatcher<ServerCommandSource> dispatcher);
 
     public boolean checkBanned(ServerCommandSource source) {
-        if (Main.MOD_DISABLED) {
+        if (Main.modDisabled()) {
             source.sendError(Text.of("The Life Series mod is disabled!"));
             source.sendError(Text.of("Enable with \"/lifeseries enable\""));
             return true;

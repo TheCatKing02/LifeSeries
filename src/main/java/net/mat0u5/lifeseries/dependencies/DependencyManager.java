@@ -20,6 +20,10 @@ public class DependencyManager {
         return isModLoaded("voicechat");
     }
 
+    public static boolean flashbackLoaded() {
+        return isModLoaded("flashback");
+    }
+
     public static boolean wildLifeModsLoaded() {
         return blockbenchImportLibraryLoaded() && polymerLoaded();
     }

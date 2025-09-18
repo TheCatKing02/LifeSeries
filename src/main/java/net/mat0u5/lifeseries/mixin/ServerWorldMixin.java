@@ -19,7 +19,7 @@ public class ServerWorldMixin {
 
     @Inject(method = "sendEntityStatus", at = @At("HEAD"))
     public void broadcast(Entity entity, byte status, CallbackInfo ci) {
-        if (status != (byte) 35 || currentSeason.getSeason() != Seasons.SECRET_LIFE || Main.MOD_DISABLED) {
+        if (status != (byte) 35 || currentSeason.getSeason() != Seasons.SECRET_LIFE || Main.modDisabled()) {
             return;
         }
         // This sound doesnt exist client-side, so it won't double

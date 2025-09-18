@@ -20,7 +20,7 @@ import static net.mat0u5.lifeseries.Main.currentSeason;
 public abstract class SleepManagerMixin {
     @Inject(method = "canResetTime", at = @At("RETURN"), cancellable = true)
     public void canResetTime(int percentage, List<ServerPlayerEntity> players, CallbackInfoReturnable<Boolean> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (currentSeason.getSeason() != Seasons.WILD_LIFE) return;
         for (ServerPlayerEntity player : players) {
             if (!player.canResetTimeBySleeping()) return;
@@ -32,7 +32,7 @@ public abstract class SleepManagerMixin {
 
     @Inject(method = "canSkipNight", at = @At("RETURN"), cancellable = true)
     public void canSkipNight(int percentage, CallbackInfoReturnable<Boolean> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (currentSeason.getSeason() != Seasons.WILD_LIFE) return;
         for (ServerPlayerEntity player : PlayerUtils.getAllPlayers()) {
             if (!player.isSleeping()) return;

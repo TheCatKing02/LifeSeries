@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Main implements ModInitializer {
-	public static final String MOD_VERSION = "dev-1.4.0.10";
+	public static final String MOD_VERSION = "dev-1.4.0.11";
 	public static final String MOD_ID = "lifeseries";
 	public static final String LATEST_UPDATE_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases/latest";
 	public static final String ALL_UPDATES_URL = "https://api.github.com/repos/Mat0u5/LifeSeries/releases";
@@ -46,6 +46,7 @@ public class Main implements ModInitializer {
 	public static final boolean ISOLATED_ENVIRONMENT = false;
 	public static final Seasons DEFAULT_SEASON = Seasons.UNASSIGNED;
 	public static boolean MOD_DISABLED = false;
+	public static boolean IS_REPLAY = false;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static ConfigManager config;
@@ -91,10 +92,14 @@ public class Main implements ModInitializer {
 		NetworkHandlerServer.registerServerReceiver();
 	}
 
+	public static boolean modDisabled() {
+		return MOD_DISABLED || IS_REPLAY;
+	}
+
 	public static void setDisabled(boolean disabled) {
 		MOD_DISABLED = disabled;
 		config.setProperty("modDisabled", String.valueOf(MOD_DISABLED));
-		if (!MOD_DISABLED) {
+		if (!modDisabled()) {
 			fullReload();
 		}
 	}

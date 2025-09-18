@@ -19,14 +19,14 @@ public class WanderingTraderManagerMixin {
     @Inject(method = "spawn", at = @At("HEAD"), cancellable = true)
     //? if <= 1.21.4 {
     public void spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (currentSeason.getSeason() == Seasons.SIMPLE_LIFE) {
             cir.setReturnValue(0);
         }
     }
     //?} else {
     /*public void spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfo ci) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (currentSeason.getSeason() == Seasons.SIMPLE_LIFE) {
             ci.cancel();
         }

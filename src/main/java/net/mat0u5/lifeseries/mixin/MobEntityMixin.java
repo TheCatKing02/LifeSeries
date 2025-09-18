@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MobEntityMixin {
     @Inject(method = "initialize", at = @At("HEAD"))
     private void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, CallbackInfoReturnable<EntityData> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (spawnReason == SpawnReason.NATURAL) return;
         if (spawnReason == SpawnReason.CHUNK_GENERATION) return;
         MobEntity mobEntity = ((MobEntity) (Object) this);

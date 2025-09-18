@@ -20,7 +20,7 @@ import static net.mat0u5.lifeseries.Main.currentSeason;
 public class SpawnHelperMixin {
     @Inject(method = "isAcceptableSpawnPosition", at = @At("HEAD"), cancellable = true)
     private static void isAcceptableSpawnPosition(ServerWorld world, Chunk chunk, BlockPos.Mutable pos, double squaredDistance, CallbackInfoReturnable<Boolean> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (currentSeason instanceof WildLife) {
             if (WildcardManager.isActiveWildcard(Wildcards.MOB_SWAP)) {
                 MobSwap.isAcceptableSpawnPosition(world, chunk, pos, squaredDistance, cir);

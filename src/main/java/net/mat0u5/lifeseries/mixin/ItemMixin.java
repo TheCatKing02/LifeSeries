@@ -31,7 +31,7 @@ public abstract class ItemMixin {
 
     @Inject(method = "getComponents", at = @At("HEAD"), cancellable = true)
     public void getComponents(CallbackInfoReturnable<ComponentMap> cir) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
         boolean isLogicalSide = Main.isLogicalSide();
         boolean hungerActive = false;
         if (isLogicalSide) {
@@ -60,7 +60,7 @@ public abstract class ItemMixin {
 
     @Inject(method = "finishUsing", at = @At("HEAD"))
     public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> cir) {
-        if (!Main.isLogicalSide() || Main.MOD_DISABLED) return;
+        if (!Main.isLogicalSide() || Main.modDisabled()) return;
         if (currentSeason instanceof WildLife && WildcardManager.isActiveWildcard(Wildcards.HUNGER)) {
             Item item = (Item) (Object) this;
             Hunger.finishUsing(item, normalComponents(), user);

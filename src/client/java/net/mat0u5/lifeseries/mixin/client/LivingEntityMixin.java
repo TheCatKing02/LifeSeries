@@ -18,7 +18,7 @@ public class LivingEntityMixin {
 
     @Inject(method = "jump", at = @At("TAIL"))
     private void onJump(CallbackInfo ci) {
-        if (Main.MOD_DISABLED) return;
+        if (Main.modDisabled()) return;
         LivingEntity entity = (LivingEntity) (Object) this;
         ClientEvents.onClientJump(entity);
     }

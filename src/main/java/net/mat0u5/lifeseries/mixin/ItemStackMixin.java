@@ -21,7 +21,7 @@ import net.minecraft.component.ComponentMapImpl;
 public class ItemStackMixin {
     @Inject(method = "areItemsAndComponentsEqual", at = @At("HEAD"), cancellable = true)
     private static void areItemsAndComponentsEqual(ItemStack stack, ItemStack otherStack, CallbackInfoReturnable<Boolean> cir) {
-        if (!stack.isOf(otherStack.getItem()) || Main.MOD_DISABLED) return;
+        if (!stack.isOf(otherStack.getItem()) || Main.modDisabled()) return;
 
         if (stack.isEmpty() && otherStack.isEmpty()) {
             cir.setReturnValue(true);
