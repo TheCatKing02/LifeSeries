@@ -251,6 +251,9 @@ public class NetworkHandlerClient {
         if (name == PacketNames.FAKE_THUNDER && MinecraftClient.getInstance().world != null) {
             MinecraftClient.getInstance().world.setLightningTicksLeft(intNumber);
         }
+        if (name == PacketNames.TAB_LIVES_CUTOFF) {
+            MainClient.TAB_LIST_LIVES_CUTOFF = intNumber;
+        }
     }
 
     public static void handleLongPacket(LongPayload payload) {

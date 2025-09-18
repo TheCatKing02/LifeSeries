@@ -46,7 +46,8 @@ public enum PacketNames {
     HOLDING_JUMP,
     TRIVIA_ANSWER,
     SHOW_TOTEM,
-    PAST_LIFE_CHOOSE_TWIST;
+    PAST_LIFE_CHOOSE_TWIST,
+    TAB_LIVES_CUTOFF;
 
     public static PacketNames fromName(String name) {
         for (PacketNames packet : PacketNames.values()) {

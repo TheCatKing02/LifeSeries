@@ -99,6 +99,7 @@ public class SecretLife extends Season {
         TaskManager.RED_FAIL = SecretLifeConfig.TASK_HEALTH_RED_FAIL.get(config);
         TaskManager.ASSIGN_TASKS_MINUTE = SecretLifeConfig.ASSIGN_TASKS_MINUTE.get(config);
         TaskManager.BROADCAST_SECRET_KEEPER = SecretLifeConfig.BROADCAST_SECRET_KEEPER.get(config);
+        TaskManager.CONSTANT_TASKS = SecretLifeConfig.CONSTANT_TASKS.get(config);
     }
 
     @Override
@@ -301,6 +302,7 @@ public class SecretLife extends Season {
         for (ServerPlayerEntity player : livesManager.getNonRedPlayers()) {
             if (!livesManager.isAlive(player)) continue;
             if (TaskManager.submittedOrFailed.contains(player.getUuid())) continue;
+            if (TaskManager.CONSTANT_TASKS) continue;
             playersWithTaskBooks.add(player.getNameForScoreboard());
         }
         if (!playersWithTaskBooks.isEmpty()) {

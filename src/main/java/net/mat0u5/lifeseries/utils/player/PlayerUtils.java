@@ -326,13 +326,14 @@ public class PlayerUtils {
     }
 
     public static boolean hidePlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
+        if (receivingPlayer == null || player == null) return false;
         if (PlayerUtils.isFakePlayer(player)) return true;
         if (hideDeadPlayerFrom(receivingPlayer, player)) return true;
         if (hideWatcherPlayerFrom(receivingPlayer, player)) return true;
         return false;
     }
 
-    public static boolean hideDeadPlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
+    private static boolean hideDeadPlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
         if (receivingPlayer.isSpectator()) return false;
         if (!player.isSpectator()) return false;
 
@@ -344,7 +345,7 @@ public class PlayerUtils {
         return true;
     }
 
-    public static boolean hideWatcherPlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
+    private static boolean hideWatcherPlayerFrom(ServerPlayerEntity receivingPlayer, ServerPlayerEntity player) {
         if (receivingPlayer.isSpectator()) return false;
         if (!player.isSpectator()) return false;
 
@@ -509,6 +510,13 @@ public class PlayerUtils {
             //?} else {
             /*player.kill(getServerWorld(player));
             *///?}
+        }
+    }
+
+    public static void broadcastToVisiblePlayers(ServerPlayerEntity broadcaster, Text message) {
+        for (ServerPlayerEntity player : PlayerUtils.getAllPlayers()) {
+            if (hidePlayerFrom(player, broadcaster)) continue;
+            player.sendMessage(message);
         }
     }
 }

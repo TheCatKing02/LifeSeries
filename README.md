@@ -76,6 +76,8 @@ This command **always** available
 - `/lifeseries chooseSeries` - Opens the series select GUI (Life Series mod on client-side required).
 - `/lifeseries setSeries <series>` - Changes the Series, only works if no series has been selected
   - `/lifeseries setSeries <series> confirm` - Changes the Series, can override the current series
+- `/lifeseries disable` - Disabled the entire life series mod.
+- `/lifeseries enable` - Enables the entire life series mod if it has been disabled.
 </details>
 
 <details open>

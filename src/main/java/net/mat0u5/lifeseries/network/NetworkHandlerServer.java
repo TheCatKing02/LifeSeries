@@ -6,6 +6,7 @@ import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.config.DefaultConfigValues;
 import net.mat0u5.lifeseries.entity.snail.Snail;
 import net.mat0u5.lifeseries.network.packets.*;
+import net.mat0u5.lifeseries.seasons.other.LivesManager;
 import net.mat0u5.lifeseries.seasons.season.Season;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.season.wildlife.WildLife;
@@ -289,6 +290,12 @@ public class NetworkHandlerServer {
             ServerPlayNetworking.send(player, payload);
         }
     }
+    public static void sendNumberPackets(PacketNames name, double number) {
+        NumberPayload payload = new NumberPayload(name.getName(), number);
+        for (ServerPlayerEntity player : PlayerUtils.getAllPlayers()) {
+            ServerPlayNetworking.send(player, payload);
+        }
+    }
 
     public static void sendNumberPacket(ServerPlayerEntity player, PacketNames name, double number) {
         if (player == null) return;
@@ -331,6 +338,7 @@ public class NetworkHandlerServer {
         }
         sendStringPacket(player, PacketNames.CURRENT_SEASON, currentSeason.getSeason().getId());
         sendStringPacket(player, PacketNames.TABLIST_SHOW_EXACT, String.valueOf(Season.TAB_LIST_SHOW_EXACT_LIVES));
+        sendNumberPacket(player, PacketNames.TAB_LIVES_CUTOFF, LivesManager.MAX_TAB_NUMBER);
     }
 
     public static void sendUpdatePackets() {

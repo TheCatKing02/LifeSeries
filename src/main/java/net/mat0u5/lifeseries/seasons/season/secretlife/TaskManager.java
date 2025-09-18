@@ -44,6 +44,7 @@ public class TaskManager {
     public static int RED_FAIL = -5;
     public static double ASSIGN_TASKS_MINUTE = 1;
     public static boolean BROADCAST_SECRET_KEEPER = false;
+    public static boolean CONSTANT_TASKS = false;
 
     public static BlockPos successButtonPos;
     public static BlockPos rerollButtonPos;
@@ -177,7 +178,7 @@ public class TaskManager {
     }
 
     public static void assignRandomTaskToPlayer(ServerPlayerEntity player, TaskTypes type) {
-        if (type != TaskTypes.RED) {
+        if (type != TaskTypes.RED || CONSTANT_TASKS) {
             submittedOrFailed.remove(player.getUuid());
         }
 
@@ -395,11 +396,7 @@ public class TaskManager {
                 addHealthThenItems(player, RED_SUCCESS);
             }
         });
-        if (livesManager.isOnLastLife(player, false)) {
-            TaskScheduler.scheduleTask(120, () -> {
-                chooseTasks(List.of(player), TaskTypes.RED);
-            });
-        }
+        chooseNewTaskForPlayerIfNecessary(player);
     }
 
     public static void rerollTask(ServerPlayerEntity player, boolean fromCommand) {
@@ -497,8 +494,15 @@ public class TaskManager {
                 secretKeeperBeingUsed = false;
             }
         });
-        if (livesManager.isOnLastLife(player, false)) {
-            TaskScheduler.scheduleTask(120, () -> chooseTasks(List.of(player), TaskTypes.RED));
+        chooseNewTaskForPlayerIfNecessary(player);
+    }
+
+    public static void chooseNewTaskForPlayerIfNecessary(ServerPlayerEntity player) {
+        if (livesManager.isOnLastLife(player, false) || CONSTANT_TASKS) {
+            TaskScheduler.scheduleTask(120, () -> {
+                TaskTypes newType = livesManager.isOnLastLife(player, false) ? TaskTypes.RED : TaskTypes.EASY;
+                chooseTasks(List.of(player), newType);
+            });
         }
     }
 

@@ -90,6 +90,10 @@ public class SecretLifeConfig extends ConfigManager {
             "beoadcast_secret_keeper", false, "season",
             "Secret Keeper Broadcast", "Makes the secret keeper broadcast a message in chat when someone succeeds, fails or rerolls a task."
     );
+    public static final ConfigFileEntry<Boolean> CONSTANT_TASKS = new ConfigFileEntry<>(
+            "constant_tasks", false, "season",
+            "Constant Tasks", "Automatically gives players a new task when they have completed one."
+    );
 
     public static final ConfigFileEntry<Object> GROUP_HEALTH = new ConfigFileEntry<>(
             "group_health", null, ConfigTypes.TEXT, "{season.health}",
@@ -107,6 +111,7 @@ public class SecretLifeConfig extends ConfigManager {
                 ,ASSIGN_TASKS_MINUTE
                 ,MAX_PLAYER_KILL_HEALTH
                 ,BROADCAST_SECRET_KEEPER
+                ,CONSTANT_TASKS
 
                 ,GROUP_HEALTH //Group
 

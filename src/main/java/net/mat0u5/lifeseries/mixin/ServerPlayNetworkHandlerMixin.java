@@ -15,6 +15,7 @@ import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.network.message.LastSeenMessageList;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.network.packet.c2s.play.*;
+import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -22,6 +23,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -160,5 +162,14 @@ public class ServerPlayNetworkHandlerMixin {
         if (packet.getAction() == PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND) {
             currentSeason.onUpdatedInventory(handler.player);
         }
+    }
+
+    @Redirect(method = "cleanUp", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
+    public void noLogoffMessage(PlayerManager instance, Text message, boolean overlay) {
+        ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) (Object) this;
+        if (!Main.isLogicalSide() || Main.modDisabled()) {
+            instance.broadcast(message, overlay);
+        }
+        PlayerUtils.broadcastToVisiblePlayers(handler.player, message);
     }
 }

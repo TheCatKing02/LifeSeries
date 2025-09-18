@@ -3,14 +3,18 @@ package net.mat0u5.lifeseries.mixin;
 import net.mat0u5.lifeseries.Main;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Function;
@@ -62,5 +66,23 @@ public class PlayerManagerMixin {
         if (alive || removalReason != Entity.RemovalReason.KILLED) return;
         if (!Main.isLogicalSide() || Main.modDisabled()) return;
         currentSeason.onPlayerRespawn(cir.getReturnValue());
+    }
+
+    @Unique
+    private ServerPlayerEntity ls$connectingPlayer;
+    @Inject(method = "onPlayerConnect", at = @At("HEAD"))
+    public void onPlayerConnectHead(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
+        ls$connectingPlayer = player;
+    }
+    @Redirect(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
+    public void skipLoginMessage(PlayerManager instance, Text message, boolean overlay) {
+        if (!Main.isLogicalSide() || Main.modDisabled() || ls$connectingPlayer == null) {
+            instance.broadcast(message, overlay);
+        }
+        PlayerUtils.broadcastToVisiblePlayers(ls$connectingPlayer, message);
+    }
+    @Inject(method = "onPlayerConnect", at = @At("TAIL"))
+    public void onPlayerConnectTail(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
+        ls$connectingPlayer = null;
     }
 }

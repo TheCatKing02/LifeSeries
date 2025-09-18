@@ -67,6 +67,7 @@ public class MainClient implements ClientModInitializer, IClientHelper {
     public static boolean COLORED_HEARTS = false;
     public static boolean COLORED_HEARTS_HARDCORE_LAST_LIFE = true;
     public static boolean COLORED_HEARTS_HARDCORE_ALL_LIVES = false;
+    public static int TAB_LIST_LIVES_CUTOFF = 4;
 
 
     public static boolean isReplay = false;
