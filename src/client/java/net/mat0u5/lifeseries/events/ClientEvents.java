@@ -49,6 +49,7 @@ import java.util.*;
 
 //? if <= 1.21.6
 import net.minecraft.particle.EntityEffectParticleEffect;
+import net.minecraft.util.math.Vec3d;
 //? if >= 1.21.9
 /*import net.minecraft.particle.TintedParticleEffect;*/
 
@@ -189,17 +190,21 @@ public class ClientEvents {
                 if (MainClient.FIX_SIZECHANGING_BUGS) {
                     EntityDimensions oldEntityDimensions = player.getBaseDimensions(player.getPose()).scaled(player.getScale());
                     Box oldBoundingBox = oldEntityDimensions.getBoxAt(player.getPos());
-                    float newScale = player.getScale() + MainClient.SIZESHIFTING_CHANGE * 2;
+                    Vec3d velocity = player.getVelocity();
+
+                    float newScale = player.getScale() + MainClient.SIZESHIFTING_CHANGE * 10;
                     EntityDimensions newEntityDimensions = player.getBaseDimensions(player.getPose()).scaled(newScale);
                     Box newBoundingBox = newEntityDimensions.getBoxAt(player.getPos());
 
                     boolean oldSpaceEmpty = ClientUtils.isSpaceEmpty(player, oldBoundingBox, 0, 1.0E-5, 0);
                     boolean newSpaceEmpty = ClientUtils.isSpaceEmpty(player, newBoundingBox, 0, 1.0E-5, 0);
+                    boolean predictedSpaceEmpty = ClientUtils.isSpaceEmpty(player, newBoundingBox, velocity.x, velocity.y + 1.0E-5, velocity.z);
 
                     if (player.input.getMovementInput().length() != 0) {
                         if (player.isInsideWall()) return;
                         if (!oldSpaceEmpty) return;
                         if (!newSpaceEmpty) return;
+                        if (!predictedSpaceEmpty) return;
                     }
                 }
 

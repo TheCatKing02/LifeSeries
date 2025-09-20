@@ -28,3 +28,7 @@ Added the 'constant_tasks' Secret Life config, which gives players a new task wh
 ----------
 
 Added the 'wildcard_sizeshifting_fix_bugs' Wild Life config, Which fixes the bug where you fall from blocks when shifting and when you get stuck on blocks when jumping. Default value is true.
+
+----------
+
+You can no longer get stuck outside the world border forever after it changes so that you become out of bounds.

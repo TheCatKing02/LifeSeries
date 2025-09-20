@@ -267,8 +267,11 @@ public class Session {
 
         if (playerX < minX || playerX > maxX || playerZ < minZ || playerZ > maxZ) {
             if (lastNonBorderPositions.containsKey(uuid)) {
-                PlayerUtils.teleport(player, lastNonBorderPositions.get(uuid));
-                return;
+                Vec3d pos = lastNonBorderPositions.get(uuid);
+                if (!(pos.x < minX || pos.x > maxX || pos.z < minZ || pos.z > maxZ)) {
+                    PlayerUtils.teleport(player, pos);
+                    return;
+                }
             }
 
             // Clamp player position inside the border
@@ -282,6 +285,7 @@ public class Session {
             lastNonBorderPositions.put(uuid, player.getPos());
         }
     }
+
     public static final Map<UUID, Integer> skipTimer = new HashMap<>();
     public void displayTimers(MinecraftServer server) {
         if (currentSeason instanceof LimitedLife limitedLife) {

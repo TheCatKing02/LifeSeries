@@ -4,21 +4,12 @@ import net.mat0u5.lifeseries.MainClient;
 import net.mat0u5.lifeseries.seasons.season.Seasons;
 import net.mat0u5.lifeseries.seasons.season.wildlife.wildcards.Wildcards;
 import net.mat0u5.lifeseries.utils.enums.Direction;
-import net.mat0u5.lifeseries.utils.interfaces.IClientPlayer;
-import net.mat0u5.lifeseries.utils.interfaces.IEntity;
 import net.mat0u5.lifeseries.utils.other.OtherUtils;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.world.ItemStackUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.DisconnectedScreen;
-import net.minecraft.client.gui.screen.MessageScreen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.realms.gui.screen.RealmsMainScreen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
@@ -32,14 +23,9 @@ import net.minecraft.network.packet.s2c.play.EntityAttributesS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.function.BooleanBiFunction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShapes;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Unique;
 
 import java.util.UUID;
 
@@ -98,7 +84,7 @@ public class ClientUtils {
         if (entity == null) return false;
         if (!(entity instanceof ClientPlayerEntity player)) return false;
         if (!MainClient.isClientPlayer(player.getUuid())) return false;
-        //?if <= 1.21 {
+        //? if <= 1.21 {
         RegistryEntry<EntityAttribute> scaleAttribute = EntityAttributes.GENERIC_SCALE;
         //?} else {
         /*RegistryEntry<EntityAttribute> scaleAttribute = EntityAttributes.SCALE;
@@ -127,50 +113,38 @@ public class ClientUtils {
             boolean newSpaceBelowEmpty = isSpaceEmpty(player, newBoundingBox, 0, -1.0E-5, 0);
             if (!oldSpaceBelowEmpty && newSpaceBelowEmpty) {
                 // The shrinking causes the player to fall when on the edge of blocks
-                OtherUtils.log("Detected fall");
-                move = findDesiredCollission(player, newBoundingBox, changedBy, - (double)1.0E-5F, false, false);
+                move = findDesiredCollission(player, newBoundingBox, changedBy, - 1.0E-5, false, false);
             }
         }
         else {
 
-            boolean oldSpaceEmpty = isSpaceEmpty(player, oldBoundingBox, 0, (double)1.0E-5F, 0);
-            boolean newSpaceEmpty = isSpaceEmpty(player, newBoundingBox, 0, (double)1.0E-5F, 0);
+            boolean oldSpaceEmpty = isSpaceEmpty(player, oldBoundingBox, 0, 1.0E-5, 0);
+            boolean newSpaceEmpty = isSpaceEmpty(player, newBoundingBox, 0, 1.0E-5, 0);
             if (oldSpaceEmpty && !newSpaceEmpty) {
                 // Growing causes the player to clip into blocks
-                OtherUtils.log("Detected clip");
-                move = findDesiredCollission(player, newBoundingBox, changedBy, (double)1.0E-5F, true, false);
+                move = findDesiredCollission(player, newBoundingBox, changedBy, 1.0E-5, true, false);
                 if (move != null) {
                     move = move.multiply(5);
                 }
             }
             if (!oldSpaceEmpty && !newSpaceEmpty) {
-                OtherUtils.log("Detected double clip");
-                move = recursivelyFindDesiredCollission(player, newBoundingBox, (double)1.0E-5F, true);
+                move = recursivelyFindDesiredCollission(player, newBoundingBox, 1.0E-5, true);
             }
 
         }
 
         if (move != null) {
-            OtherUtils.log("Moving by " + move);
-            /*
             if (changedBy > 0) {
                 Vec3d playerVelocity = player.getVelocity();
                 double speedX = playerVelocity.x;
                 double speedZ = playerVelocity.z;
-                if (move.x != 0) {
-                    OtherUtils.log("Stopping X speed");
-                    speedX = 0;
-                }
-                if (move.z != 0) {
-                    OtherUtils.log("Stopping Z speed");
-                    speedZ = 0;
-                }
-                if (player instanceof IClientPlayer clientPlayer) {
-                    clientPlayer.ls$stopMovementFor(2);
-                }
+
+                if (move.x != 0) speedX = 0;
+                if (move.z != 0) speedZ = 0;
+
                 player.setVelocity(speedX, playerVelocity.y, speedZ);
             }
-            */
+
             player.setPos(player.getX() + move.x, player.getY(), player.getZ() + move.z);
             instance.setBaseValue(baseValue);
             player.calculateDimensions();
@@ -200,16 +174,13 @@ public class ClientUtils {
     }
 
     public static Vec3d findDesiredCollission(ClientPlayerEntity player, Box newBoundingBox, double changedBy, double offsetY, boolean desiredSpaceEmpty, boolean onlyCardinal) {
-        int i = 0;
         Direction[] directions = onlyCardinal ? Direction.getCardinalDirections() : Direction.values();
         for (Direction direction : directions) {
-            i++;
             double offsetX = changedBy * direction.x;
             double offsetZ = changedBy * direction.z;
 
             boolean movedSpaceEmpty = isSpaceEmpty(player, newBoundingBox, offsetX, offsetY, offsetZ);
             if (movedSpaceEmpty == desiredSpaceEmpty) {
-                OtherUtils.log("Success in " + i);
                 return new Vec3d(offsetX, 0, offsetZ);
             }
         }
