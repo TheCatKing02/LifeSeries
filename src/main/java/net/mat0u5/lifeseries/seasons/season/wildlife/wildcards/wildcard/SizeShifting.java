@@ -26,6 +26,8 @@ public class SizeShifting extends Wildcard {
     public static double SIZE_CHANGE_MULTIPLIER = 1;
     public static double SIZE_CHANGE_STEP = 0.0015;
 
+    public static boolean FIX_SIZECHANGING_BUGS = false;
+
     //public static boolean SAVE_FROM_FALLING = true;
     
     @Override

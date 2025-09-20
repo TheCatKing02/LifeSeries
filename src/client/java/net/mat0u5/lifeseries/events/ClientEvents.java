@@ -18,6 +18,7 @@ import net.mat0u5.lifeseries.seasons.session.SessionStatus;
 import net.mat0u5.lifeseries.utils.ClientResourcePacks;
 import net.mat0u5.lifeseries.utils.ClientSounds;
 import net.mat0u5.lifeseries.utils.ClientTaskScheduler;
+import net.mat0u5.lifeseries.utils.ClientUtils;
 import net.mat0u5.lifeseries.utils.enums.HandshakeStatus;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.versions.UpdateChecker;
@@ -28,6 +29,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.decoration.DisplayEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -110,6 +112,15 @@ public class ClientEvents {
         if (Main.modDisabled()) return;
     }
 
+    public static void onClientTickStart() {
+        if (Main.modDisabled()) return;
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        if (player != null) {
+            sendPackets(player);
+        }
+    }
+
     public static void onClientTickEnd() {
         try {
             ClientTaskScheduler.onClientTick();
@@ -123,7 +134,6 @@ public class ClientEvents {
             if (Main.modDisabled()) return;
 
             if (player != null) {
-                sendPackets(player);
                 tryTripleJump(player);
                 checkSnailInvisible(client, player);
                 checkTriviaSnailInvisible(client, player);
@@ -170,14 +180,31 @@ public class ClientEvents {
     public static void sendPackets(ClientPlayerEntity player) {
         if (MainClient.clientCurrentSeason == Seasons.WILD_LIFE && MainClient.clientActiveWildcards.contains(Wildcards.SIZE_SHIFTING)) {
             //? if <= 1.21 {
-            if (player.input.jumping) {
-                NetworkHandlerClient.sendHoldingJumpPacket();
-            }
+            boolean jumping = player.input.jumping;
             //?} else {
-            /*if (player.input.playerInput.jump()) {
+            /*boolean jumping = player.input.playerInput.jump();
+            *///?}
+            if (jumping) {
+
+                if (MainClient.FIX_SIZECHANGING_BUGS) {
+                    EntityDimensions oldEntityDimensions = player.getBaseDimensions(player.getPose()).scaled(player.getScale());
+                    Box oldBoundingBox = oldEntityDimensions.getBoxAt(player.getPos());
+                    float newScale = player.getScale() + MainClient.SIZESHIFTING_CHANGE * 2;
+                    EntityDimensions newEntityDimensions = player.getBaseDimensions(player.getPose()).scaled(newScale);
+                    Box newBoundingBox = newEntityDimensions.getBoxAt(player.getPos());
+
+                    boolean oldSpaceEmpty = ClientUtils.isSpaceEmpty(player, oldBoundingBox, 0, 1.0E-5, 0);
+                    boolean newSpaceEmpty = ClientUtils.isSpaceEmpty(player, newBoundingBox, 0, 1.0E-5, 0);
+
+                    if (player.input.getMovementInput().length() != 0) {
+                        if (player.isInsideWall()) return;
+                        if (!oldSpaceEmpty) return;
+                        if (!newSpaceEmpty) return;
+                    }
+                }
+
                 NetworkHandlerClient.sendHoldingJumpPacket();
             }
-            *///?}
         }
     }
 

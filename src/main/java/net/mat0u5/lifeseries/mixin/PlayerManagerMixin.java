@@ -68,21 +68,11 @@ public class PlayerManagerMixin {
         currentSeason.onPlayerRespawn(cir.getReturnValue());
     }
 
-    @Unique
-    private ServerPlayerEntity ls$connectingPlayer;
-    @Inject(method = "onPlayerConnect", at = @At("HEAD"))
-    public void onPlayerConnectHead(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
-        ls$connectingPlayer = player;
-    }
     @Redirect(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
-    public void skipLoginMessage(PlayerManager instance, Text message, boolean overlay) {
-        if (!Main.isLogicalSide() || Main.modDisabled() || ls$connectingPlayer == null) {
+    public void skipLoginMessage(PlayerManager instance, Text message, boolean overlay, ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData) {
+        if (!Main.isLogicalSide() || Main.modDisabled() || player == null) {
             instance.broadcast(message, overlay);
         }
-        PlayerUtils.broadcastToVisiblePlayers(ls$connectingPlayer, message);
-    }
-    @Inject(method = "onPlayerConnect", at = @At("TAIL"))
-    public void onPlayerConnectTail(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
-        ls$connectingPlayer = null;
+        PlayerUtils.broadcastToVisiblePlayers(player, message);
     }
 }

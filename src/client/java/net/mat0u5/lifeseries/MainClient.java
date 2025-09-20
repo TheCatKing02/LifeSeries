@@ -5,10 +5,6 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.mat0u5.lifeseries.config.ClientConfig;
-import net.mat0u5.lifeseries.config.ConfigManager;
-import net.mat0u5.lifeseries.config.MainConfig;
-import net.mat0u5.lifeseries.events.ClientEvents;
-import net.mat0u5.lifeseries.events.ClientKeybinds;
 import net.mat0u5.lifeseries.network.NetworkHandlerClient;
 import net.mat0u5.lifeseries.registries.ClientRegistries;
 import net.mat0u5.lifeseries.render.ClientRenderer;
@@ -19,7 +15,6 @@ import net.mat0u5.lifeseries.seasons.session.SessionStatus;
 import net.mat0u5.lifeseries.utils.enums.HandshakeStatus;
 import net.mat0u5.lifeseries.utils.interfaces.IClientHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -68,6 +63,8 @@ public class MainClient implements ClientModInitializer, IClientHelper {
     public static boolean COLORED_HEARTS_HARDCORE_LAST_LIFE = true;
     public static boolean COLORED_HEARTS_HARDCORE_ALL_LIVES = false;
     public static int TAB_LIST_LIVES_CUTOFF = 4;
+    public static boolean FIX_SIZECHANGING_BUGS = false;
+    public static float SIZESHIFTING_CHANGE = 0;
 
 
     public static boolean isReplay = false;

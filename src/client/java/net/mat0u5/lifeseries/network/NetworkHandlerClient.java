@@ -26,16 +26,12 @@ import net.mat0u5.lifeseries.utils.ClientUtils;
 import net.mat0u5.lifeseries.utils.enums.HandshakeStatus;
 import net.mat0u5.lifeseries.utils.enums.PacketNames;
 import net.mat0u5.lifeseries.utils.other.TextUtils;
-import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.versions.VersionControl;
 import net.mat0u5.lifeseries.utils.world.AnimationUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.GameMenuScreen;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.DisconnectionInfo;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -232,6 +228,9 @@ public class NetworkHandlerClient {
         if (name == PacketNames.PAST_LIFE_CHOOSE_TWIST) {
             MinecraftClient.getInstance().setScreen(new PastLifeChooseTwistScreen());
         }
+        if (name == PacketNames.FIX_SIZECHANGING_BUGS) {
+            MainClient.FIX_SIZECHANGING_BUGS = value.equalsIgnoreCase("true");
+        }
     }
 
     public static void handleNumberPacket(NumberPayload payload) {
@@ -253,6 +252,9 @@ public class NetworkHandlerClient {
         }
         if (name == PacketNames.TAB_LIVES_CUTOFF) {
             MainClient.TAB_LIST_LIVES_CUTOFF = intNumber;
+        }
+        if (name == PacketNames.SIZESHIFTING_CHANGE) {
+            MainClient.SIZESHIFTING_CHANGE = (float) number;
         }
     }
 

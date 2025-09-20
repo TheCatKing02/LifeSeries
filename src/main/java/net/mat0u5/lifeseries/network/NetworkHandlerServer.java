@@ -28,9 +28,6 @@ import net.mat0u5.lifeseries.utils.player.PermissionManager;
 import net.mat0u5.lifeseries.utils.player.PlayerUtils;
 import net.mat0u5.lifeseries.utils.versions.VersionControl;
 import net.minecraft.network.DisconnectionInfo;
-import net.minecraft.network.packet.s2c.play.TeamS2CPacket;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -339,6 +336,8 @@ public class NetworkHandlerServer {
         sendStringPacket(player, PacketNames.CURRENT_SEASON, currentSeason.getSeason().getId());
         sendStringPacket(player, PacketNames.TABLIST_SHOW_EXACT, String.valueOf(Season.TAB_LIST_SHOW_EXACT_LIVES));
         sendNumberPacket(player, PacketNames.TAB_LIVES_CUTOFF, LivesManager.MAX_TAB_NUMBER);
+        sendStringPacket(player, PacketNames.FIX_SIZECHANGING_BUGS, String.valueOf(SizeShifting.FIX_SIZECHANGING_BUGS));
+        sendNumberPacket(player, PacketNames.SIZESHIFTING_CHANGE, SizeShifting.SIZE_CHANGE_STEP * SizeShifting.SIZE_CHANGE_MULTIPLIER);
     }
 
     public static void sendUpdatePackets() {

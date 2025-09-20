@@ -24,3 +24,7 @@ The mod is now disabled when playing on servers that do not have it installed.
 Players can no longer see login and logoff message from players that are hidden from them in the tab list.<br>
 The tab list now shows "x+" lives based on the highest lives team, instead of always "4+".<br>
 Added the 'constant_tasks' Secret Life config, which gives players a new task when they have completed one (not just red players).
+
+----------
+
+Added the 'wildcard_sizeshifting_fix_bugs' Wild Life config, Which fixes the bug where you fall from blocks when shifting and when you get stuck on blocks when jumping. Default value is true.
