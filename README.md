@@ -10,7 +10,7 @@
 
 
 # Life Series Mod
-This mod is a one-to-one recreation of [Grian](https://www.youtube.com/c/Grian)'s Life Series in minecraft fabric, with as many QOL features as possible. 
+This mod is a one-to-one recreation of [Melon](https://www.youtube.com/c/Grian)'s Life Series in minecraft fabric, with as many QOL features as possible. 
 That includes automated lives tracking, automated team colors, automated session timer, automatic Boogeyman selection and kill tracking, and much more.<br>
 The mod is *server-side required* and optional (**but very much recommended**) on the client-side, as that adds further QOL features (such as GUIs for most of the features, so you don't have to use the commands as much).<br>
 Join the [Discord](https://discord.gg/QWJxfb4zQZ) or make an issue if you want to submit any bugs or give suggestions.
